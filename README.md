@@ -5,6 +5,8 @@ Author: Eddy Ardonne
 
 Many thanks to: Joost Slingerland, Gert Vercleyen
 
+Last update: 2021-10-24
+
 The method used is described the paper:
 
 Clebsch-Gordan and 6j-coefficients for rank two quantum groups,
