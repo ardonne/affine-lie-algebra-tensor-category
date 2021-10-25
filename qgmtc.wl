@@ -146,7 +146,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-10-24\n\
+       "Last revision: 2021-10-25\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -781,7 +781,7 @@ possiblerootfactors[atype_, rank_, level_] :=
 initialize[atype_, rr_, level_] :=
     Module[{typerangeok, levelok},
    
-   If[Not[arangeok[atype, tw, rr]],
+   If[Not[arangeok[atype, 1, rr]],
     typerangeok = False;
     Print["The type of algebra and the rank are not compatible!"];,
     typerangeok = True;,
@@ -816,7 +816,7 @@ initialize[atype_, rr_, level_] :=
    
 initialize[atype_, rr_, level_, rootfac_] :=
   Module[{typerangeok, levelok, rootfacok, posrootfacs},
-      If[Not[arangeok[atype, tw, rr]],
+      If[Not[arangeok[atype, 1, rr]],
         typerangeok = False;
         Print["The type of algebra and the rank are not compatible!"];,
         typerangeok = True;,
