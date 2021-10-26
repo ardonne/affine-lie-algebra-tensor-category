@@ -124,7 +124,7 @@ of vertices of type (a,b,c)."
 Begin["`Private`"];
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*General functions*)
 
 
@@ -146,7 +146,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-10-25\n\
+       "Last revision: 2021-10-26\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -195,7 +195,8 @@ q = e^(2 \[Pi] i rootfactor/(tmax (k + g))) ,\n where k is the level, \
 g the dual coxeter number of the \
 algebra, and tmax is the ratio of the length of the long and short \
 roots, if any (see the table above for the values of g and tmax). \
-rootfactor should be relative prime with tmax(k+g). The value of q is \
+rootfactor should be relative prime with tmax(k+g), so we restrict \
+to the homogeneous cases. The value of q is \
 set by running "],
       codeStyle["setrootofunity[rootfactor]"],
       textStyle[" .\n"],
