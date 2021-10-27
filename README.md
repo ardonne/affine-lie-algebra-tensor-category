@@ -1,4 +1,4 @@
-# qgmtc
+# affine-lie-algebra-tensor-category (alatc)
 Mathematica package for calculating the F- and R- symbols from the quantum groups associated with (non-twisted) affine Lie algebras, as well as the associated modular data.
 
 Author: Eddy Ardonne
