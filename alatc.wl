@@ -131,8 +131,11 @@ Begin["`Private`"];
 displayinfo[] := With[{},
    textStyle = 
     Style[ #,  FontSize -> 15, FontFamily -> "Source Sans Pro" ] &;
+   textStyleBold = 
+    Style[ #,  FontSize -> 15, FontFamily -> "Source Sans Pro", Bold] &;
    codeStyle = 
     Style[ #,  FontSize -> 14, FontFamily -> "Source Code Pro" ] &;
+    
    
    Print[Sequence @@
      {
@@ -224,7 +227,13 @@ ill-conditioned matrices, or if the fusion rules are inconsistent, \
 one can try to increase the precision (which is standard set to 100, \
 so pretty high already) by running "],
       codeStyle["setprecision[precision]"],
-      textStyle[" where precision should be an integer > 100.\n"],
+      textStyle[" where precision should be an integer > 100. "],
+      codeStyle["setprecision[precision]"],
+      textStyle[" should be run "],
+      textStyleBold["before"],
+      textStyle[" running "],
+      codeStyle["setrootofunity[rootfactor]"],
+      textStyle[".\n"],
       textStyle["When loading the package, the recusion limit is set to 10000.\n"],
       textStyle["The gauge choices made during the calculation follow, to a \
 large extend, the ones described in the paper above."]
