@@ -124,7 +124,7 @@ of vertices of type (a,b,c)."
 Begin["`Private`"];
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*General functions*)
 
 
@@ -149,7 +149,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-10-27\n\
+       "Last revision: 2021-10-30\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
