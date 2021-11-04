@@ -124,7 +124,7 @@ of vertices of type (a,b,c)."
 Begin["`Private`"];
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*General functions*)
 
 
@@ -143,13 +143,13 @@ displayinfo[] := With[{},
        FontFamily -> "Source Sans Pro"],
       Style[ "Authors: Eddy Ardonne\n" , FontSize -> 15, 
        FontFamily -> "Source Sans Pro", Bold],
-      Style[ "Many thanks to: Joost Slingerland, Gert Vercleyen\n" , 
+      Style[ "Many thanks to: Steve Simon, Joost Slingerland, Gert Vercleyen\n" , 
        FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-10-30\n\
+       "Last revision: 2021-11-04\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
