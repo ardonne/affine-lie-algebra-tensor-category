@@ -3,9 +3,9 @@ Mathematica package for calculating the F- and R- symbols from the quantum group
 
 Author: Eddy Ardonne
 
-Many thanks to: Joost Slingerland, Gert Vercleyen
+Many thanks to: Steve Simnon, Joost Slingerland, Gert Vercleyen
 
-Last update: 2021-10-30
+Last update: 2021-11-04
 
 The method used is described the paper:
 
