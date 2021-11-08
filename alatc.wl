@@ -2575,7 +2575,7 @@ diagonalizermatrices[] := With[{},
    ];
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Command to calculate the modular data*)
 
 
@@ -2734,7 +2734,8 @@ before calculating the modular data."];
   Print["The scaling dimensions modulo one (calculated from the twists) are: ", hlist];
   
   If[fmatunitary && Not[qdimspositive],
-   Print["The f-matrices are all unitary, but the quantum dimensions are not all positive. Better check!"];
+   Print["The f-matrices are all unitary, but the quantum dimensions are not all positive. \
+Presumably, there exists a different pivotal structure, such that all the quantum dimensions are positive."];
    ];
 
   If[Not[fmatunitary] && qdimspositive,
