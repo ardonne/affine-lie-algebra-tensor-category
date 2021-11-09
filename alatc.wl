@@ -1887,7 +1887,7 @@ to do so. Proceed with care!"];
     Print["The F-matrices are unitary."];,
     fmatunitary = False;
     Print[
-     "The F-matrices are not all unitary. This can happen if q is not a primitive root of unity."];
+     "The F-matrices are not all unitary."];
     ];
    
    
