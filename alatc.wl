@@ -149,7 +149,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-11-04\n\
+       "Last revision: 2021-11-09\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -233,7 +233,8 @@ so pretty high already) by running "],
       textStyleBold["before"],
       textStyle[" running "],
       codeStyle["setrootofunity[rootfactor]"],
-      textStyle[".\n"],
+      textStyle[". Warnings are generated if the deviation is bigger than 10^(-(precision - 20)), \
+so 10^(-80) with the standard setting.\n"],
       textStyle["When loading the package, the recusion limit is set to 10000.\n"],
       textStyle["The gauge choices made during the calculation follow, to a \
 large extend, the ones described in the paper above."]
@@ -1172,7 +1173,15 @@ checkweightspaceorthogonality[] := Module[{maxdev, tempdev},
        Max[(Abs /@ 
           Flatten[(basison[ir, w].gramm[ir, w].Transpose[
                basison[ir, w]] - IdentityMatrix[wdim[ir, w]])])];
-      If[tempdev > maxdev, maxdev = tempdev];
+               
+      (*If[tempdev > maxdev, maxdev = tempdev];*)
+      (*
+      Max deals beter with high precision numbers than > (Greater).
+      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
+      *)
+      maxdev=Max[maxdev,tempdev];        
+      
+        
       ];
     , {ir, irreps}, {w, weights[ir]}];
 
@@ -1677,13 +1686,19 @@ checkorthonormality[] := Module[{maxdev, tempdev},
       Null,
       
       orthonormalityok = False;
-      
+          
       tempdev = 
        Max[Abs /@ (Flatten[
            Table[(tpbasis[hw1, hw2, hw3, v, {w3, i}].tpbasis[hw1, hw2, hw3, v, {w3, j}])
            , {i, 1, wdim[hw3, w3]}, {j, 1, wdim[hw3, w3]}] - IdentityMatrix[wdim[hw3, w3]]])];
+           
+      (*If[tempdev > maxdev, maxdev = tempdev];*)
+      (*
+      Max deals beter with high precision numbers than > (Greater).
+      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
+      *)
+      maxdev=Max[maxdev,tempdev];
       
-      If[tempdev > maxdev, maxdev = tempdev];
       
       ];
       
@@ -1693,7 +1708,7 @@ checkorthonormality[] := Module[{maxdev, tempdev},
    If[orthonormalityok,
     Print["The calculated q-CG coefficients satisfy the orthonormality conditions :-)"],
     Print["The constructed q-CG coefficients do not satisfy the orthonormalilty conditions :-( If the maximum deviation ", maxdev, 
-      " is small, you can try to proceed at your own risk; typically, the numerical error in the F-sybmols is smaller. Increasing the precision, might also help"];
+      " is small, you can try to proceed at your own risk; typically, the numerical error in the F-sybmols is smaller. Increasing the precision might also help."];
     ];
    ]; 
    
@@ -1813,8 +1828,12 @@ checkpentagon[] := Module[{maxdev, tempdev},
               , {h, Quiet[Cases[fusion[i[[2]], i[[3]]], x_ /; MemberQ[fusion[i[[1]], x], i[[7]]] && 
                MemberQ[fusion[x, i[[4]]], i[[8]]]]]}
                , {v2, nv[i[[2]], i[[3]], h]}, {v3, nv[i[[1]], h, i[[7]]]}, {v4, nv[h, i[[4]], i[[8]]]}]];
-      
-      If[tempdev > maxdev, maxdev = tempdev];
+      (*If[tempdev > maxdev, maxdev = tempdev];*)
+      (*
+      Max deals beter with high precision numbers than > (Greater).
+      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
+      *)
+      maxdev=Max[maxdev,tempdev];
       ,
       If[Not[pentundecidable], 
         Print["At least one of the pentagon equations is not decidable! Something went wrong :-("];
@@ -2288,8 +2307,12 @@ checkhexagon[] := Module[{maxdev, tempdev},
           , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]
         
         ];
-      
-      If[tempdev > maxdev, maxdev = tempdev];
+      (*If[tempdev > maxdev, maxdev = tempdev];*)
+      (*
+      Max deals beter with high precision numbers than > (Greater).
+      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
+      *)
+      maxdev=Max[maxdev,tempdev];
       ,
       If[Not[hexrundecidable], 
         Print["At least one of the hexagon equations for R is not decidable! Something went wrong :-("];
@@ -2333,8 +2356,12 @@ checkhexagon[] := Module[{maxdev, tempdev},
             , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]
         
         ];
-      
-      If[tempdev > maxdev, maxdev = tempdev];
+      (*If[tempdev > maxdev, maxdev = tempdev];*)
+      (*
+      Max deals beter with high precision numbers than > (Greater).
+      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
+      *)
+      maxdev=Max[maxdev,tempdev];
       ,
       If[Not[hexrinvundecidable],
       Print["At least one of the hexagon equations for R is not decidable! Something went wrong :-("];
@@ -2575,7 +2602,7 @@ diagonalizermatrices[] := With[{},
    ];
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Command to calculate the modular data*)
 
 
