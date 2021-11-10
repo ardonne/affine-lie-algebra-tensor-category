@@ -149,7 +149,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-11-09\n\
+       "Last revision: 2021-11-10\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -2047,11 +2047,11 @@ this issue should be investigated further!"]];
            fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
           , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
               MemberQ[fusion[i[[2]], x], i[[4]]]]}
-              , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7,  nv[i[[2]], j, i[[4]]]}]) , 10^(-20) ]
+              , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7,  nv[i[[2]], j, i[[4]]]}]) // Expand , 10^(-20) ]
       , {i, flist}]
      , 0];
       
-   goodposonesign = Position[temphex, x_Complex + c1_Complex sign[y1___]] // Flatten;
+   goodposonesign = Position[temphex, x_Complex + c1_Complex sign[y1___], {1} , Heads -> False] // Flatten;
    
    If[Length[goodposonesign] > 0, signeqleft = True];
    
@@ -2067,10 +2067,10 @@ this issue should be investigated further!"]];
        temphex[[goodposonesign[[i]]]] == 0, {i, 1, Length[goodposonesign]}]];
     
     If[Length[solsign] != 1, Print["There is more than one solution for the signs! Something went wrong!"]];
-    solsign = Chop[ solsign[[1]] , 10^(-(Max[10, precision - 20])) ];
+    solsign = Chop[ solsign[[1]] , 10^(-20) ];
     
     Do[
-    rsym[Sequence @@ rlist[[i]]] = Chop[ rsym[Sequence @@ rlist[[i]]] /. solsign , 10^(-(Max[10, precision - 20]))];
+    rsym[Sequence @@ rlist[[i]]] = Chop[ rsym[Sequence @@ rlist[[i]]] /. solsign , 10^(-20)];
     , {i, 1, Length[rlist]}];
     
     temphex =
@@ -2088,19 +2088,17 @@ this issue should be investigated further!"]];
             fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
            , {j, Cases[irreps,  x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
              MemberQ[fusion[i[[2]], x], i[[4]]]]}
-           , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]) , 10^(-20) ]
+           , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]) // Expand, 10^(-20) ]
        
        , {i, flist}]
       
       , 0];
     
-    goodposonesign = Position[temphex, x_Complex + c1_Complex sign[y1___]] // Flatten;
+    goodposonesign = Position[temphex, x_Complex + c1_Complex sign[y1___], {1} , Heads -> False] // Flatten;
     
     If[Length[goodposonesign] > 0, signeqleft = True];
     
     ];
-   
-   
    
    If[
     MemberQ[Table[rsym[Sequence @@ rs], {rs, rlist}], sign[___]],
@@ -2108,7 +2106,7 @@ this issue should be investigated further!"]];
     ];
    
    goodposonephase = 
-    Position[temphex, x_Complex + c1_Complex phase[y1___]] // Flatten;
+    Position[temphex, x_Complex + c1_Complex phase[y1___], {1} , Heads -> False] // Flatten;
    
    If[Length[goodposonephase] > 0, phaseeqleft = True];
    
@@ -2126,9 +2124,9 @@ this issue should be investigated further!"]];
     
     If[Length[solphase] != 1, 
      Print["There is more than one solution for the phases! Something went wrong!"]];
-    solphase = Chop[ solphase[[1]] , 10^(-(Max[10, precision - 20])) ];
+    solphase = Chop[ solphase[[1]] , 10^(-20) ];
     
-    Do[rsym[Sequence @@ rlist[[i]]] = Chop[ rsym[Sequence @@ rlist[[i]]] /. solphase , 10^(-(Max[10, precision - 20])) ];
+    Do[rsym[Sequence @@ rlist[[i]]] = Chop[ rsym[Sequence @@ rlist[[i]]] /. solphase , 10^(-20) ];
     , {i, 1, Length[rlist]}];
     
     temphex =
@@ -2144,14 +2142,14 @@ this issue should be investigated further!"]];
             fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
            , {j, Cases[irreps,  x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
              MemberQ[fusion[i[[2]], x], i[[4]]]]}
-           , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]) , 10^(-20) ]
+           , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]) // Expand , 10^(-20) ]
        
        , {i, flist}]
       
       , 0];
     
     goodposonephase = 
-     Position[temphex, x_Complex + c1_Complex phase[y1___]] // Flatten;
+     Position[temphex, x_Complex + c1_Complex phase[y1___], {1} , Heads -> False] // Flatten;
     
     If[Length[goodposonephase] > 0, phaseeqleft = True];
     
@@ -2180,9 +2178,9 @@ this issue should be investigated further!"]];
       Variables[temphex[[firstlinpos]]][[1]]];
     If[Length[solphase] != 1, 
      Print["There is more than one solution for the phases! Something went wrong!"]];
-    solphase = Chop[ solphase[[1]] , 10^(-(Max[10, precision - 20])) ];
+    solphase = Chop[ solphase[[1]] , 10^(-20) ];
     
-    Do[rsym[Sequence @@ rlist[[i]]] = Chop[ rsym[Sequence @@ rlist[[i]]] /. solphase , 10^(-(Max[10, precision - 20])) ];
+    Do[rsym[Sequence @@ rlist[[i]]] = Chop[ rsym[Sequence @@ rlist[[i]]] /. solphase , 10^(-20) ];
     , {i, 1, Length[rlist]}];
     
     temphex =
@@ -2198,7 +2196,7 @@ this issue should be investigated further!"]];
              fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
             , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
               MemberQ[fusion[i[[2]], x], i[[4]]]]}
-            , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]) , 10^(-20) ]
+            , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]) // Expand , 10^(-20) ]
        
        , {i, flist}]
       
@@ -2274,6 +2272,8 @@ checkhexagon[] := Module[{maxdev, tempdev},
    hexrundecidable = False;
    hexrinvundecidable = False;
    maxdev = 0;
+   hexfail={};
+   hexinvfail={};
    
    Do[
     
@@ -2293,6 +2293,7 @@ checkhexagon[] := Module[{maxdev, tempdev},
         , 10^(-(Max[10, precision - 20]))] == 0, Null,
       
       hexholds = False;
+      AppendTo[hexfail,i];
       tempdev = Abs[
         Sum[rsym[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}]*
            fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
@@ -2328,13 +2329,13 @@ checkhexagon[] := Module[{maxdev, tempdev},
     
     If[
       Chop[
-        Sum[rsyminv[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}]*
+        Sum[rsyminv[i[[2]], i[[1]], i[[5]], {i[[7, 1]], v8}]*
            fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
-           rsyminv[i[[3]], i[[2]], i[[6]], {v9, i[[7, 3]]}]
+           rsyminv[i[[2]], i[[3]], i[[6]], {v9, i[[7, 3]]}]
            , {v8, nv[i[[1]], i[[2]], i[[5]]]}, {v9, nv[i[[3]], i[[2]], i[[6]]]}]
            -
          Sum[fsym[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
-           rsyminv[j, i[[2]], i[[4]], {v6, v7}]*
+           rsyminv[i[[2]], j , i[[4]], {v6, v7}]*
            fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
           , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
             MemberQ[fusion[i[[2]], x], i[[4]]]]}
@@ -2342,14 +2343,15 @@ checkhexagon[] := Module[{maxdev, tempdev},
         , 10^(-(Max[10, precision - 20]))] == 0, Null,
       
       hexholds = False;
+      AppendTo[hexinvfail,i];
       tempdev = Abs[
-        Sum[rsyminv[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}]*
+        Sum[rsyminv[i[[2]], i[[1]], i[[5]], {i[[7, 1]], v8}]*
            fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
-           rsyminv[i[[3]], i[[2]], i[[6]], {v9, i[[7, 3]]}]
+           rsyminv[i[[2]], i[[3]], i[[6]], {v9, i[[7, 3]]}]
            , {v8, nv[i[[1]], i[[2]], i[[5]]]}, {v9, nv[i[[3]], i[[2]], i[[6]]]}]
            -
          Sum[fsym[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
-           rsyminv[j, i[[2]], i[[4]], {v6, v7}]*
+           rsyminv[i[[2]], j, i[[4]], {v6, v7}]*
            fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
           , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
             MemberQ[fusion[i[[2]], x], i[[4]]]]}
