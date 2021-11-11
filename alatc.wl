@@ -149,7 +149,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-11-10\n\
+       "Last revision: 2021-11-11\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -2266,14 +2266,12 @@ this issue should be investigated further!"]];
    ];(* End of constructrsymbols[] *)
 
 
-checkhexagon[] := Module[{maxdev, tempdev},
+checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
    
    hexholds = True;
    hexrundecidable = False;
    hexrinvundecidable = False;
    maxdev = 0;
-   hexfail={};
-   hexinvfail={};
    
    Do[
     
@@ -2293,7 +2291,6 @@ checkhexagon[] := Module[{maxdev, tempdev},
         , 10^(-(Max[10, precision - 20]))] == 0, Null,
       
       hexholds = False;
-      AppendTo[hexfail,i];
       tempdev = Abs[
         Sum[rsym[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}]*
            fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
@@ -2322,6 +2319,8 @@ checkhexagon[] := Module[{maxdev, tempdev},
     
     
     , {i, flist}];
+    maxdevhex = maxdev;
+    maxdev = 0;
    
    (* Checking the hexagon for the inverses of the R-matrices, 
    NOT assuming the R-matrices are unitary *)
@@ -2343,7 +2342,6 @@ checkhexagon[] := Module[{maxdev, tempdev},
         , 10^(-(Max[10, precision - 20]))] == 0, Null,
       
       hexholds = False;
-      AppendTo[hexinvfail,i];
       tempdev = Abs[
         Sum[rsyminv[i[[2]], i[[1]], i[[5]], {i[[7, 1]], v8}]*
            fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
@@ -2373,7 +2371,8 @@ checkhexagon[] := Module[{maxdev, tempdev},
     
     
     , {i, flist}];
-   
+   maxdevhexinv = maxdev;
+   maxdev = Max[maxdevhex,maxdevhexinv];
 
    
    If[hexholds && Not[hexrundecidable] && Not[hexrinvundecidable],
@@ -2452,11 +2451,11 @@ before calculating the R-symbols."];
   ];
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Routine to diagonalize the R - matrices*)
 
 
-diagonalizermatrices[] := With[{},
+diagonalizermatrices[] := Module[{tempmat,tempmatinv,rmatdiagonallist,rmatnondiagonallist,rmatnondiagonallistswap,rmatnondiagonallistreduced,rmatnondiagonallistsymmetric},
    
   If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated,
    
@@ -2467,24 +2466,50 @@ diagonalizermatrices[] := With[{},
    recheck = True;
    
    rmatdiagonallist = DeleteCases[Table[
-      If[ Chop[ rmat[Sequence @@ rm] , 10^(-(Max[10, precision - 20])) ] // DiagonalMatrixQ , rm]
+      If[ Chop[ rmat[Sequence @@ rm] , 10^(-20) ] // DiagonalMatrixQ , rm]
       , {rm, rmatlist}], Null];
-   
-   
+      
    rmatnondiagonallist = DeleteCases[Table[
-      If[Not[ Chop[ rmat[Sequence @@ rm] , 10^(-(Max[10, precision - 20])) ] // DiagonalMatrixQ], rm]
+      If[Not[ Chop[ rmat[Sequence @@ rm] , 10^(-20) ] // DiagonalMatrixQ], rm]
       , {rm, rmatlist}], Null];
+   
+   rmatnondiagonallistswap =
+   Table[{rm[[2]], rm[[1]], rm[[3]]}, {rm, rmatnondiagonallist}] // Sort;
+   
+   If[
+   Not[rmatnondiagonallist == rmatnondiagonallistswap],
+   Print["There is a non-diagonal R-matrix R^{a,b}_c, such that R^{b,c}_c is diagonal. \
+This means that the R-matrices can not all be diagonalized at the same time. Something seems to have gone wrong."];
+   ];
+   
+   rmatnondiagonallistreduced = 
+    Cases[rmatnondiagonallist, x_ /; x[[1]] != x[[2]] && OrderedQ[x[[1 ;; 2]]]];
+   
+   rmatnondiagonallistsymmetric =
+    Cases[rmatnondiagonallist, x_ /; x[[1]] == x[[2]]];
    
    Do[
     umat[Sequence @@ rm] = IdentityMatrix[nv[Sequence @@ rm]];
     umatinv[Sequence @@ rm] = umat[Sequence @@ rm];
     , {rm, rmatdiagonallist}];
    
-   Do[
-    umat[Sequence @@ rm] = (Chop[ rmat[Sequence @@ rm] // Eigensystem , 10^(-(Max[10, precision - 20])) ])[[2]] // Transpose;
+
+    Do[
+    umat[Sequence @@ rm] = (Chop[ rmat[Sequence @@ rm] // Eigensystem , 10^(-20) ])[[2]] // Transpose;
     umatinv[Sequence @@ rm] = Inverse[umat[Sequence @@ rm]];
-    , {rm, rmatnondiagonallist}];
-   
+    , {rm, rmatnondiagonallistsymmetric}];
+    
+    Do[
+    tempmat = (Chop[ rmat[Sequence @@ rm] // Eigensystem , 10^(-20) ])[[2]] // Transpose;
+    tempmatinv = (Chop[ rmat[Sequence @@ rm] // Eigensystem , 10^(-20) ])[[2]] // Transpose // Inverse;
+    umat[rm[[2]], rm[[1]], rm[[3]]] = tempmat;
+    umatinv[rm[[2]], rm[[1]], rm[[3]]] = tempmatinv;
+    
+    umatinv[rm[[1]], rm[[2]], rm[[3]]] = tempmatinv;
+    umat[rm[[1]], rm[[2]], rm[[3]]] = tempmat;
+        
+    , {rm, rmatnondiagonallistreduced}];
+  
    Do[
     rsymold[Sequence @@ rs] = rsym[Sequence @@ rs]
     , {rs, rlist}];
@@ -2505,7 +2530,7 @@ diagonalizermatrices[] := With[{},
     rsym[Sequence @@ rs] = Sum[
        umatinv[rs[[1]], rs[[2]], rs[[3]]][[rs[[4, 1]], v1]]*
         rsymold[rs[[1]], rs[[2]], rs[[3]], {v1, v2}]*
-        umat[rs[[1]], rs[[2]], rs[[3]]][[v2, rs[[4, 2]]]]
+        umat[rs[[2]], rs[[1]], rs[[3]]][[v2, rs[[4, 2]]]]
        , {v1, 1, nv[rs[[1]], rs[[2]], rs[[3]]]}, {v2, 1, nv[rs[[1]], rs[[2]], rs[[3]]]}];
     , {rs, rlist}];
    
@@ -2669,6 +2694,13 @@ before calculating the modular data."];
   Do[
    selfdual[irreps[[i]]] = selfdualvec[[i]]
    , {i, 1, numofirreps}];
+   
+  simplecurrentvec =
+  Table[
+   Table[Sum[nv[ir1, ir2, ir3], {ir3, fusion[ir1, ir2]}], {ir2, irreps}] == Table[1, {i, 1, numofirreps}]
+   , {ir1, irreps}];
+   
+  numofsimplecurrents = Count[simplecurrentvec, True];
   
   qdim1overfvec = 
    Table[
@@ -2752,6 +2784,7 @@ before calculating the modular data."];
   
   Print["The labels of the irreps are: ", irreps];
   Print["Are the particles selfdual: ", selfdualvec];
+  Print["Are the particles simple currents: ", simplecurrentvec];
   Print["The pivotal structure is: ", pivotlist];
   If[pivoteqnok,
    Print["The pivotal equations are satisfied :-)"];,
@@ -2791,11 +2824,11 @@ Presumably, there exists a different pivotal structure, such that all the quantu
   
   If[modular && qdimspositive,
    Print["The S-matrix is given by:"]; 
-   Print[smat // N // MatrixForm];
+   Print[smat // N //Chop // MatrixForm];
    ];
   If[modular && Not[qdimspositive],
    Print["The S-matrix is given by (up to an overall sign):"];
-   Print[smat // N // MatrixForm];
+   Print[smat // N //Chop // MatrixForm];
    ];
    
   If[modular && modularrelationsok,
@@ -2806,7 +2839,6 @@ Presumably, there exists a different pivotal structure, such that all the quantu
     Print["The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 = S^2 = C are not satisfied :-("]
   ];
 
-  
   modulardatacalculated=True;
   
   Global`FPdimlist = fpdimvec;
