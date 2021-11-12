@@ -38,7 +38,8 @@ setrootofunity::usage =
 	"setrootofunity[rootfactor] sets the value of q to e^(2 \[Pi] i rootfactor/(tmax (k+g))), \
 where k is the level, g the dual coxeter number of the affine Lie algebra, and \
 tmax = 1 for the simply laced cases, tmax = 3 for g_2 and tmax = 2 for the other \
-non-simply laced cases (g and tmax are set when intialize[\"x\",r] is run)."
+non-simply laced cases (g and tmax are set when intialize[\"x\",r] is run). Identical to \
+initializerootofunity[rootfactor], but kept for backwards compatibility."
 	
 possiblerootfactors::usage =
 	"possiblerootfactors[\"x\",rank,level] gives the possible rootfactors \
@@ -149,7 +150,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-11-11\n\
+       "Last revision: 2021-11-12\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -201,7 +202,7 @@ roots, if any (see the table above for the values of g and tmax). \
 rootfactor should be relative prime with tmax(k+g), so we restrict \
 to the homogeneous cases. The value of q is \
 set by running "],
-      codeStyle["setrootofunity[rootfactor]"],
+      codeStyle["initializerootofunity[rootfactor]"],
       textStyle[" .\n"],
       textStyle[
        "After the type of algebra, rank, level and rootfacter are \
@@ -222,8 +223,8 @@ well.\n"],
       codeStyle["displayinfo[]"],
       textStyle[".\n"],
       textStyle["\nSome technical notes.\n"],
-      textStyle["If Mathematica complains about \
-ill-conditioned matrices, or if the fusion rules are inconsistent, \
+      textStyle["\nIf Mathematica complains about \
+ill-conditioned matrices, or if the fusion rules are inconsistent etc., \
 one can try to increase the precision (which is standard set to 100, \
 so pretty high already) by running "],
       codeStyle["setprecision[precision]"],
@@ -232,11 +233,12 @@ so pretty high already) by running "],
       textStyle[" should be run "],
       textStyleBold["before"],
       textStyle[" running "],
-      codeStyle["setrootofunity[rootfactor]"],
-      textStyle[". Warnings are generated if the deviation is bigger than 10^(-(precision - 20)), \
-so 10^(-80) with the standard setting.\n"],
-      textStyle["When loading the package, the recusion limit is set to 10000.\n"],
-      textStyle["The gauge choices made during the calculation follow, to a \
+      codeStyle["initializerootofunity[rootfactor]"],
+      textStyle[". Warnings are generated if the deviation is bigger than 10^(-20). \
+Otherwise, the maximum deviation is given, to give a sense of the accuracy. Typically, \
+the precision is much better than 10^(-20).\n"],
+      textStyle["\nWhen loading the package, the recusion limit is set to 10000.\n"],
+      textStyle["\nThe gauge choices made during the calculation follow, to a \
 large extend, the ones described in the paper above."]
       }
     ];
@@ -1158,7 +1160,7 @@ constructbasis[] := Module[{norm},
    ];   
 
  
-checkweightspaceorthogonality[] := Module[{maxdev, tempdev},
+checkweightspaceorthogonalityorg[] := Module[{maxdev, tempdev},
    weightspaceorthogonal = True;
    maxdev = 0;
    Do[
@@ -1167,7 +1169,7 @@ checkweightspaceorthogonality[] := Module[{maxdev, tempdev},
        zeromatrix[wdim[ir, w]],
       Null
       ,
-      Print[{ir, w}];
+      (*Print[{ir, w}];*)
       weightspaceorthogonal = False;
       tempdev = 
        Max[(Abs /@ 
@@ -1184,15 +1186,56 @@ checkweightspaceorthogonality[] := Module[{maxdev, tempdev},
         
       ];
     , {ir, irreps}, {w, weights[ir]}];
+    
 
       If[weightspaceorthogonal,
     Print[
-     "The constructed bases for the weightspaces are orthonormal :-)"],
+     "The constructed bases for the weightspaces are orthonormal :-)"];
+     ,
     Print[
      "The constructed bases for the weightspaces are not orthonormal :-(, if the maximum deviation ", maxdev, 
      " is small, you can try to proceed at your own risk."]
     ];
-   ]; 
+   ];
+
+   
+checkweightspaceorthogonality[] := Module[{maxdev, tempdev},
+   weightspaceorthogonal = True;
+   maxdev = 0;
+   Do[
+    tempdev =
+     Max[(Abs /@ Flatten[(basison[ir, w].gramm[ir, w].Transpose[basison[ir, w]] - IdentityMatrix[wdim[ir, w]])])];
+    (*If[tempdev > maxdev, maxdev = tempdev];*)
+    (*
+      Max deals beter with high precision numbers than > (Greater).
+      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
+    *)
+    maxdev=Max[maxdev,tempdev];   
+
+    , {ir, irreps}, {w, weights[ir]}];
+    
+  
+    If[
+     Max[maxdev,10^(-20)] == maxdev,
+     weightspaceorthogonal = False; 
+    ];
+
+   weightspacedeviation = maxdev;
+
+    
+
+      If[weightspaceorthogonal,
+    Print[
+     "The constructed bases for the weightspaces are orthonormal :-)"];
+    Print["The maximum deviation is: ", weightspacedeviation]; 
+     ,
+    Print[
+     "The constructed bases for the weightspaces are not orthonormal :-(, if the maximum deviation ", weightspacedeviation, 
+     " is small, you can try to proceed at your own risk."]
+    ];
+   
+   ];         
+   
    
 initializeweightspacebasis[] := With[{},
    initializeinnerproduct[];
@@ -1586,11 +1629,11 @@ sethwstates[hw1_, hw2_, hw3_] := Module[
        ];
       subspos++];
      If[notfound, 
-      Print["The number of hw states (as previously determined) were not found, so there's a problem"]];
+      Print["The number of highest weight states (as previously determined) were not found, so there's a problem"]];
      ];
     
     If[result == Table[vars[i], {i, 1, tpdim}],
-     Print["No hw states were found, somthing's wrong!"]
+     Print["No highest weight states were found, somthing's wrong!"]
      ];
     
     Do[
@@ -1675,7 +1718,7 @@ generatetpbasis[] := With[{},
    
    ]; 
    
-checkorthonormality[] := Module[{maxdev, tempdev},
+checkorthonormalityorg[] := Module[{maxdev, tempdev},
    orthonormalityok = True;
    maxdev = 0;
    
@@ -1713,6 +1756,47 @@ checkorthonormality[] := Module[{maxdev, tempdev},
    ]; 
    
    
+checkorthonormality[] := Module[{maxdev, tempdev},
+   orthonormalityok = True;
+   maxdev = 0;
+
+   Do[
+   
+    tempdev = 
+       Max[Abs /@ (Flatten[
+           Table[(tpbasis[hw1, hw2, hw3, v, {w3, i}].tpbasis[hw1, hw2, hw3, v, {w3, j}])
+           , {i, 1, wdim[hw3, w3]}, {j, 1, wdim[hw3, w3]}] - IdentityMatrix[wdim[hw3, w3]]])];
+
+    (*If[tempdev > maxdev, maxdev = tempdev];*)
+    (*
+     Max deals beter with high precision numbers than > (Greater).
+     This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
+    *)
+    maxdev=Max[maxdev,tempdev];           
+                 
+    , {hw1, irreps}, {hw2, irreps}, {hw3, fusion[hw1, hw2]}
+    , {w3, weights[hw3]}, {v, 1, nv[hw1, hw2, hw3]}];
+    
+    
+    If[
+     Max[maxdev,10^(-20)] == maxdev,
+     orthonormalityok = False; 
+    ];
+
+   qCGdeviation = maxdev;    
+    
+   
+   If[orthonormalityok,
+    Print["The calculated q-CG coefficients satisfy the orthonormality conditions :-)"];
+    Print["The maximum deviation is: ", qCGdeviation];
+    ,
+    Print["The constructed q-CG coefficients do not satisfy the orthonormalilty conditions :-( If the maximum deviation ", qCGdeviation, 
+      " is small, you can try to proceed at your own risk; typically, the numerical error in the F-sybmols is smaller. Increasing the precision might also help."];
+    ];
+   ]; 
+
+   
+         
 generatealltpstates[] := With[{},
    
    lowertpstates[];
@@ -1794,7 +1878,7 @@ constructfsymbols[] := With[{},
    ];
    
 
-checkpentagon[] := Module[{maxdev, tempdev},
+checkpentagonorg[] := Module[{maxdev, tempdev},
    
    pentholds = True;
    pentundecidable = False;
@@ -1930,6 +2014,146 @@ to do so. Proceed with care!"];
    
    ];      
    
+checkpentagon[] := Module[{maxdev, tempdev},
+   
+   pentholds = True;
+   pentundecidable = False;
+   maxdev = 0;
+   
+   If[pentagontobechecked,
+   If[Not[recheck],Print["Checking the ", Length[pentlist]," pentagon equations..."];];
+   If[recheck,Print["Re-checking the ", Length[pentlist]," pentagon equations..."];];
+   Do[
+
+       tempdev = 
+       Abs[
+        Sum[(fsym[i[[6]], i[[3]], i[[4]], i[[5]], i[[7]], i[[9]], {i[[10, 2]], i[[10, 3]], i[[10, 4]], v1}]*
+             fsym[i[[1]], i[[2]], i[[9]], i[[5]], i[[6]], i[[8]], {i[[10, 1]], v1, i[[10, 5]], i[[10, 6]]}])
+             , {v1, nv[i[[6]], i[[9]], i[[5]]]}] - 
+         Sum[(fsym[i[[1]], i[[2]], i[[3]], i[[7]], i[[6]], 
+             h, {i[[10, 1]], i[[10, 2]], v2, v3}] *
+             fsym[i[[1]], h, i[[4]], i[[5]], i[[7]], i[[8]], {v3, i[[10, 3]], v4, i[[10, 6]]}]*
+              fsym[i[[2]], i[[3]], i[[4]], i[[8]], h, i[[9]], {v2, v4, i[[10, 4]], i[[10, 5]]}])
+              , {h, Quiet[Cases[fusion[i[[2]], i[[3]]], x_ /; MemberQ[fusion[i[[1]], x], i[[7]]] && 
+               MemberQ[fusion[x, i[[4]]], i[[8]]]]]}
+               , {v2, nv[i[[2]], i[[3]], h]}, {v3, nv[i[[1]], h, i[[7]]]}, {v4, nv[h, i[[4]], i[[8]]]}]];
+               
+               
+               
+       (*If[tempdev > maxdev, maxdev = tempdev];*)
+      (*
+      Max deals beter with high precision numbers than > (Greater).
+      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
+      *)
+      
+      If[NumberQ[tempdev],
+      maxdev=Max[maxdev,tempdev];,
+      If[Not[pentundecidable], 
+        Print["At least one of the pentagon equations is not decidable! Something went wrong :-("];
+        pentundecidable = True;];
+      ];         
+
+      , {i, pentlist}];
+      
+    If[
+     Max[maxdev,10^(-20)] == maxdev,
+     pentholds = False; 
+    ];
+
+   pentagondeviation = maxdev;          
+      
+    
+    ,
+     If[Not[recheck],
+     Print["The pentagon equations were not checked, because you opted not \
+to do so. Proceed with care!"];
+     ];
+     If[recheck,
+     Print["The pentagon equations were not (re)-checked, because you opted not \
+to do so. Proceed with care!"];
+    ];
+
+  ];
+   
+   
+   
+   
+   If[pentagontobechecked,
+  If[pentholds && Not[pentundecidable],
+    Print["The pentagon equations are satisfied :-)"];
+    Print["The maximum deviation is: ", pentagondeviation];,
+    Print["The pentagon equations are not satisfied :-(, the maximum deviation is: ", pentagondeviation, " something went wrong..."];];
+  ];
+
+   If[Not[recheck],
+   If[multiplicity,
+    If[numoffusmultiplicities == 1,
+     Print["There is one fusion multiplicity."];, 
+     Print["There are ", numoffusmultiplicities," fusion multiplicities."]];
+    Print["The largest fusion multiplicity is: ", maxmultiplicity];
+    ,
+    Print["There are no fusion multiplicities."];
+    ];
+    ];
+    
+   
+   fsymsreal = 
+    And @@ (Element[#, Reals] & /@ 
+       Table[Chop[ fsym[Sequence @@ i] , 10^(-20) ], {i, flist}]);
+   
+   If[
+    And @@ Table[
+       (Chop[ (fmat[Sequence @@ fm].Conjugate[Transpose[fmat[Sequence @@ fm]]] - 
+              IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20) ] // Flatten // Union) == {0}
+       , {fm, fmatlist}] && And @@ Table[(Chop[ (Conjugate[Transpose[fmat[Sequence @@ fm]]].fmat[Sequence @@ fm] - 
+              IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20) ] // Flatten // Union) == {0}
+       , {fm, fmatlist}],
+    fmatunitary = True;
+    Print["The F-matrices are unitary."];,
+    fmatunitary = False;
+    Print[
+     "The F-matrices are not all unitary."];
+    ];
+   
+   
+   If[
+    And @@ Table[
+       ( Chop[ (fmat[Sequence @@ fm].Transpose[fmat[Sequence @@ fm]] - IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20) ] // Flatten // Union) == {0}
+       , {fm, fmatlist}] &&
+    And @@ Table[( Chop[ (Transpose[fmat[Sequence @@ fm]].fmat[Sequence @@ fm] - IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20)] // Flatten // Union) == {0}
+       , {fm, fmatlist}],
+    fsymsFTFone = True;
+    ,
+    fsymsFTFone = False;
+    ];
+   
+   If[fsymsreal && fsymsFTFone,
+    Print["The F-matrices are orthogonal."]
+    ];
+   
+   If[fsymsreal && Not[fsymsFTFone],
+    Print["The F-matrices are real."];
+    Print["The F-matrices do not all satisfy F.(F^T) = (F^T).F = 1. One should check if this is reasonalbe or not!"];
+    ];
+   
+   If[Not[fsymsreal] && fsymsFTFone,
+    Print["The F-matrices are not all real."];
+    Print["The F-matrices satisfy F.(F^T) = (F^T).F = 1"];
+    ];
+   
+   If[Not[fsymsreal] && Not[fsymsFTFone],
+    Print["The F-matrices are not all real."];
+    Print["The F-matrices do not all satisfy F.(F^T) = (F^T).F = 1. One should check if this is reasonalbe or not!"];
+    ];
+    
+    If[(pentagontobechecked && pentholds && Not[pentundecidable]) || Not[pentagontobechecked],
+     fsymbolscalculated = True;
+     If[Not[recheck],
+      Print["You can proceed to calculate the R-symbols :-)"];
+     ];
+    ];
+   
+   ];      
    
    
 calculatefsymbols[] :=
@@ -2215,8 +2439,6 @@ this issue should be investigated further!"]];
     
     ];
    
-   
-   
    (* Calculating the inverses of the R-symbols, 
    NOT assuming that the R-matrices are unitairy *)
    Do[
@@ -2266,7 +2488,7 @@ this issue should be investigated further!"]];
    ];(* End of constructrsymbols[] *)
 
 
-checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
+checkhexagonorg[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
    
    hexholds = True;
    hexrundecidable = False;
@@ -2319,6 +2541,8 @@ checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
     
     
     , {i, flist}];
+        
+    
     maxdevhex = maxdev;
     maxdev = 0;
    
@@ -2387,7 +2611,7 @@ checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
     If[
      rmatdiagonal,
      Print["The R-matrices are diagonal."];
-     Print["Thus all the R-symbols are phases. The largest denominator s in R^{a,b}_c = e^(i\[Pi] r/s) one encounters is: ", rmatevalargmaxdenom];
+     Print["Thus all the (non-zero) R-symbols are phases. The largest denominator s in R^{a,b}_c = e^(i\[Pi] r/s) one encounters is: ", rmatevalargmaxdenom];
      ,
      Print["The R-matrices are not all diagonal."];
      Print["All the eigenvalues of the R-matrices are phases, because they are unitary. The largest denominator s in R^{a,b}_c = e^(i\[Pi] r/s) one encounters after diagonalization is: ", 
@@ -2419,7 +2643,139 @@ checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
     Print["You can proceed to calculate the modular data :-)"];
     ];    
              
-   ];(* End of checkhexagon[] *)
+   ];(* End of checkhexagonorg[] *)
+   
+   
+checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
+   
+   hexholds = True;
+   hexrundecidable = False;
+   hexrinvundecidable = False;
+   maxdev = 0;
+   
+   Do[
+    
+      tempdev = Abs[
+        Sum[rsym[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}]*
+           fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
+           rsym[i[[3]], i[[2]], i[[6]]
+           , {v9, i[[7, 3]]}], {v8, nv[i[[1]], i[[2]], i[[5]]]}, {v9, nv[i[[3]], i[[2]], i[[6]]]}]
+           -
+         Sum[fsym[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
+           rsym[j, i[[2]], i[[4]], {v6, v7}]*
+           fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
+          , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
+            MemberQ[fusion[i[[2]], x], i[[4]]]]}
+          , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]
+        
+        ];
+
+      (*If[tempdev > maxdev, maxdev = tempdev];*)
+      (*
+      Max deals beter with high precision numbers than > (Greater).
+      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
+      *)
+      If[NumberQ[tempdev],
+      maxdev=Max[maxdev,tempdev];,
+      If[Not[hexrundecidable], 
+        Print["At least one of the hexagon equations for R is not decidable! Something went wrong :-("];
+        hexrundecidable = True;];
+      ];         
+    
+    , {i, flist}];
+    
+    hexagonRdeviation = maxdev;
+    maxdev = 0;
+   
+   (* Checking the hexagon for the inverses of the R-matrices, 
+   NOT assuming the R-matrices are unitary *)
+   Do[
+    
+    tempdev = Abs[
+        Sum[rsyminv[i[[2]], i[[1]], i[[5]], {i[[7, 1]], v8}]*
+           fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
+           rsyminv[i[[2]], i[[3]], i[[6]], {v9, i[[7, 3]]}]
+           , {v8, nv[i[[1]], i[[2]], i[[5]]]}, {v9, nv[i[[3]], i[[2]], i[[6]]]}]
+           -
+         Sum[fsym[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
+           rsyminv[i[[2]], j, i[[4]], {v6, v7}]*
+           fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
+          , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
+            MemberQ[fusion[i[[2]], x], i[[4]]]]}
+            , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]
+        ];
+        
+        
+      (*If[tempdev > maxdev, maxdev = tempdev];*)
+      (*
+      Max deals beter with high precision numbers than > (Greater).
+      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
+      *)
+      If[NumberQ[tempdev],
+      maxdev=Max[maxdev,tempdev];,
+      If[Not[hexrinvundecidable], 
+        Print["At least one of the hexagon equations for R-inverse is not decidable! Something went wrong :-("];
+        hexrinvundecidable = True;];
+      ];         
+
+   , {i, flist}];
+   
+   
+   hexagonRinversedeviation = maxdev;
+   hexagondeviation = Max[hexagonRdeviation,hexagonRinversedeviation];
+   
+   If[
+     Max[hexagondeviation,10^(-20)] == hexagondeviation,
+     hexholds = False; 
+    ];
+   
+   If[hexholds && Not[hexrundecidable] && Not[hexrinvundecidable],
+    Print["The hexagon equations are satisfied :-)"];
+    Print["The maximum devitation for R is: ", hexagonRdeviation];
+    Print["The maximum devitation for R-inverse is: ", hexagonRinversedeviation];
+    rsymbolscalculated = True;,
+    Print["The hexagon equations are not satisfied :-(, the maximum deviation is: ", maxdev, " something went wrong..."];
+    ];
+   
+   If[
+    rmatunitary,
+    Print["The R-matrices are unitary."];
+    If[
+     rmatdiagonal,
+     Print["The R-matrices are diagonal."];
+     Print["Thus all the (non-zero) R-symbols are phases. The largest denominator s in R^{a,b}_c = e^(i\[Pi] r/s) one encounters is: ", rmatevalargmaxdenom];
+     ,
+     Print["The R-matrices are not all diagonal."];
+     Print["All the eigenvalues of the R-matrices are phases, because they are unitary. The largest denominator s in R^{a,b}_c = e^(i\[Pi] r/s) one encounters after diagonalization is: ", 
+       rmatevalargmaxdenom];
+     If[pentagontobechecked,
+      Print["The R-matrices can be diagonalized by running diagonalizermatrices[].\n This will change both F- and R-symbols, so by running diagonalizermatrices[], the pentagon and hexagon equations will be checked again."];,
+      Print["The R-matrices can be diagonalized by running diagonalizermatrices[].\n This will change both F- and R-symbols, so by running diagonalizermatrices[], the hexagon equations will be checked again, but not the pentagon equations, because you opted not to do so."];
+      ];
+     ];
+    ];
+   
+   If[
+    Not[rmatunitary],
+    Print[
+     "The R-matrices are not all unitary (at least in the basis used here)."];
+    If[rmatevalsarephases,
+     Print["All the eigenvalues of the R-matrices are phases. The largest denominator s in R^{a,b}_c = e^(i\[Pi] r/s) one encounters after diagonalization is: ", 
+       rmatevalargmaxdenom];
+     If[pentagontobechecked,
+      Print["The R-matrices can be diagonalized by running diagonalizermatrices[].\n This will change both F- and R-symbols, so by running diagonalizermatrices[], the pentagon and hexagon equations will be checked again."];,
+      Print["The R-matrices can be diagonalized by running diagonalizermatrices[].\n This will change both F- and R-symbols, so by running diagonalizermatrices[], the hexagon equations will be checked again, but not the pentagon equations, because you opted not to do so."];
+     ];
+     ,
+     Print["NOT all the eigenvalues of the R-matrices are phases. One should really check if this is reasonable!"]
+     ];
+    ];
+    
+    If[hexholds && Not[hexrundecidable] && Not[hexrinvundecidable] && Not[recheck],
+    Print["You can proceed to calculate the modular data :-)"];
+    ];    
+             
+   ];(* End of checkhexagon[] *)   
 
 
 calculatersymbols[] := With[{},
@@ -2451,7 +2807,7 @@ before calculating the R-symbols."];
   ];
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Routine to diagonalize the R - matrices*)
 
 
@@ -2735,7 +3091,7 @@ before calculating the modular data."];
    , {i, 1, Length[irreps]}];
 
   hlist = 
-   Table[Mod[Rationalize[Chop[1/(2 Pi I) Log[thetalist[[i]]], 10^(-(Max[10, precision - 20])) ]], 1]
+   Table[Mod[Rationalize[Chop[1/(2 Pi I) Log[thetalist[[i]]], 10^(-20) ]], 1]
    , {i, 1, Length[irreps]}];
   
   Do[
@@ -2744,7 +3100,7 @@ before calculating the modular data."];
   
   frobschurlist = Chop[ Table[
      1/qdtot2 Sum[nv[ir, ir1, ir2] qd[ir1] qd[ir2] theta[ir1]^2/theta[ir2]^2, {ir1, irreps}, {ir2, fusion[ir, ir1]}]
-     , {ir, irreps}] , 10^(-(Max[10, precision - 20])) ];
+     , {ir, irreps}] , 10^(-20) ];
   
   Do[
    frobschur[irreps[[i]]] = frobschurlist[[i]]
@@ -2756,7 +3112,7 @@ before calculating the modular data."];
   
   smat = Chop[ 1/(qdtot) Table[ 
       Sum[qd[ir3] theta[ir3] * nv[dual[ir1], ir2, ir3]/(theta[dual[ir1]] * theta[ir2]), {ir3, fusion[dual[ir1], ir2]}]
-        , {ir1, irreps}, {ir2, irreps}] , 10^(-(Max[10, precision - 20])) ];
+        , {ir1, irreps}, {ir2, irreps}] , 10^(-20) ];
   
   cmat = SparseArray[
     Table[{i, Position[irrepsdual, irreps[[i]]][[1, 1]]} -> 1, {i, 1, numofirreps}]
@@ -2771,7 +3127,7 @@ before calculating the modular data."];
   modular2 = (Chop[ pplus pminus - qdtot2 , 10^(-20) ]) == 0;
   If[modular != modular2, Print["The two ways of determining modularity do NOT agree!"]];
   If[modular,
-   centralcharge = Chop[ 8/(2 Pi I) Log[pplus/qdtot] , 10^(-(Max[10, precision - 20])) ] // Rationalize;
+   centralcharge = Chop[ 8/(2 Pi I) Log[pplus/qdtot] , 10^(-20) ] // Rationalize;
    centralcharge = Mod[centralcharge, 8];
    ];
   
