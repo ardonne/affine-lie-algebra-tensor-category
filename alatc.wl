@@ -69,15 +69,16 @@ re-checked for security."
 donotcheckpentagon::usage =
 	"Run donotcheckpentagon[] (after the type of algebra, rank and level have been initialized) \
 if you do not want the pentagon equations to be checked. \
-Though it is of course safer to check the pentagon equations, the list of pentagon equations \
-can be extremely long. By running donotcheckpentagon[], this list is not generated, and the \
-pentagon equations are not checked. It is recommended to generate the R-symbols as well, so \
+Though it is of course safer to check the pentagon equations, checking the pentagon equations \
+can take a long time (though typically not as long as calculating the F-symbols in the first place). \
+By running donotcheckpentagon[], the \
+pentagon equations will not be checked. It is recommended to generate the R-symbols as well, so \
 that at least the hexagon equations can be checked. If these hold, it is likely that the \
 pentagon equations are also satisfied."
 
 docheckpentagon::usage =
-	"Run docheckpentagon[] if you ran donotcheckpentagon[] accidentally, \
-but still want to check the pentagon equations."
+	"Run docheckpentagon[] (before calculating the F-symbols) if you ran donotcheckpentagon[] \
+accidentally, but still want to check the pentagon equations."
 
 displayinfo::usage = 
 	"displayinfo[] displays some general information and basic instructions on how \
@@ -150,7 +151,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-11-12\n\
+       "Last revision: 2021-11-13\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -1159,7 +1160,7 @@ constructbasis[] := Module[{norm},
    
    ];   
 
- 
+(* 
 checkweightspaceorthogonalityorg[] := Module[{maxdev, tempdev},
    weightspaceorthogonal = True;
    maxdev = 0;
@@ -1198,7 +1199,7 @@ checkweightspaceorthogonalityorg[] := Module[{maxdev, tempdev},
     ];
    ];
 
-   
+*)   
 checkweightspaceorthogonality[] := Module[{maxdev, tempdev},
    weightspaceorthogonal = True;
    maxdev = 0;
@@ -1534,6 +1535,7 @@ generatefusionrules[] :=
    
    fmatlist = flist[[All, 1 ;; 4]] // Union;
    
+(*   
    If[pentagontobechecked,
    pentlist = 
     Flatten[Table[{a, b, c, d, e, f, g, fp, gp, {v1, v2, v3, v4, v5, v6}}
@@ -1543,7 +1545,7 @@ generatefusionrules[] :=
        , {v1, nv[a, b, f]}, {v2, nv[f, c, g]}, {v3, nv[g, d, e]}, {v4, nv[c, d, gp]}, {v5, nv[b, gp, fp]}, {v6, nv[a, fp, e]}]
        , 14];
     ];
-       
+*)       
        
    
    rlist = Flatten[
@@ -1717,7 +1719,8 @@ generatetpbasis[] := With[{},
      , {w3, weights[hw3]}, {i, 1, wdim[hw3, w3]}, {v, 1, nv[hw1, hw2, hw3]}];
    
    ]; 
-   
+
+(*      
 checkorthonormalityorg[] := Module[{maxdev, tempdev},
    orthonormalityok = True;
    maxdev = 0;
@@ -1755,6 +1758,7 @@ checkorthonormalityorg[] := Module[{maxdev, tempdev},
     ];
    ]; 
    
+*)   
    
 checkorthonormality[] := Module[{maxdev, tempdev},
    orthonormalityok = True;
@@ -1878,11 +1882,13 @@ constructfsymbols[] := With[{},
    ];
    
 
-checkpentagonorg[] := Module[{maxdev, tempdev},
+(*checkpentagonorg[] := Module[{maxdev, tempdev},
    
    pentholds = True;
    pentundecidable = False;
    maxdev = 0;
+   
+   
    
    If[pentagontobechecked,
    If[Not[recheck],Print["Checking the ", Length[pentlist]," pentagon equations..."];];
@@ -2013,7 +2019,8 @@ to do so. Proceed with care!"];
     ];
    
    ];      
-   
+*)
+     
 checkpentagon[] := Module[{maxdev, tempdev},
    
    pentholds = True;
@@ -2021,8 +2028,10 @@ checkpentagon[] := Module[{maxdev, tempdev},
    maxdev = 0;
    
    If[pentagontobechecked,
-   If[Not[recheck],Print["Checking the ", Length[pentlist]," pentagon equations..."];];
-   If[recheck,Print["Re-checking the ", Length[pentlist]," pentagon equations..."];];
+   If[Not[recheck],Print["Checking the pentagon equations..."];];
+   If[recheck,Print["Re-checking the pentagon equations..."];];
+   
+(*   
    Do[
 
        tempdev = 
@@ -2055,6 +2064,52 @@ checkpentagon[] := Module[{maxdev, tempdev},
 
       , {i, pentlist}];
       
+*)      
+       pentagoncounter = 0;
+
+       Do[
+       
+       pentagoncounter++;
+
+       tempdev = 
+       Abs[
+        Sum[(fsym[f, c, d, e, g, gp, {v2, v3, v4, v1s}]*
+             fsym[a, b, gp, e, f, fp, {v1, v1s, v5, v6}])
+             , {v1s, nv[f, gp, e]}] - 
+         Sum[(fsym[a, b, c, g, f, h, {v1, v2, v2s, v3s}] *
+             fsym[a, h, d, e, g, fp, {v3s, v3, v4s, v6}]*
+              fsym[b, c, d, fp, h, gp, {v2s, v4s, v4, v5}])
+              , {h, Quiet[Cases[fusion[b, c], x_ /; MemberQ[fusion[a, x], g] && 
+               MemberQ[fusion[x, d], fp]]]}
+               , {v2s, nv[b, c, h]}, {v3s, nv[a, h, g]}, {v4s, nv[h, d, fp]}]];
+               
+               
+               
+       (*If[tempdev > maxdev, maxdev = tempdev];*)
+      (*
+      Max deals beter with high precision numbers than > (Greater).
+      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
+      *)
+      
+      If[NumberQ[tempdev],
+      maxdev=Max[maxdev,tempdev];,
+      If[Not[pentundecidable], 
+        Print["At least one of the pentagon equations is not decidable! Something went wrong :-("];
+        pentundecidable = True;];
+      ];         
+
+      , 
+      {a, irreps}, {b, irreps}, {c, irreps}, {d, irreps},
+      {f, fusion[a, b]}, {g, fusion[f, c]}, {e, fusion[g, d]},
+      {gp, Cases[fusion[c, d], x_ /; MemberQ[fusion[f, x], e]]},
+      {fp, Cases[fusion[b, gp], x_ /; MemberQ[fusion[a, x], e]]},
+      {v1, nv[a, b, f]}, {v2, nv[f, c, g]}, {v3, nv[g, d, e]},
+      {v4, nv[c, d, gp]}, {v5, nv[b, gp, fp]}, {v6, nv[a, fp, e]}
+      
+      ];
+      
+            
+      
     If[
      Max[maxdev,10^(-20)] == maxdev,
      pentholds = False; 
@@ -2080,9 +2135,9 @@ to do so. Proceed with care!"];
    
    If[pentagontobechecked,
   If[pentholds && Not[pentundecidable],
-    Print["The pentagon equations are satisfied :-)"];
+    Print["The ", pentagoncounter ," pentagon equations are satisfied :-)"];
     Print["The maximum deviation is: ", pentagondeviation];,
-    Print["The pentagon equations are not satisfied :-(, the maximum deviation is: ", pentagondeviation, " something went wrong..."];];
+    Print["At least one of the ", pentagoncounter, " pentagon equations is not satisfied :-(, the maximum deviation is: ", pentagondeviation, " something went wrong..."];];
   ];
 
    If[Not[recheck],
@@ -2488,6 +2543,7 @@ this issue should be investigated further!"]];
    ];(* End of constructrsymbols[] *)
 
 
+(*
 checkhexagonorg[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
    
    hexholds = True;
@@ -2645,6 +2701,7 @@ checkhexagonorg[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
              
    ];(* End of checkhexagonorg[] *)
    
+*)
    
 checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
    
