@@ -151,7 +151,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-11-13\n\
+       "Last revision: 2021-11-14\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -360,13 +360,18 @@ initialize[atype_, rr_] :=
   qdtot, qdimspositive, fpdimvec, irrepsdual, dual, selfdualvec, 
   selfdual, qdim1overfvec, pivotlist,  pivot, thetalist, theta, 
   hlist, hvalue, frobschurlist, frobschur, smat, cmat, tmat, modular, 
-  pplus, pminus, modular2, centralcharge, modularrelationsok];
+  pplus, pminus, modular2, centralcharge, modularrelationsok, 
+  fsymbolsallrealorimaginary, fsymbolarguements];
+  Clear[weightspaceorthogonal, weightspacedeviation, orthonormalityok,
+  qCGdeviation, pentagondeviation, pentholds, recheck, pentagoncounter,
+  hexrundecidable, hexagonRdeviation, hexrinvundecidable, hexagonRinversedeviation,
+  hexagondeviation, hexholds, selfdualvec, simplecurrentvec];
   Clear[Global`irreps, Global`flist, Global`fmatlist, Global`rlist, 
   Global`rmatlist, Global`maxmultiplicity,  Global`multiplicity, 
   Global`numberoffusionmultiplicities, Global`FPdimlist, 
   Global`qdimlist, Global`pivotlist, Global`thetalist, Global`hlist, 
   Global`FSlist, Global`smat, Global`tmat, Global`cmat, 
-  Global`centralcharge, Global`modular, Global`unitary];
+  Global`centralcharge, Global`modular, Global`unitary, Global`selfduallist, Global`simplecurrentlist];
     type = atype;
     twist = tw;
     If[tw != 1, 
@@ -490,13 +495,18 @@ initializelevel[lev_] :=
   qdtot, qdimspositive, fpdimvec, irrepsdual, dual, selfdualvec, 
   selfdual, qdim1overfvec, pivotlist,  pivot, thetalist, theta, 
   hlist, hvalue, frobschurlist, frobschur, smat, cmat, tmat, modular, 
-  pplus, pminus, modular2, centralcharge, modularrelationsok];
+  pplus, pminus, modular2, centralcharge, modularrelationsok, 
+  fsymbolsallrealorimaginary, fsymbolarguements];
+  Clear[weightspaceorthogonal, weightspacedeviation, orthonormalityok,
+  qCGdeviation, pentagondeviation, pentholds, recheck, pentagoncounter,
+  hexrundecidable, hexagonRdeviation, hexrinvundecidable, hexagonRinversedeviation,
+  hexagondeviation, hexholds, selfdualvec, simplecurrentvec];
   Clear[Global`irreps, Global`flist, Global`fmatlist, Global`rlist, 
   Global`rmatlist, Global`maxmultiplicity,  Global`multiplicity, 
   Global`numberoffusionmultiplicities, Global`FPdimlist, 
   Global`qdimlist, Global`pivotlist, Global`thetalist, Global`hlist, 
   Global`FSlist, Global`smat, Global`tmat, Global`cmat, 
-  Global`centralcharge, Global`modular, Global`unitary];
+  Global`centralcharge, Global`modular, Global`unitary, Global`selfduallist, Global`simplecurrentlist];
      level = lev;
      k = lev;
      rootofunity = 1/(g + k);
@@ -740,13 +750,18 @@ setrootofunity[rootfac_] := Piecewise[{
   qdtot, qdimspositive, fpdimvec, irrepsdual, dual, selfdualvec, 
   selfdual, qdim1overfvec, pivotlist,  pivot, thetalist, theta, 
   hlist, hvalue, frobschurlist, frobschur, smat, cmat, tmat, modular, 
-  pplus, pminus, modular2, centralcharge, modularrelationsok];
+  pplus, pminus, modular2, centralcharge, modularrelationsok, 
+  fsymbolsallrealorimaginary, fsymbolarguements];
+  Clear[weightspaceorthogonal, weightspacedeviation, orthonormalityok,
+  qCGdeviation, pentagondeviation, pentholds, recheck, pentagoncounter,
+  hexrundecidable, hexagonRdeviation, hexrinvundecidable, hexagonRinversedeviation,
+  hexagondeviation, hexholds, selfdualvec, simplecurrentvec];
   Clear[Global`irreps, Global`flist, Global`fmatlist, Global`rlist, 
   Global`rmatlist, Global`maxmultiplicity,  Global`multiplicity, 
   Global`numberoffusionmultiplicities, Global`FPdimlist, 
   Global`qdimlist, Global`pivotlist, Global`thetalist, Global`hlist, 
   Global`FSlist, Global`smat, Global`tmat, Global`cmat, 
-  Global`centralcharge, Global`modular, Global`unitary];
+  Global`centralcharge, Global`modular, Global`unitary, Global`selfduallist, Global`simplecurrentlist];
        ,
        typeranklevelrootinitok = False;
        Print["The possible roots of unity are ", Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
@@ -2182,6 +2197,10 @@ to do so. Proceed with care!"];
     fsymsFTFone = False;
     ];
    
+   fsymbolarguements = Arg[Chop[Fsym[Sequence @@ #]& /@ flist , 10^(-20)]]/Pi//Union;
+   
+   fsymbolsallrealorimaginary = SubsetQ[{-1/2,0,1/2,1}, fsymbolarguements];
+   
    If[fsymsreal && fsymsFTFone,
     Print["The F-matrices are orthogonal."]
     ];
@@ -2200,6 +2219,10 @@ to do so. Proceed with care!"];
     Print["The F-matrices are not all real."];
     Print["The F-matrices do not all satisfy F.(F^T) = (F^T).F = 1. One should check if this is reasonalbe or not!"];
     ];
+    
+  If[Not[fsymsreal] && fsymbolsallrealorimaginary,
+   Print["The F-symbols are all real or purely imaginary."];
+    ];  
     
     If[(pentagontobechecked && pentholds && Not[pentundecidable]) || Not[pentagontobechecked],
      fsymbolscalculated = True;
@@ -3256,6 +3279,8 @@ Presumably, there exists a different pivotal structure, such that all the quantu
   
   Global`FPdimlist = fpdimvec;
   Global`qdimlist = qdimvec;
+  Global`selfduallist = selfdualvec;
+  Global`simplecurrentlist = simplecurrentvec;
   Global`pivotlist = pivotlist;
   Global`thetalist = thetalist;
   Global`hlist = hlist;
