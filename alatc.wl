@@ -29,7 +29,8 @@ matrices, or if the fusion rules are inconsistent, etc., one can try to \
 increase the precision."
 
 initializerootofunity::usage =
-	"initializerootofunity[rootfactor] sets the value of q to e^(2 \[Pi] i rootfactor/(tmax (k+g))), \
+	"initializerootofunity[rootfactor] sets the value of q to \
+e^(2 \[Pi] i rootfactor/(tmax (k+g))), \
 where k is the level, g the dual coxeter number of the affine Lie algebra, and \
 tmax = 1 for the simply laced cases, tmax = 3 for g_2 and tmax = 2 for the other \
 non-simply laced cases (g and tmax are set when intialize[\"x\",r] is run)."
@@ -40,7 +41,7 @@ where k is the level, g the dual coxeter number of the affine Lie algebra, and \
 tmax = 1 for the simply laced cases, tmax = 3 for g_2 and tmax = 2 for the other \
 non-simply laced cases (g and tmax are set when intialize[\"x\",r] is run). Identical to \
 initializerootofunity[rootfactor], but kept for backwards compatibility."
-	
+		
 possiblerootfactors::usage =
 	"possiblerootfactors[\"x\",rank,level] gives the possible rootfactors \
 for the selected type, rank and level."	
@@ -66,6 +67,7 @@ diagonalizermatrices::usage =
 This will change both F- and R-symbols, so the pentagon and hexagon equations will be \
 re-checked for security."
 
+(*
 donotcheckpentagon::usage =
 	"Run donotcheckpentagon[] (after the type of algebra, rank and level have been initialized) \
 if you do not want the pentagon equations to be checked. \
@@ -75,10 +77,13 @@ By running donotcheckpentagon[], the \
 pentagon equations will not be checked. It is recommended to generate the R-symbols as well, so \
 that at least the hexagon equations can be checked. If these hold, it is likely that the \
 pentagon equations are also satisfied."
+*)
 
+(*
 docheckpentagon::usage =
 	"Run docheckpentagon[] (before calculating the F-symbols) if you ran donotcheckpentagon[] \
 accidentally, but still want to check the pentagon equations."
+*)
 
 displayinfo::usage = 
 	"displayinfo[] displays some general information and basic instructions on how \
@@ -126,7 +131,7 @@ of vertices of type (a,b,c)."
 Begin["`Private`"];
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*General functions*)
 
 
@@ -151,7 +156,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-11-14\n\
+       "Last revision: 2021-11-15\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -363,7 +368,7 @@ initialize[atype_, rr_] :=
   pplus, pminus, modular2, centralcharge, modularrelationsok, 
   fsymbolsallrealorimaginary, fsymbolarguements];
   Clear[weightspaceorthogonal, weightspacedeviation, orthonormalityok,
-  qCGdeviation, pentagondeviation, pentholds, recheck, pentagoncounter,
+  qCGdeviation, pentagondeviation, pentholds, pentagoncounter,
   hexrundecidable, hexagonRdeviation, hexrinvundecidable, hexagonRinversedeviation,
   hexagondeviation, hexholds, selfdualvec, simplecurrentvec];
   Clear[Global`irreps, Global`flist, Global`fmatlist, Global`rlist, 
@@ -498,7 +503,7 @@ initializelevel[lev_] :=
   pplus, pminus, modular2, centralcharge, modularrelationsok, 
   fsymbolsallrealorimaginary, fsymbolarguements];
   Clear[weightspaceorthogonal, weightspacedeviation, orthonormalityok,
-  qCGdeviation, pentagondeviation, pentholds, recheck, pentagoncounter,
+  qCGdeviation, pentagondeviation, pentholds, pentagoncounter,
   hexrundecidable, hexagonRdeviation, hexrinvundecidable, hexagonRinversedeviation,
   hexagondeviation, hexholds, selfdualvec, simplecurrentvec];
   Clear[Global`irreps, Global`flist, Global`fmatlist, Global`rlist, 
@@ -753,7 +758,7 @@ setrootofunity[rootfac_] := Piecewise[{
   pplus, pminus, modular2, centralcharge, modularrelationsok, 
   fsymbolsallrealorimaginary, fsymbolarguements];
   Clear[weightspaceorthogonal, weightspacedeviation, orthonormalityok,
-  qCGdeviation, pentagondeviation, pentholds, recheck, pentagoncounter,
+  qCGdeviation, pentagondeviation, pentholds, pentagoncounter,
   hexrundecidable, hexagonRdeviation, hexrinvundecidable, hexagonRinversedeviation,
   hexagondeviation, hexholds, selfdualvec, simplecurrentvec];
   Clear[Global`irreps, Global`flist, Global`fmatlist, Global`rlist, 
@@ -1894,7 +1899,16 @@ constructfsymbols[] := With[{},
    
    fmatdimtab = Table[fmatdim[Sequence @@ fm], {fm, fmatlist}];
    
+   If[pentagontobechecked,
+    numofpentagonequations = Sum[
+    nv[a, b, f]*nv[f, c, g]*nv[g, d, e]* nv[c, d, gp]*nv[b, gp, fp]*nv[a, fp, e]
+    , {a, irreps}, {b, irreps}, {c, irreps}, {d, irreps}
+    , {f, fusion[a, b]}, {g, fusion[f, c]}, {e, fusion[g, d]}
+    , {gp, Cases[fusion[c, d], x_ /; MemberQ[fusion[f, x], e]]}
+    , {fp, Cases[fusion[b, gp], x_ /; MemberQ[fusion[a, x], e]]}];
    ];
+   
+ ];
    
 
 (*checkpentagonorg[] := Module[{maxdev, tempdev},
@@ -2043,8 +2057,8 @@ checkpentagon[] := Module[{maxdev, tempdev},
    maxdev = 0;
    
    If[pentagontobechecked,
-   If[Not[recheck],Print["Checking the pentagon equations..."];];
-   If[recheck,Print["Re-checking the pentagon equations..."];];
+   If[Not[recheck],Print["Checking the ", numofpentagonequations, " pentagon equations..."];];
+   If[recheck,Print["Re-checking the ", numofpentagonequations, " pentagon equations..."];];
    
 (*   
    Do[
@@ -2079,12 +2093,10 @@ checkpentagon[] := Module[{maxdev, tempdev},
 
       , {i, pentlist}];
       
-*)      
-       pentagoncounter = 0;
+*)   
 
        Do[
        
-       pentagoncounter++;
 
        tempdev = 
        Abs[
@@ -2150,9 +2162,9 @@ to do so. Proceed with care!"];
    
    If[pentagontobechecked,
   If[pentholds && Not[pentundecidable],
-    Print["The ", pentagoncounter ," pentagon equations are satisfied :-)"];
+    Print["The pentagon equations are satisfied :-)"];
     Print["The maximum deviation is: ", pentagondeviation];,
-    Print["At least one of the ", pentagoncounter, " pentagon equations is not satisfied :-(, the maximum deviation is: ", pentagondeviation, " something went wrong..."];];
+    Print["At least one of the pentagon equations is not satisfied :-(, the maximum deviation is: ", pentagondeviation, " something went wrong..."];];
   ];
 
    If[Not[recheck],
@@ -2811,8 +2823,11 @@ checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
    
    If[hexholds && Not[hexrundecidable] && Not[hexrinvundecidable],
     Print["The hexagon equations are satisfied :-)"];
+    (*
     Print["The maximum devitation for R is: ", hexagonRdeviation];
     Print["The maximum devitation for R-inverse is: ", hexagonRinversedeviation];
+    *)
+    Print["The maximum devitation is: ", hexagondeviation];
     rsymbolscalculated = True;,
     Print["The hexagon equations are not satisfied :-(, the maximum deviation is: ", maxdev, " something went wrong..."];
     ];
