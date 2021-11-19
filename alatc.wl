@@ -17,6 +17,10 @@ subject to the constraints displayed when the package was loaded.\n\
 initialize[\"x\",r,level] initializes the type of affine Lie algebra, its rank and level.\n\
 initialize[\"x\",r,level,rootfactor] initializes the type of affine Lie algebra, its rank, the level \
 and the rootfactor, which sets the root of unity."
+
+initializelz::usage = 
+	"initialize[\"x\", r, l, z] initializes the type of affine Lie algebra, its rank, and the \
+root of unity as q = e^(2 Pi I z / l)."
 	
 initializelevel::usage =
 	"initializelevel[k] intializes the level to k."
@@ -44,7 +48,8 @@ initializerootofunity[rootfactor], but kept for backwards compatibility."
 		
 possiblerootfactors::usage =
 	"possiblerootfactors[\"x\",rank,level] gives the possible rootfactors \
-for the selected type, rank and level."	
+for the selected type, rank and level. A list containing the lists with the possible rootfactors \
+for the uniform and non-uniform cases is returned. The list for non-uniform cases might be empty."	
 	
 calculatefsymbols::usage = 
 	"calculatefsymbols[] calculates the F-symbols, after the type of algebra, rank, \
@@ -123,6 +128,11 @@ Fusion::usage =
 taking fusion multiplicities into account. Use Nvertex[a,b,c] to obtain the number \
 of vertices of type (a,b,c)."
 
+possiblepivotalstructures::usage =
+	"possiblepivotalstructures[] calculates the solutions to the pivotal equations. \
+Note that only one these solutions is actually realized for any particular choice of \
+algebra, rank, level and rootfactor!"
+
 
 (* ::Section:: *)
 (*Begin `Private` Context*)
@@ -131,7 +141,7 @@ of vertices of type (a,b,c)."
 Begin["`Private`"];
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*General functions*)
 
 
@@ -150,13 +160,13 @@ displayinfo[] := With[{},
        FontFamily -> "Source Sans Pro"],
       Style[ "Authors: Eddy Ardonne\n" , FontSize -> 15, 
        FontFamily -> "Source Sans Pro", Bold],
-      Style[ "Many thanks to: Steve Simon, Joost Slingerland, Gert Vercleyen\n" , 
+      Style[ "Many thanks to: Eric Rowell, Steve Simon, Joost Slingerland, Gert Vercleyen\n" , 
        FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-11-15\n\
+       "Last revision: 2021-11-19\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -205,9 +215,10 @@ q = e^(2 \[Pi] i rootfactor/(tmax (k + g))) ,\n where k is the level, \
 g the dual coxeter number of the \
 algebra, and tmax is the ratio of the length of the long and short \
 roots, if any (see the table above for the values of g and tmax). \
-rootfactor should be relative prime with tmax(k+g), so we restrict \
-to the homogeneous cases. The value of q is \
-set by running "],
+For the standard, uniform cases, rootfactor should be relative prime \
+with tmax(k+g). See the section `More detailed information' of the \
+accompanying notebook alatc-info-examples.nb for more information on \
+the non-uniform cases. The value of q is set by running "],
       codeStyle["initializerootofunity[rootfactor]"],
       textStyle[" .\n"],
       textStyle[
@@ -280,6 +291,7 @@ recheck=False;
 typerankinfo=True;
 levelinfo=True;
 rootfacinfo=True;
+initfromlz=False;
 
 
 (* ::Subsection::Closed:: *)
@@ -301,6 +313,53 @@ Nmat[a_]:=nmat[a];
 Nvertex[a_,b_,c_]:= nv[a,b,c];
 
 Fusion[a_,b_]:= fusion[a,b];
+
+pivotalequations[]:=
+Module[{value,valueok},
+  valueok=True;
+  Flatten[
+    Table[
+      value = 
+       Sum[
+        fsym[ir1, ir2, dual[ir3], irreps[[1]], ir3, dual[ir1], {v1, 1, v2, 1}]*
+        fsym[ir2, dual[ir3], ir1, irreps[[1]], dual[ir1], dual[ir2], {v2, 1, v3, 1}]*
+        fsym[dual[ir3], ir1, ir2, irreps[[1]], dual[ir2], ir3, {v3, 1, v1, 1}]
+       ,{v2, 1, nv[ir2, dual[ir3], dual[ir1]]},{v3, 1, nv[dual[ir3], ir1, dual[ir2]]}];
+     If[Chop[value-Round[value],10^(-20)]==0,
+      value=Round[value],
+       If[valueok,
+        Print["The numerical value appering in the pivotal equation is not equal to +1 or -1, \
+as should be the case for this fusion category."];
+       valueok=False;
+      ];
+    ];
+   pivotvar[ir1] * pivotvar[ir2] / pivotvar[ir3]==value
+ ,{ir1, irreps},{ir2, irreps},{ir3, fusion[ir1, ir2]},{v1, 1, nv[ir1, ir2, ir3]}],3]
+];
+
+possiblepivotalstructures[]:=Module[{piveqns,pivsols,allpivotalstructures},
+    
+  If[Not[typeranklevelrootinitok],
+  Print["The type of algebra, rank, level and/or rootfactor were not \
+(correctly) initialized, please do so first, followed by calculating \
+the F-symbols, before calculating the possible pivotal structures."];
+  ];
+  If[typeranklevelrootinitok && Not[fsymbolscalculated],
+  Print["The F-symbols were not calculated. Please do so first, before \
+calculating the possible pivotal structures."];
+  ];
+  
+  If[typeranklevelrootinitok && fsymbolscalculated,
+    piveqns=pivotalequations[]//Union;
+    pivsols=Solve[piveqns];
+    If[Length[pivsols] != numofsimplecurrents,
+     Print["The number of solutions of the pivotal equations is not equal to the number of simple currents! Better check."];
+    ];
+    allpivotalstructures=pivsols[[All,All,2]];
+    allpivotalstructures=Abs[#]Exp[I Arg[#]]&/@allpivotalstructures;
+    allpivotalstructures
+  ]
+];
 
 
 (* ::Subsection::Closed:: *)
@@ -354,29 +413,9 @@ initialize[atype_, rr_] :=
     modulardatacalculated=False;
     pentagontobechecked=True;
     recheck=False;
-    Clear[raising, lowering, statespossible, statesneeded,
-     tpstatesraising, basisraising, basislowering, stateraising,
-     statelowering, tpstatevec, tpbasis, basis, basison, gramm, tpstates];
-    Clear[fusion, nv, nmat, dualirreps, dualirrep, flist, fmatlist, pentlist, rlist, rmatlist,
-    nvlist, maxmultiplicity, multiplicity, numoffusmultiplicities, irreps];
-    Clear[qcg, fsym, fmat, fmatdim, fmatdimtab, rsym, rsyminv, rmat, 
-  rmatinv, sign, phase, fsymold, rsymold, fmatold, rmatold, umat, 
-  umatinv, numofirreps, numposroots, posroots, qdimvec, qd, qdtot2, 
-  qdtot, qdimspositive, fpdimvec, irrepsdual, dual, selfdualvec, 
-  selfdual, qdim1overfvec, pivotlist,  pivot, thetalist, theta, 
-  hlist, hvalue, frobschurlist, frobschur, smat, cmat, tmat, modular, 
-  pplus, pminus, modular2, centralcharge, modularrelationsok, 
-  fsymbolsallrealorimaginary, fsymbolarguements];
-  Clear[weightspaceorthogonal, weightspacedeviation, orthonormalityok,
-  qCGdeviation, pentagondeviation, pentholds, pentagoncounter,
-  hexrundecidable, hexagonRdeviation, hexrinvundecidable, hexagonRinversedeviation,
-  hexagondeviation, hexholds, selfdualvec, simplecurrentvec];
-  Clear[Global`irreps, Global`flist, Global`fmatlist, Global`rlist, 
-  Global`rmatlist, Global`maxmultiplicity,  Global`multiplicity, 
-  Global`numberoffusionmultiplicities, Global`FPdimlist, 
-  Global`qdimlist, Global`pivotlist, Global`thetalist, Global`hlist, 
-  Global`FSlist, Global`smat, Global`tmat, Global`cmat, 
-  Global`centralcharge, Global`modular, Global`unitary, Global`selfduallist, Global`simplecurrentlist];
+    clearvariables[];
+    clearglobalvariables[];
+    
     type = atype;
     twist = tw;
     If[tw != 1, 
@@ -384,8 +423,6 @@ initialize[atype_, rr_] :=
     rank = rr;
     r = rr;
     c = 0;
-    useweyl = False;
-    If[r == 1, useweyl = False;];
     acartan = acartanmatrix[atype, tw, r];
     tw2abb = If[tw == 2 && (atype === "a" || atype === "bb"), True, False];
     tw2abbcor = If[tw2abb, 2, 1];
@@ -433,7 +470,6 @@ initialize[atype_, rr_] :=
     
     (* Generate the roots of the algebra *)
     
-    Clear[roots];
     pos = 1;
     roots = {th};
     While[pos <= Dimensions[roots][[1]], 
@@ -481,7 +517,7 @@ initialize[atype_, rr_] :=
 initializelevel[lev_] :=
   Module[{n},  
   If[typerankinitok,
-   If[IntegerQ[lev] && lev > 0,
+   If[IntegerQ[lev] && lev >= 0,
      typeranklevelinitok=False; (* will be set to True once we're done *)
      typeranklevelrootinitok=False;
      fsymbolscalculated=False;
@@ -489,50 +525,689 @@ initializelevel[lev_] :=
      modulardatacalculated=False;
      pentagontobechecked=True;
      recheck=False;
-     Clear[raising, lowering, statespossible, statesneeded,
-     tpstatesraising, basisraising, basislowering, stateraising,
-     statelowering, tpstatevec, tpbasis, basis, basison, gramm, tpstates];
-     Clear[fusion, nv, nmat, dualirreps, dualirrep, flist, fmatlist, pentlist, rlist, rmatlist,
-     nvlist, maxmultiplicity, multiplicity, numoffusmultiplicities, irreps];
-     Clear[qcg, fsym, fmat, fmatdim, fmatdimtab, rsym, rsyminv, rmat, 
-  rmatinv, sign, phase, fsymold, rsymold, fmatold, rmatold, umat, 
-  umatinv, numofirreps, numposroots, posroots, qdimvec, qd, qdtot2, 
-  qdtot, qdimspositive, fpdimvec, irrepsdual, dual, selfdualvec, 
-  selfdual, qdim1overfvec, pivotlist,  pivot, thetalist, theta, 
-  hlist, hvalue, frobschurlist, frobschur, smat, cmat, tmat, modular, 
-  pplus, pminus, modular2, centralcharge, modularrelationsok, 
-  fsymbolsallrealorimaginary, fsymbolarguements];
-  Clear[weightspaceorthogonal, weightspacedeviation, orthonormalityok,
-  qCGdeviation, pentagondeviation, pentholds, pentagoncounter,
-  hexrundecidable, hexagonRdeviation, hexrinvundecidable, hexagonRinversedeviation,
-  hexagondeviation, hexholds, selfdualvec, simplecurrentvec];
-  Clear[Global`irreps, Global`flist, Global`fmatlist, Global`rlist, 
-  Global`rmatlist, Global`maxmultiplicity,  Global`multiplicity, 
-  Global`numberoffusionmultiplicities, Global`FPdimlist, 
-  Global`qdimlist, Global`pivotlist, Global`thetalist, Global`hlist, 
-  Global`FSlist, Global`smat, Global`tmat, Global`cmat, 
-  Global`centralcharge, Global`modular, Global`unitary, Global`selfduallist, Global`simplecurrentlist];
      level = lev;
      k = lev;
      rootofunity = 1/(g + k);
-     Clear[rootfactor];
-     rootfactors = Cases[Table[rf, {rf, 1, (tmax/rootofunity)}], x_ /; GCD[x, tmax/rootofunity] == 1];
-     irreps = Flatten[
-       Table[
-        Table[m[j], {j, 1, rank}],
-        Evaluate[
-        Sequence@@Table[{m[i], 0, Floor[(level - Sum[m[i1]*comark[[i1 + 1]], {i1, 1, i - 1}])/comark[[i + 1]]]}, {i, 1, rank}]]
+     canbenonuniform = nonuniformpossible[type, rank, level];
+     rootfactorsuniform = possiblerootfactorsuniform[type, rank, level];
+     If[canbenonuniform,
+       rootfactorsnonuniform = possiblerootfactorsnonuniform[type, rank, level];,
+       rootfactorsnonuniform = {};
+     ];
+     rootfactors = Union[rootfactorsuniform, rootfactorsnonuniform];
+     
+     typeranklevelinitok=True;
+     If[levelinfo,
+     Print["The level has been set to ",level];
+     If[canbenonuniform,
+     Print["The possible roots of unity are ", 
+      Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
+      ",\n with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases, or \n\
+with rootfactor an element of the set: ", rootfactorsnonuniform, " for the non-uniform cases."];,
+     Print["The possible roots of unity are ", 
+      Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
+      ",\n with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases.\n There are no non-uniform cases."];
+      ];
+     ];
+     ,
+     If[levelinfo,
+     Print["The level has to be a positive integer!"];
+     Print["Run initializelevel[level] again to set the level."];
+     ];
+     ,
+     If[levelinfo,
+     Print["The level has to be a positive integer!"];
+     Print["Run initializelevel[level] again to set the level."];
+     ];
+     ];
+     ,
+    Print["The type of algebra and rank are not correctly initialized, please do so first!"];
+     ];
+   ];   
+   
+setrootofunity[rootfac_]:= initializerootofunity[rootfac];   
+   
+initializerootofunity[rootfac_] := Piecewise[{
+    {
+     If[MemberQ[rootfactors, rootfac],
+       rootfactor = rootfac;
+       q = N[Exp[2 Pi I rootfactor rootofunity/tmax], precision];
+       
+       If[MemberQ[rootfactorsuniform, rootfac], uniform = True;, uniform = False;];
+       
+       If[uniform, irreps = irrepsuniform[type, rank, level];, irreps = irrepsnonuniform[type, rank, level];];       
+       
+       If[rootfacinfo,
+       Print["The rootfactor has been set to ",rootfactor];
+       ];
+       If[uniform && Not[initfromlz],
+       Print["The type of algebra, rank, level and rootfactor are initialized, and set to ", {type, rank, level, rootfactor}, ". This is a uniform case."];
+       ];
+       If[uniform && initfromlz,
+       Print["The type of algebra, rank, l and z are initialized, and set to ", {type, rank, lval, zval}, ". This is a uniform case."];
+       ];
+       If[Not[uniform] && Not[initfromlz],
+       Print["The type of algebra, rank, level and rootfactor are initialized, and set to ", {type, rank, level, rootfactor}, ". This is a non-uniform case."];
+       ];
+       If[Not[uniform] && initfromlz,
+       Print["The type of algebra, rank, l and z are initialized, and set to ", {type, rank, lval, zval}, ". This is a non-uniform case."];
+       ];       
+       typeranklevelrootinitok = True;
+       fsymbolscalculated=False;
+       rsymbolscalculated=False;
+       modulardatacalculated=False;
+       recheck=False;
+              
+       Print["You can proceed to calculate the F-symbols :-)"];
+       ,
+       typeranklevelrootinitok = False;
+        If[canbenonuniform,
+        Print["The possible roots of unity are ", 
+        Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm,
+        ",\n\
+with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases, or \n\
+with rootfactor an element of the set: ", rootfactorsnonuniform, " for the non-uniform cases."];,
+        Print["The possible roots of unity are ", 
+        Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
+        ",\n\
+with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases.\n\
+There are no non-uniform cases."];
+        ];
+        Print["Run initializerootofunity[rootfactor] again to select a valid rootfactor."];
+       ,
+       typeranklevelrootinitok = False;
+        If[canbenonuniform,
+        Print["The possible roots of unity are ", 
+        Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm,
+        ",\n\
+with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases, or \n\
+with rootfactor an element of the set: ", rootfactorsnonuniform, " for the non-uniform cases."];,
+        Print["The possible roots of unity are ", 
+        Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
+        ",\n\
+with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases.\n\
+There are no non-uniform cases."];
+        ];
+        Print["Run initializerootofunity[rootfactor] again to select a valid rootfactor."];
+       ];
+     , typeranklevelinitok},
+    {Print["The type of algebra and rank are not correctly initialized, please do so first!"];
+     , Not[typerankinitok]},
+    {Print["The level is not correctly initialized, please do so first!"];
+     , typerankinitok && Not[typeranklevelinitok]}
+    }];
+    
+   
+initialize[atype_, rr_, level_] :=
+    Module[{typerangeok, levelok},
+   
+   If[Not[arangeok[atype, 1, rr]],
+    typerangeok = False;
+    Print["The type of algebra and the rank are not compatible!"];,
+    typerangeok = True;,
+    typerangeok = False;
+    Print["The type of algebra and the rank are not compatible!"];
+    ];
+   
+   If[IntegerQ[level] && level > 0,
+    levelok = True,
+    Print["The level is not a positive integer!"];
+    levelok = False;,
+    Print["The level is not a positive integer!"];
+    levelok = False;
+    ];
+   
+   If[typerangeok && levelok,
+    typerankinfo = False;
+    levelinfo = False;
+    initialize[atype, rr];
+    initializelevel[level];
+    Print["The type of algebra, rank, and level are initialized, and set to ",{atype,rr,level}];
+    If[canbenonuniform,
+     Print["The possible roots of unity are ", 
+      Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm,
+      ",\n\
+with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases, or \n\
+with rootfactor an element of the set: ", rootfactorsnonuniform, " for the non-uniform cases."];,
+     Print["The possible roots of unity are ", 
+      Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
+      ",\n\
+with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases.\n\
+There are no non-uniform cases."];
+     ];      
+      
+      
+    typerankinfo = True;
+    levelinfo = True;
+    ,
+    Print["No initialization was done!"];
+    ];
+   
+   ];   
+   
+initialize[atype_, rr_, level_, rootfac_] :=
+  Module[{typerangeok, levelok, rootfacok, posrootfacsall, posrootfacsuniform, posrootfacsnonuniform, canbenonuniform},
+      If[Not[arangeok[atype, 1, rr]],
+        typerangeok = False;
+        Print["The type of algebra and the rank are not compatible!"];,
+        typerangeok = True;,
+        typerangeok = False;
+        Print["The type of algebra and the rank are not compatible!"];
+        ];
+      
+      If[IntegerQ[level] && level > 0,
+        levelok = True,
+        Print["The level is not a positive integer!"];
+        levelok = False;,
+        Print["The level is not a positive integer!"];
+        levelok = False;
+        ];
+        
+    If[typerangeok && levelok,
+     canbenonuniform = nonuniformpossible[atype, rr, level];
+     posrootfacsuniform = possiblerootfactorsuniform[atype, rr, level];
+     If[canbenonuniform,
+       posrootfacsnonuniform = possiblerootfactorsnonuniform[atype, rr, level];,
+       posrootfacsnonuniform = {};
+     ];
+     posrootfacsall = Union[posrootfacsuniform, posrootfacsnonuniform];
+
+    If[MemberQ[posrootfacsall, rootfac],
+     rootfacok = True;,
+     If[canbenonuniform,
+      Print["The rootfactor should be a member of the set ", posrootfacsuniform," for the uniform case, or of the set ",
+      posrootfacsnonuniform," for the non-uniform case."];,
+      Print["The rootfactor should be a member of the set ", posrootfacsuniform," for the uniform case. There are no non-uniform cases."];
+      ];
+     rootfacok = False;,
+     If[canbenonuniform,
+      Print["The rootfactor should be a member of the set ", posrootfacsuniform," for the uniform case, or of the set ",
+      posrootfacsnonuniform," for the non-uniform case."];,
+      Print["The rootfactor should be a member of the set ", posrootfacsuniform," for the uniform case. There are no non-uniform cases."];
+      ];
+     rootfacok = False;
+     ];
+   
+     ]; 
+    
+    
+    If[typerangeok && levelok && rootfacok,
+        typerankinfo = False;
+        levelinfo = False;
+        rootfacinfo = False;
+        initialize[atype, rr];
+        initializelevel[level];
+        initializerootofunity[rootfac];
+        typerankinfo = True;
+        levelinfo = True;
+        rootfacinfo = True;
+        ,
+        Print["No initialization was done!"];
+        ];
+      ]; 
+      
+initializelz[type_, rank_, lvalue_, zvalue_]:=
+Module[{typerangeok, currentlvalueok, currentzvalueok, currentlzvaluesok, lzlevel, lzrootfac},
+
+  If[Not[arangeok[type, 1, rank]],
+   typerangeok = False;
+   Print["The type of algebra and the rank are not compatible!"];,
+   typerangeok = True;
+   ,
+   typerangeok = False;
+   Print["The type of algebra and the rank are not compatible!"];
+ ];
+ 
+ 
+ If[typerangeok,
+  If[Not[lvalueok[type, rank, lvalue]],
+  currentlvalueok = False;
+  Print["The values of l is not compatible with the type of algebra and its rank."];
+  lvaluespossible[type, rank];,
+  currentlvalueok = True;,
+  currentlvalueok = False;
+  Print["The values of l is not compatible with the type of algebra and its rank."];
+  lvaluespossible[type, rank];
+ ];
+ ];
+ 
+ If[typerangeok && currentlvalueok,
+   If[Not[zvalueok[lvalue,zvalue]],
+    currentzvalueok = False;
+    currentlzvaluesok = False;
+    Print["The value of z is not compatible with l. The possible values for z are: 0 < z < ", lvalue, ", such that \
+GDC[z,",lvalue,"] == 1."];,
+    currentzvalueok = True;
+    currentlzvaluesok = True;,
+    currentzvalueok = False;
+    currentlzvaluesok = False;
+    Print["The value of z is not compatible with l. The possible values for z are: 0 < z < ", lvalue, ", such that \
+GDC[z,",lvalue,"] == 1."];
+   ];
+  ];
+ 
+ If[typerangeok && currentlvalueok && currentzvalueok,
+    typerankinfo = False;
+    levelinfo = False;
+    rootfacinfo = False;
+    initialize[type,rank];
+    uniform = lzvaluesuniform[type, rank, lvalue, zvalue];
+    lzlevel = If[uniform, lvalue/tmax - g, lvalue - g];
+    lzrootfac = If[uniform, zvalue, tmax*zvalue];
+    initializelevel[lzlevel];
+    lval = lvalue;
+    zval = zvalue;
+    initfromlz = True;
+    initializerootofunity[lzrootfac];
+    typerankinfo = True;
+    levelinfo = True;
+    rootfacinfo = True;
+    initfromlz = False;
+    ,
+    Print["No initialization was done!"];,
+    Print["No initialization was done!"];
+ ];
+ 
+ 
+];
+
+
+
+setprecision[prec_] := With[{},
+   If[IntegerQ[prec] && prec > 100,
+     precision = prec;
+     Print["The precision has been set to ", precision];
+     ,
+     precision = 100;
+     Print["The precision should be an integer \[GreaterEqual] 100"];
+     Print["The precision has been set to ", precision];
+     ,
+     precision = 100;
+     Print["The precision should be an integer \[GreaterEqual] 100"];
+     Print["The precision has been set to ", precision];
+     ];
+   ];         
+   
+donotcheckpentagon[] := With[{},
+   pentagontobechecked = False;
+   Print["You opted to hop over the step of checking the pentagon \
+equations, so you proceed at your own risk. \n\
+The (potentially very long) list of pentagon equations will not \
+be generated, and the pentagon equations will not be checked. \n\
+It is recommended that the R-symbols are also generated, so that \
+the hexagon equations are checked. \
+If they hold, it is likely the pentagon equations are also \
+satisfied."];
+   ];   
+   
+docheckpentagon[] := With[{},
+   pentagontobechecked = True;
+   Print["The pentagon equations will be checked."];
+   ];   
+
+
+(* ::Subsection::Closed:: *)
+(*Functions for the non-uniform case*)
+
+
+nonuniformpossible[type_, rank_, level_] :=
+  Piecewise[
+   {
+    {True, type == "b" && rank >= 3 && Mod[level, 2] == 0 && level >= 1},
+    {True, type == "c" && rank >= 2 && Mod[level + rank, 2] == 0 && level >= rank - 1},
+    {True, type == "f" && rank == 4 && Mod[level, 2] == 0 && level >= 3},
+    {True, type == "g" && rank == 2 && (Mod[level, 3] == 0 || Mod[level, 3] == 1) && level >= 2}
+   },
+   False
+  ];
+
+tmaxval[type_] :=
+  Piecewise[
+   {
+    {1, type == "a" || type == "d" || type == "e"},
+    {2, type == "b" || type == "c" || type == "f"},
+    {3, type == "g"}
+   }
+  ];
+  
+dualcoxeter[type_, rank_] :=
+  Piecewise[
+   {
+    {rank + 1, type == "a" && rank >= 1},
+    {2 rank - 1, type == "b" && rank >= 3},
+    {rank + 1, type == "c" && rank >= 2},
+    {2 rank - 2, type == "d" && rank >= 4},
+    {12, type == "e" && rank == 6},
+    {18, type == "e" && rank == 7},
+    {30, type == "e" && rank == 8},
+    {9, type == "f" && rank == 4},
+    {4, type == "g" && rank == 2}
+    }
+  ];
+  
+thvecshort[type_, 1, rank_] :=
+  Piecewise[
+   {
+    {{2}, type == "a" && rank == 1},
+    {Table[If[i == 1 || i == rank, 1, 0], {i, 1, rank}], type == "a" && rank > 1},
+    {Table[If[i == 1, 1, 0], {i, 1, rank}], type == "b" && rank >= 3},
+    {Table[If[i == 2, 1, 0], {i, 1, rank}], type == "c" && rank >= 2},
+    {Table[If[i == 2, 1, 0], {i, 1, rank}], type == "d" && rank >= 4},
+    {{0, 0, 0, 0, 0, 1}, type == "e" && rank == 6},
+    {{1, 0, 0, 0, 0, 0, 0}, type == "e" && rank == 7},
+    {{1, 0, 0, 0, 0, 0, 0, 0}, type == "e" && rank == 8},
+    {{0, 0, 0, 1}, type == "f" && rank == 4},
+    {{0, 1}, type == "g" && rank == 2}
+   }
+  ];
+  
+thveclong[type_, 1, rank_] :=
+  Piecewise[
+   {
+    {{2}, type == "a" && rank == 1},
+    {Table[If[i == 1 || i == rank, 1, 0], {i, 1, rank}], type == "a" && rank > 1},
+    {Table[If[i == 2, 1, 0], {i, 1, rank}], type == "b" && rank >= 3},
+    {Table[If[i == 1, 2, 0], {i, 1, rank}], type == "c" && rank >= 2},
+    {Table[If[i == 2, 1, 0], {i, 1, rank}], type == "d" && rank >= 4},
+    {{0, 0, 0, 0, 0, 1}, type == "e" && rank == 6},
+    {{1, 0, 0, 0, 0, 0, 0}, type == "e" && rank == 7},
+    {{1, 0, 0, 0, 0, 0, 0, 0}, type == "e" && rank == 8},
+    {{1, 0, 0, 0}, type == "f" && rank == 4},
+    {{1, 0}, type == "g" && rank == 2}
+   }
+ ];  
+
+rootlengthfactors[type_, rank_] :=
+  Piecewise[
+   {
+    {Table[1, {i, 1, rank}], (type == "a" && rank >= 1) || (type == "d" && rank >= 4) || (type == "e" && 6 <= rank <= 8)},
+    {Table[If[i < rank, 1, 2], {i, 1, rank}], type == "b" && rank >= 3},
+    {Table[If[i < rank, 2, 1], {i, 1, rank}], type == "c" && rank >= 2},
+    {{1, 1, 2, 2}, type == "f" && rank == 4},
+    {{1, 3}, type == "g" && rank == 2}
+   }
+ ];
+
+  
+cartanmat[type_, rank_] :=
+  Piecewise[
+   {
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 -> -1}, {rank, rank}] // Normal, type == "a"},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && j < rank -> -1, {rank - 1, rank} -> -2}, {rank, rank}] // Normal, type == "b" && rank >= 3},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank -> -1, {rank, rank - 1} -> -2}, {rank, rank}] // Normal, type == "c" && rank >= 2},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank && j < rank -> -1, {rank - 2, rank} -> -1, {rank, rank - 2} -> -1}, {rank, rank}] // Normal, type == "d" && rank >= 4},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank && j < rank -> -1, {3, 6} -> -1, {6, 3} -> -1}, {rank, rank}] // Normal, type == "e" && rank == 6},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank && j < rank -> -1, {3, 7} -> -1, {7, 3} -> -1}, {rank, rank}] // Normal, type == "e" && rank == 7},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank && j < rank -> -1, {5, 8} -> -1, {8, 5} -> -1}, {rank, rank}] // Normal, type == "e" && rank == 8},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && {i, j} != {2, 3} -> -1, {2, 3} -> -2}, {rank, rank}] // Normal, type == "f" && rank == 4},
+    {{{2, -3}, {-1, 2}}, type == "g" && rank == 2}
+   }
+  ];
+  
+qfmat[type_, rank_] :=
+  With[
+  {ict = Transpose[Inverse[cartanmat[type, rank]]],
+   rlfs = rootlengthfactors[type, rank]},
+   Table[1/rlfs[[i]] ict[[i]], {i, 1, rank}]
+   ]; 
+
+irrepsuniform[type_, rank_, level_] :=
+  Solve[
+  (Table[avar[i] + 1, {i, 1, rank}]).qfmat[type, rank].thveclong[type, 1, rank] < level + dualcoxeter[type, rank] &&
+  And @@ Table[avar[i] >= 0, {i, 1, rank}], Integers][[All, All, 2]] // Sort;
+  
+irrepsnonuniform[type_, rank_, level_] :=
+ Solve[
+   tmaxval[type] (Table[avar[i] + 1, {i, 1, rank}]).qfmat[type, rank].thvecshort[type, 1, rank] < level + dualcoxeter[type, rank] && 
+   And @@ Table[avar[i] >= 0, {i, 1, rank}], Integers][[All, All, 2]] // Sort;
+      
+possiblerootfactorsnonuniform[type_, rank_, level_] :=
+  Module[
+   {tmax = tmaxval[type], g = dualcoxeter[type, rank], res},
+   If[nonuniformpossible[type, rank, level],
+    res = Range[tmax (level + g)];
+    res = Cases[res, x_ /; Mod[x, tmax] == 0 && GCD[x, level + g] == 1];,
+    res = {};
+    ];
+    res
+   ];
+
+possiblerootfactorsuniform[type_, rank_, level_] :=
+  Module[
+   {tmax = tmaxval[type], g = dualcoxeter[type, rank], res},
+   res = Range[tmax (level + g)];
+   res = Cases[res, x_ /; GCD[x, tmax(level + g)] == 1]
+   ];
+   
+possiblerootfactors[type_, rank_, level_] :=
+  Module[{tmax, g, rfpossible,rfuniform,rfnonuniform},
+   If[arangeok[type, 1, rank],
+    If[IntegerQ[level] && level > 0,
+     rfuniform = possiblerootfactorsuniform[type,rank,level];
+     rfnonuniform = possiblerootfactorsnonuniform[type,rank,level];
+     rfpossible = {rfuniform, rfnonuniform}
+     , Print["The level is not a positve integer"];
+     ]
+    , Print["The type of algebra and rank are not compatible!"];
+    ]
+   ];    
+   
+
+           
+lzvaluesok[type_, rank_Integer, lvalue_Integer, zvalue_Integer] :=
+  Piecewise[
+   {
+    (* uniform cases: *)
+    {True, type == "a" && rank >= 1 && lvalue >= 1*(rank + 1) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "b" && rank >= 3 && lvalue >= 2*(2 rank - 1) && Mod[lvalue, 2] == 0 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "c" && rank >= 2 && lvalue >= 2*(rank + 1) && Mod[lvalue, 2] == 0 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "d" && rank >= 4 && lvalue >= 1*(2 rank - 2) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "e" && rank == 6 && lvalue >= 1*(12) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "e" && rank == 7 && lvalue >= 1*(18) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "e" && rank == 8 && lvalue >= 1*(30) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "f" && rank == 4 && lvalue >= 2*(9) && Mod[lvalue, 2] == 0 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "g" && rank == 2 && lvalue >= 3*(4) && Mod[lvalue, 3] == 0 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    (* non-uniform cases: *)
+    {True, type == "b" && rank >= 3 && lvalue >= 2 rank + 1 && Mod[lvalue, 2] == 1 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "c" && rank >= 2 && lvalue >= 2 rank + 1 && Mod[lvalue, 2] == 1 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "f" && rank == 4 && lvalue >= 13 && Mod[lvalue, 2] == 1 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "g" && rank == 2 && lvalue >= 7 && (Mod[lvalue, 3] == 1 || Mod[lvalue, 3] == 2) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue}
+    },
+   False
+   ];
+   
+lvalueok[type_, rank_Integer, lvalue_Integer] :=
+  Piecewise[
+   {
+    (* uniform cases: *)
+    {True, type == "a" && rank >= 1 && lvalue >= 1*(rank + 1)},
+    {True, type == "b" && rank >= 3 && lvalue >= 2*(2 rank - 1) && Mod[lvalue, 2] == 0},
+    {True, type == "c" && rank >= 2 && lvalue >= 2*(rank + 1) && Mod[lvalue, 2] == 0},
+    {True, type == "d" && rank >= 4 && lvalue >= 1*(2 rank - 2)},
+    {True, type == "e" && rank == 6 && lvalue >= 1*(12)},
+    {True, type == "e" && rank == 7 && lvalue >= 1*(18)},
+    {True, type == "e" && rank == 8 && lvalue >= 1*(30)},
+    {True, type == "f" && rank == 4 && lvalue >= 2*(9) && Mod[lvalue, 2] == 0},
+    {True, type == "g" && rank == 2 && lvalue >= 3*(4) && Mod[lvalue, 3] == 0},
+    (* non-uniform cases: *)
+    {True, type == "b" && rank >= 3 && lvalue >= 2 rank + 1 && Mod[lvalue, 2] == 1},
+    {True, type == "c" && rank >= 2 && lvalue >= 2 rank + 1 && Mod[lvalue, 2] == 1},
+    {True, type == "f" && rank == 4 && lvalue >= 13 && Mod[lvalue, 2] == 1},
+    {True, type == "g" && rank == 2 && lvalue >= 7 && (Mod[lvalue, 3] == 1 || Mod[lvalue, 3] == 2)}
+    },
+   False
+   ];
+   
+zvalueok[lvalue_Integer, zvalue_Integer]:= (GCD[lvalue,zvalue] == 1) && (0 < zvalue < lvalue);
+         
+   
+lzvaluesuniform[type_, rank_Integer, lvalue_Integer, zvalue_Integer] :=
+  Piecewise[
+   {
+    (* uniform cases: *)
+    {True, type == "a" && rank >= 1 && lvalue >= 1*(rank + 1) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "b" && rank >= 3 && lvalue >= 2*(2 rank - 1) && Mod[lvalue, 2] == 0 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "c" && rank >= 2 && lvalue >= 2*(rank + 1) && Mod[lvalue, 2] == 0 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "d" && rank >= 4 && lvalue >= 1*(2 rank - 2) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "e" && rank == 6 && lvalue >= 1*(12) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "e" && rank == 7 && lvalue >= 1*(18) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "e" && rank == 8 && lvalue >= 1*(30) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "f" && rank == 4 && lvalue >= 2*(9) && Mod[lvalue, 2] == 0 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {True, type == "g" && rank == 2 && lvalue >= 3*(4) && Mod[lvalue, 3] == 0 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    (* non-uniform cases: *)
+    {False, type == "b" && rank >= 3 && lvalue >= 2 rank + 1 && Mod[lvalue, 2] == 1 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {False, type == "c" && rank >= 2 && lvalue >= 2 rank + 1 && Mod[lvalue, 2] == 1 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {False, type == "f" && rank == 4 && lvalue >= 13 && Mod[lvalue, 2] == 1 && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue},
+    {False, type == "g" && rank == 2 && lvalue >= 7 && (Mod[lvalue, 3] == 1 || Mod[lvalue, 3] == 2) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue}
+    }
+   ];
+   
+         
+lzvaluespossible[type_,rank_Integer]:=
+  Piecewise[
+  {
+  {Print["Possible values for l (only uniform cases): l >= rank + 1; 0 < z < l such that GCD[z,l]==1."],type == "a" && rank >= 1},
+  {Print["Possible values for l even (uniform case): l >= 4 rank - 2; 0 < z < l such that GCD[z,l]==1.\n\
+Possible values for l odd (non-uniform case): l >= 2 rank + 1; 0 < z < l such that GCD[z,l]==1."],type == "b" && rank >= 3},
+  {Print["Possible values for l even (uniform case): l >= 2 rank + 2; 0 < z < l such that GCD[z,l]==1.\n\
+Possible values for l odd (non-uniform case): l >= 2 rank + 1 ; 0 < z < l such that GCD[z,l]==1."],type == "c" && rank >= 2},
+  {Print["Possible values for l (only uniform cases): l >= 2 rank - 2; 0 < z < l such that GCD[z,l]==1."],type == "d" && rank >= 4},
+  {Print["Possible values for l (only uniform cases): l >= 12; 0 < z < l such that GCD[z,l]==1."],type == "e" && rank == 6},
+  {Print["Possible values for l (only uniform cases): l >= 18; 0 < z < l such that GCD[z,l]==1."],type == "e" && rank == 7},
+  {Print["Possible values for l (only uniform cases): l >= 30; 0 < z < l such that GCD[z,l]==1."],type == "e" && rank == 8},
+  {Print["Possible values for l even (uniform case): l >= 18; 0 < z < l such that GCD[z,l]==1.\n\
+Possible values for l odd (non-uniform case): l >= 13 ; 0 < z < l such that GCD[z,l]==1."],type == "f" && rank == 4},
+  {Print["Possible values for l a multiple of three (uniform case): l >= 12; 0 < z < l such that GCD[z,l]==1.\n\
+Possible values for l not a multiple of three (non-uniform case): l >= 7; 0 < z < l such that GCD[z,l]==1."],type == "g" && rank == 2}
+  },
+  Print["The type and rank are not compatible!"];
+ ];
+ 
+lvaluespossible[type_,rank_Integer]:=
+  Piecewise[
+  {
+  {Print["The possible values for l (only uniform cases) are: l >= ", rank + 1, "."];, type == "a" && rank >= 1},
+  {Print["The possible values for l even (uniform case) are: l >= ", 4 rank - 2, ",\n\
+the possible values for l odd (non-uniform case) are: l >= ", 2 rank + 1, "."],type == "b" && rank >= 3},
+  {Print["The possible values for l even (uniform case): l >= ", 2 rank + 2, ",\n\
+the possible values for l odd (non-uniform case): l >= ", 2 rank + 1, "."],type == "c" && rank >= 2},
+  {Print["The possible values for l (only uniform cases): l >= ", 2 rank - 2, "."],type == "d" && rank >= 4},
+  {Print["The possible values for l (only uniform cases): l >= ", 12, "."],type == "e" && rank == 6},
+  {Print["The possible values for l (only uniform cases): l >= ", 18, "."],type == "e" && rank == 7},
+  {Print["The possible values for l (only uniform cases): l >= ", 30, "."],type == "e" && rank == 8},
+  {Print["The possible values for l even (uniform case): l >= ", 18, ",\n\
+the possible values for l odd (non-uniform case): l >= ", 13, "."],type == "f" && rank == 4},
+  {Print["The possible values for l a multiple of three (uniform case): l >= ", 12, ",\n\
+the possible values for l not a multiple of three (non-uniform case): l >= ", 7,"."],type == "g" && rank == 2}
+  },
+  Print["The type and rank are not compatible!"];
+ ];
+ 
+ 
+
+
+(* ::Subsection::Closed:: *)
+(*Routines for the inner product*)
+
+
+cleargeneralinnerproduct[] :=
+ With[{},
+  Clear[generalinnerproduct];
+  generalinnerproduct[hw_, operators_] := 
+   generalinnerproduct[hw, operators] =
+    Module[{leftmostlowerpos},
+     If[
+      
+      (* Check if raising and lowering operators are consistent and only give states in the representation *)
+      
+      Sort[Cases[operators, x_ /; x[[2]] == 1][[All, 1]]] != 
+        Sort[Cases[operators, x_ /; x[[2]] == -1][[All, 1]]] || Not[
+        Module[{test, len},
+         len = Length[operators];
+         If[len > 0,
+          test[len + 1] = hw;
+          
+          Do[test[pos] = 
+            test[pos + 1] + (operators[[pos, 2]]) cartan[[operators[[pos, 1]]]]
+            , {pos, len, 1, -1}];
+          
+          And @@ Table[
+            MemberQ[weights[hw], test[pos]], {pos, 1, len}], True
+          ]
+         ]
+        ],
+      0,
+      If[
+       (* End of the recursion *)
+       operators == {},
+       1,
+       If[
+        (* (conjugate) raising operator acts on the highest weight *)
+        operators[[1, 2]] == -1,
+        0,
+        (* Actual recursion step *)
+        leftmostlowerpos = 
+         Position[operators, x_ /; x[[2]] == -1, {1}, 1, 
+           Heads -> False][[1, 1]];
+        If[
+         (* Check if lefmost lowering operator commutes with raising operator which is one position to the left *)
+         operators[[leftmostlowerpos, 1]] != 
+          operators[[leftmostlowerpos - 1, 1]],
+         (* commutes, only one term contributes *)
+         generalinnerproduct[hw, 
+          ReplacePart[
+           operators, {leftmostlowerpos -> 
+             operators[[leftmostlowerpos - 1]], 
+            leftmostlowerpos - 1 -> operators[[leftmostlowerpos]]}]]
+            ,
+         (* does not commute, two terms contribute *)
+         generalinnerproduct[hw, 
+           ReplacePart[
+            operators, {leftmostlowerpos -> 
+              operators[[leftmostlowerpos - 1]], 
+             leftmostlowerpos - 1 -> operators[[leftmostlowerpos]]}]] +
+          nq[(hw - Sum[cartan[[operators[[i, 1]]]], {i, 1, leftmostlowerpos - 2}])[[
+             operators[[leftmostlowerpos, 1]]]], 
+            tvec[[operators[[leftmostlowerpos, 1]]]]]*
+           generalinnerproduct[hw, 
+            Delete[operators, {{leftmostlowerpos}, {leftmostlowerpos - 1}}]]
         ]
-       , rank - 1];  
-     airreps = 
-      Table[Prepend[irreps[[i]], level - Plus @@ irreps[[i]]], {i, 1, Length[irreps]}];
-     inprod[lp_, mm_, p_] := lp.qfm.mm + k p/tw2abbcor;
-     
-     (* Generate the states for all the weights in all the irreps at this level *)
-     
-     Clear[weights, wdim];
-     
-     Do[
+        ]
+       ]
+      ]
+     ]
+  ];
+
+
+
+clearinnerproduct[] :=
+ With[{},
+  Clear[innerproduct];
+  innerproduct[hw1_, lowops1_, hw2_, lowops2_] := 
+   innerproduct[hw1, lowops1, hw2, lowops2] = 
+    If[hw1 != hw2 || Sort[lowops1] != Sort[lowops2], 0,
+     Chop[
+      generalinnerproduct[hw1, Flatten[{Table[{op1, 1}, {op1, Reverse[lowops1]}], Table[{op2, -1}, {op2, lowops2}]}, 1]]
+      , 10^(-(Max[10, precision - 20]))]]
+  ];
+
+initializeinnerproduct[] :=
+  With[{},
+   clearinnerproduct[];
+   cleargeneralinnerproduct[];
+   ];
+
+
+(* ::Subsection::Closed:: *)
+(*Routine to initialize the weight spaces*)
+
+
+initializeweightspaces[irreps_] := Module[{n, airreps, inprod, fact, w, l, mm, pos, dims, dim, temp, temp1, temp2, p1, p2, p3, p4},
+	airreps =
+	  Table[Prepend[irreps[[i]], level - Plus @@ irreps[[i]]], {i, 1, Length[irreps]}];
+	inprod[lp_, mm_, p_] := lp.qfm.mm + k p/tw2abbcor;
+   
+    Do[
       l = hw[[2 ;; -1]];
       fact[lp_, gr_] := 
        2/((l + rho).qfm.(l + rho) - (lp + rho).qfm.(lp + rho) + 2 gr (k + g)/tw2abbcor);
@@ -674,16 +1349,14 @@ initializelevel[lev_] :=
                     w[i][[j]] - p1 1/2  roots[[a]], n]); p1++, 
                     Throw[temp1]]]]; n += 2, Throw[temp2]]]], 0], {a, 
                  1, (na - 1)/2}], 0]), {j, 1}]; 
-         If[useweyl, 
-          Do[If[Length[
-              dims[i][[
-               Position[w[i], wms[[pos]].w[i][[j]]][[1, 1]]]]] == 0, 
-            dims[i] = 
-             Insert[dims[i], 
-              dims[i][[j, 
-               1]], {Position[w[i], wms[[pos]].w[i][[j]]][[1, 1]], 
-               1}]], {pos, 2, awms}]]], {j, 1, 
-         Dimensions[w[i]][[1]]}], {i, 0, c}];
+               
+               ]
+               
+               , {j, 1, Dimensions[w[i]][[1]]}]
+         
+         , {i, 0, c}];
+         
+         
       Do[dim[l, w[0][[i]]] = dims[0][[i, 1]], {i, 1, Length[dims[0]]}];
       
       
@@ -703,318 +1376,8 @@ initializelevel[lev_] :=
       , {ir, irreps}, {w, weights[ir]}, {alpha, 1, r}];
      
      Clear[w, l];
-     
-     typeranklevelinitok=True;
-     If[levelinfo,
-     Print["The level has been set to ",level];
-     Print["The possible roots of unity are ", 
-      Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
-      ", with rootfactor an element of the set: ", rootfactors];
-      ];
-     ,
-     If[levelinfo,
-     Print["The level has to be a positive integer!"];
-     Print["Run initializelevel[level] again to set the level."];
-     ];
-     ,
-     If[levelinfo,
-     Print["The level has to be a positive integer!"];
-     Print["Run initializelevel[level] again to set the level."];
-     ];
-     ];
-     ,
-    Print["The type of algebra and rank are not correctly initialized, please do so first!"];
-     ];
-   ];   
-   
-initializerootofunity[rootfac_]:= setrootofunity[rootfac];   
-   
-setrootofunity[rootfac_] := Piecewise[{
-    {
-     If[MemberQ[rootfactors, rootfac],
-       rootfactor = rootfac;
-       q = N[Exp[2 Pi I rootfactor rootofunity/tmax], precision];
-       If[rootfacinfo,
-       Print["The rootfactor has been set to ",rootfactor];
-       ];
-       Print["The type of algebra, rank, level and rootfactor are initialized, and set to ",{type,rank,level,rootfactor}];
-       Print["You can proceed to calculate the F-symbols :-)"];
-       typeranklevelrootinitok = True;
-       fsymbolscalculated=False;
-       rsymbolscalculated=False;
-       modulardatacalculated=False;
-       recheck=False;
-       Clear[statespossible, statesneeded,
-       tpstatesraising, basisraising, basislowering, stateraising,
-       statelowering, tpstatevec, tpbasis, basis, basison, gramm, tpstates];
-       Clear[fusion, nv, nmat, dualirreps, dualirrep, flist, fmatlist, pentlist, rlist, rmatlist,
-       nvlist, maxmultiplicity, multiplicity, numoffusmultiplicities];
-       Clear[qcg, fsym, fmat, fmatdim, fmatdimtab, rsym, rsyminv, rmat, 
-  rmatinv, sign, phase, fsymold, rsymold, fmatold, rmatold, umat, 
-  umatinv, numofirreps, numposroots, posroots, qdimvec, qd, qdtot2, 
-  qdtot, qdimspositive, fpdimvec, irrepsdual, dual, selfdualvec, 
-  selfdual, qdim1overfvec, pivotlist,  pivot, thetalist, theta, 
-  hlist, hvalue, frobschurlist, frobschur, smat, cmat, tmat, modular, 
-  pplus, pminus, modular2, centralcharge, modularrelationsok, 
-  fsymbolsallrealorimaginary, fsymbolarguements];
-  Clear[weightspaceorthogonal, weightspacedeviation, orthonormalityok,
-  qCGdeviation, pentagondeviation, pentholds, pentagoncounter,
-  hexrundecidable, hexagonRdeviation, hexrinvundecidable, hexagonRinversedeviation,
-  hexagondeviation, hexholds, selfdualvec, simplecurrentvec];
-  Clear[Global`irreps, Global`flist, Global`fmatlist, Global`rlist, 
-  Global`rmatlist, Global`maxmultiplicity,  Global`multiplicity, 
-  Global`numberoffusionmultiplicities, Global`FPdimlist, 
-  Global`qdimlist, Global`pivotlist, Global`thetalist, Global`hlist, 
-  Global`FSlist, Global`smat, Global`tmat, Global`cmat, 
-  Global`centralcharge, Global`modular, Global`unitary, Global`selfduallist, Global`simplecurrentlist];
-       ,
-       typeranklevelrootinitok = False;
-       Print["The possible roots of unity are ", Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
-        ", with rootfactor an element from the set: ", rootfactors];
-       Print["Run setrootofunity[rootfactor] again to select a valid rootfactor."];
-       ,
-       typeranklevelrootinitok = False;
-       Print["The possible roots of unity are ", Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
-        ", with rootfactor an element from the set: ", rootfactors];
-       Print["Run setrootofunity[rootfactor] again to select a valid rootfactor."];
-       ];
-     , typeranklevelinitok},
-    {Print["The type of algebra and rank are not correctly initialized, please do so first!"];
-     , Not[typerankinitok]},
-    {Print["The level is not correctly initialized, please do so first!"];
-     , typerankinitok && Not[typeranklevelinitok]}
-    }];
-    
-    
-possiblerootfactors[atype_, rank_, level_] :=
-  Module[{tmax, g, rfpossible},
-   If[arangeok[atype, 1, rank],
-    If[IntegerQ[level] && level > 0,
-     tmax = 
-      Piecewise[{{1, 
-         atype == "a" || atype == "d" || atype == "e"}, {2, 
-         atype == "b" || atype == "c" || atype == "f"}, {3, 
-         atype == "g"}}];
-     g = Piecewise[{{rank + 1, atype == "a"}, {2*rank - 1, 
-         atype == "b"}, {rank + 1, atype == "c"}, {2*rank - 2, 
-         atype == "d"}, {12, atype == "e" && rank == 6}, {18, 
-         atype == "e" && rank == 7}, {30, 
-         atype == "e" && rank == 8}, {9, atype == "f"}, {4, 
-         atype == "g"}}];
-     rfpossible = 
-      Cases[Table[i, {i, 1, tmax*(g + level)}], 
-       x_ /; GCD[x, tmax*(g + level)] == 1];
-     rfpossible
-     , Print["The level is not a positve integer"];
-     ]
-    , Print["The type of algebra and rank are not compatible!"];
-    ]
-   ];    
-   
-   
-initialize[atype_, rr_, level_] :=
-    Module[{typerangeok, levelok},
-   
-   If[Not[arangeok[atype, 1, rr]],
-    typerangeok = False;
-    Print["The type of algebra and the rank are not compatible!"];,
-    typerangeok = True;,
-    typerangeok = False;
-    Print["The type of algebra and the rank are not compatible!"];
-    ];
-   
-   If[IntegerQ[level] && level > 0,
-    levelok = True,
-    Print["The level is not a positive integer!"];
-    levelok = False;,
-    Print["The level is not a positive integer!"];
-    levelok = False;
-    ];
-   
-   If[typerangeok && levelok,
-    typerankinfo = False;
-    levelinfo = False;
-    initialize[atype, rr];
-    initializelevel[level];
-    Print["The type of algebra, rank, and level are initialized, and set to ",{atype,rr,level}];
-    Print["The possible roots of unity are ", 
-      Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
-      ", with rootfactor an element of the set: ", rootfactors];
-    typerankinfo = True;
-    levelinfo = True;
-    ,
-    Print["No initialization was done!"];
-    ];
-   
-   ];   
-   
-initialize[atype_, rr_, level_, rootfac_] :=
-  Module[{typerangeok, levelok, rootfacok, posrootfacs},
-      If[Not[arangeok[atype, 1, rr]],
-        typerangeok = False;
-        Print["The type of algebra and the rank are not compatible!"];,
-        typerangeok = True;,
-        typerangeok = False;
-        Print["The type of algebra and the rank are not compatible!"];
-        ];
-      If[IntegerQ[level] && level > 0,
-        levelok = True,
-        Print["The level is not a positive integer!"];
-        levelok = False;,
-        Print["The level is not a positive integer!"];
-        levelok = False;
-        ];
-    If[typerangeok && levelok,
-    posrootfacs = possiblerootfactors[atype, rr, level];
-    If[MemberQ[posrootfacs, rootfac],
-     rootfacok = True;,
-     Print["The rootfactor should be a member of the set ", 
-      posrootfacs];
-     rootfacok = False;,
-     Print["The rootfactor should be a member of the set ", 
-      posrootfacs];
-     rootfacok = False;
-     ];
-    ]; 
-    If[typerangeok && levelok && rootfacok,
-        typerankinfo = False;
-        levelinfo = False;
-        rootfacinfo = False;
-        initialize[atype, rr];
-        initializelevel[level];
-        setrootofunity[rootfac];
-        typerankinfo = True;
-        levelinfo = True;
-        rootfacinfo = True;
-        ,
-        Print["No initialization was done!"];
-        ];
-      ];   
 
-
-setprecision[prec_] := With[{},
-   If[IntegerQ[prec] && prec > 100,
-     precision = prec;
-     Print["The precision has been set to ", precision];
-     ,
-     precision = 100;
-     Print["The precision should be an integer \[GreaterEqual] 100"];
-     Print["The precision has been set to ", precision];
-     ,
-     precision = 100;
-     Print["The precision should be an integer \[GreaterEqual] 100"];
-     Print["The precision has been set to ", precision];
-     ];
-   ];         
-   
-donotcheckpentagon[] := With[{},
-   pentagontobechecked = False;
-   Print["You opted to hop over the step of checking the pentagon \
-equations, so you proceed at your own risk. \n\
-The (potentially very long) list of pentagon equations will not \
-be generated, and the pentagon equations will not be checked. \n\
-It is recommended that the R-symbols are also generated, so that \
-the hexagon equations are checked. \
-If they hold, it is likely the pentagon equations are also \
-satisfied."];
-   ];   
-   
-docheckpentagon[] := With[{},
-   pentagontobechecked = True;
-   Print["The pentagon equations will be checked."];
-   ];   
-
-
-(* ::Subsection::Closed:: *)
-(*Routines for the inner product*)
-
-
-cleargeneralinnerproduct[] :=
- With[{},
-  Clear[generalinnerproduct];
-  generalinnerproduct[hw_, operators_] := 
-   generalinnerproduct[hw, operators] =
-    Module[{leftmostlowerpos},
-     If[
-      
-      (* Check if raising and lowering operators are consistent and only give states in the representation *)
-      
-      Sort[Cases[operators, x_ /; x[[2]] == 1][[All, 1]]] != 
-        Sort[Cases[operators, x_ /; x[[2]] == -1][[All, 1]]] || Not[
-        Module[{test, len},
-         len = Length[operators];
-         If[len > 0,
-          test[len + 1] = hw;
-          
-          Do[test[pos] = 
-            test[pos + 1] + (operators[[pos, 2]]) cartan[[operators[[pos, 1]]]]
-            , {pos, len, 1, -1}];
-          
-          And @@ Table[
-            MemberQ[weights[hw], test[pos]], {pos, 1, len}], True
-          ]
-         ]
-        ],
-      0,
-      If[
-       (* End of the recursion *)
-       operators == {},
-       1,
-       If[
-        (* (conjugate) raising operator acts on the highest weight *)
-        operators[[1, 2]] == -1,
-        0,
-        (* Actual recursion step *)
-        leftmostlowerpos = 
-         Position[operators, x_ /; x[[2]] == -1, {1}, 1, 
-           Heads -> False][[1, 1]];
-        If[
-         (* Check if lefmost lowering operator commutes with raising operator which is one position to the left *)
-         operators[[leftmostlowerpos, 1]] != 
-          operators[[leftmostlowerpos - 1, 1]],
-         (* commutes, only one term contributes *)
-         generalinnerproduct[hw, 
-          ReplacePart[
-           operators, {leftmostlowerpos -> 
-             operators[[leftmostlowerpos - 1]], 
-            leftmostlowerpos - 1 -> operators[[leftmostlowerpos]]}]]
-            ,
-         (* does not commute, two terms contribute *)
-         generalinnerproduct[hw, 
-           ReplacePart[
-            operators, {leftmostlowerpos -> 
-              operators[[leftmostlowerpos - 1]], 
-             leftmostlowerpos - 1 -> operators[[leftmostlowerpos]]}]] +
-          nq[(hw - Sum[cartan[[operators[[i, 1]]]], {i, 1, leftmostlowerpos - 2}])[[
-             operators[[leftmostlowerpos, 1]]]], 
-            tvec[[operators[[leftmostlowerpos, 1]]]]]*
-           generalinnerproduct[hw, 
-            Delete[operators, {{leftmostlowerpos}, {leftmostlowerpos - 1}}]]
-        ]
-        ]
-       ]
-      ]
-     ]
-  ];
-
-
-
-clearinnerproduct[] :=
- With[{},
-  Clear[innerproduct];
-  innerproduct[hw1_, lowops1_, hw2_, lowops2_] := 
-   innerproduct[hw1, lowops1, hw2, lowops2] = 
-    If[hw1 != hw2 || Sort[lowops1] != Sort[lowops2], 0,
-     Chop[
-      generalinnerproduct[hw1, Flatten[{Table[{op1, 1}, {op1, Reverse[lowops1]}], Table[{op2, -1}, {op2, lowops2}]}, 1]]
-      , 10^(-(Max[10, precision - 20]))]]
-  ];
-
-initializeinnerproduct[] :=
-  With[{},
-   clearinnerproduct[];
-   cleargeneralinnerproduct[];
-   ];
+];
 
 
 (* ::Subsection::Closed:: *)
@@ -1145,7 +1508,6 @@ generatestatesneeded[] :=
 
 
 constructgramm[] := With[{},
-   Clear[gramm];
    Do[gramm[ir, w] = Table[
        Chop[innerproduct[ir, w1, ir, w2], 
         10^(-(Max[10, precision - 20]))]
@@ -1155,8 +1517,6 @@ constructgramm[] := With[{},
    ];
    
 constructbasis[] := Module[{norm},
- 
-     Clear[basis, basison];
    
    Do[
     basis[ir, w, i] =
@@ -1180,46 +1540,6 @@ constructbasis[] := Module[{norm},
    
    ];   
 
-(* 
-checkweightspaceorthogonalityorg[] := Module[{maxdev, tempdev},
-   weightspaceorthogonal = True;
-   maxdev = 0;
-   Do[
-    If[
-      Chop[basison[ir, w].gramm[ir, w].Transpose[basison[ir, w]] - IdentityMatrix[wdim[ir, w]], 10^(-(Max[10, precision - 20]))] == 
-       zeromatrix[wdim[ir, w]],
-      Null
-      ,
-      (*Print[{ir, w}];*)
-      weightspaceorthogonal = False;
-      tempdev = 
-       Max[(Abs /@ 
-          Flatten[(basison[ir, w].gramm[ir, w].Transpose[
-               basison[ir, w]] - IdentityMatrix[wdim[ir, w]])])];
-               
-      (*If[tempdev > maxdev, maxdev = tempdev];*)
-      (*
-      Max deals beter with high precision numbers than > (Greater).
-      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
-      *)
-      maxdev=Max[maxdev,tempdev];        
-      
-        
-      ];
-    , {ir, irreps}, {w, weights[ir]}];
-    
-
-      If[weightspaceorthogonal,
-    Print[
-     "The constructed bases for the weightspaces are orthonormal :-)"];
-     ,
-    Print[
-     "The constructed bases for the weightspaces are not orthonormal :-(, if the maximum deviation ", maxdev, 
-     " is small, you can try to proceed at your own risk."]
-    ];
-   ];
-
-*)   
 checkweightspaceorthogonality[] := Module[{maxdev, tempdev},
    weightspaceorthogonal = True;
    maxdev = 0;
@@ -1460,9 +1780,6 @@ initializetpstates[] := With[{},
    
    
 intializefusionrules[] := With[{},
-  Clear[fusion];
-  Clear[nv];
-  Clear[nmat];
   Do[fusion[hw1, hw2] = {};, {hw1, irreps}, {hw2, irreps}];
   ];
   
@@ -1531,6 +1848,31 @@ checkfusionrules[] := Module[{dualpos, tempok, irreppos},
    Print["The calculated fusion rules are not consistent :-( something went wrong..."];
    ];
   
+  numofirreps = Length[irreps];
+  
+  irrepsdual = 
+   Table[
+   irreps[[Position[nmat[irreps[[i]]], x_ /; x[[1]] == 1][[1, 1]]]]
+      , {i, 1, Length[irreps]}] // Quiet;
+       
+  Do[
+   dual[irreps[[i]]] = irrepsdual[[i]]
+   , {i, 1, Length[irreps]}];
+  
+  selfdualvec = 
+   Table[irreps[[i]] == irrepsdual[[i]], {i, 1, numofirreps}];
+   
+  Do[
+   selfdual[irreps[[i]]] = selfdualvec[[i]]
+   , {i, 1, numofirreps}];
+   
+  simplecurrentvec =
+  Table[
+   Table[Sum[nv[ir1, ir2, ir3], {ir3, fusion[ir1, ir2]}], {ir2, irreps}] == Table[1, {i, 1, numofirreps}]
+   , {ir1, irreps}];
+   
+  numofsimplecurrents = Count[simplecurrentvec, True];  
+  
   ];
   
 generatefusionrules[] :=
@@ -1554,19 +1896,6 @@ generatefusionrules[] :=
     , 9];
    
    fmatlist = flist[[All, 1 ;; 4]] // Union;
-   
-(*   
-   If[pentagontobechecked,
-   pentlist = 
-    Flatten[Table[{a, b, c, d, e, f, g, fp, gp, {v1, v2, v3, v4, v5, v6}}
-       , {a, irreps}, {b, irreps}, {c, irreps}, {d, irreps}, {f, fusion[a, b]}, {g, fusion[f, c]}, {e, fusion[g, d]}
-       , {gp, Cases[fusion[c, d], x_ /; MemberQ[fusion[f, x], e]]}
-       , {fp, Cases[fusion[b, gp], x_ /; MemberQ[fusion[a, x], e]]}
-       , {v1, nv[a, b, f]}, {v2, nv[f, c, g]}, {v3, nv[g, d, e]}, {v4, nv[c, d, gp]}, {v5, nv[b, gp, fp]}, {v6, nv[a, fp, e]}]
-       , 14];
-    ];
-*)       
-       
    
    rlist = Flatten[
      Table[{a, b, c, {v1, v2}}
@@ -1666,7 +1995,6 @@ sethwstates[hw1_, hw2_, hw3_] := Module[
    ];
    
 generatehwstates[] := Module[{},
-  Clear[tpstatevec];
   Do[sethwstates[hw1, hw2, hw3], {hw1, irreps}, {hw2, irreps}, {hw3, fusion[hw1, hw2]}];
   ];   
 
@@ -1740,45 +2068,6 @@ generatetpbasis[] := With[{},
    
    ]; 
 
-(*      
-checkorthonormalityorg[] := Module[{maxdev, tempdev},
-   orthonormalityok = True;
-   maxdev = 0;
-   
-   Do[
-    If[(Chop[ Table[(tpbasis[hw1, hw2, hw3, v, {w3, i}].tpbasis[hw1, hw2, 
-                hw3, v, {w3, j}]), {i, 1, wdim[hw3, w3]}, {j, 1, 
-              wdim[hw3, w3]}] - IdentityMatrix[wdim[hw3, w3]] , 10^(-(Max[10, precision - 20]))] // Flatten // Union) == {0},
-      Null,
-      
-      orthonormalityok = False;
-          
-      tempdev = 
-       Max[Abs /@ (Flatten[
-           Table[(tpbasis[hw1, hw2, hw3, v, {w3, i}].tpbasis[hw1, hw2, hw3, v, {w3, j}])
-           , {i, 1, wdim[hw3, w3]}, {j, 1, wdim[hw3, w3]}] - IdentityMatrix[wdim[hw3, w3]]])];
-           
-      (*If[tempdev > maxdev, maxdev = tempdev];*)
-      (*
-      Max deals beter with high precision numbers than > (Greater).
-      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
-      *)
-      maxdev=Max[maxdev,tempdev];
-      
-      
-      ];
-      
-    , {hw1, irreps}, {hw2, irreps}, {hw3, fusion[hw1, hw2]}
-    , {w3, weights[hw3]}, {v, 1, nv[hw1, hw2, hw3]}];
-   
-   If[orthonormalityok,
-    Print["The calculated q-CG coefficients satisfy the orthonormality conditions :-)"],
-    Print["The constructed q-CG coefficients do not satisfy the orthonormalilty conditions :-( If the maximum deviation ", maxdev, 
-      " is small, you can try to proceed at your own risk; typically, the numerical error in the F-sybmols is smaller. Increasing the precision might also help."];
-    ];
-   ]; 
-   
-*)   
    
 checkorthonormality[] := Module[{maxdev, tempdev},
    orthonormalityok = True;
@@ -1864,9 +2153,7 @@ generateqcgcoefficients[] := With[{},
 
 
 constructfsymbols[] := With[{},
-   
-   Clear[fsym, fmat, fmatdim];
-   
+      
    Do[fsym[Sequence @@ flist[[i]]] = Chop[Sum[
         qcg[flist[[i, 1]], {m1, d1}, flist[[i, 2]], {m2, d2}, flist[[i, 5]], {m12, d12}, flist[[i, 7, 1]]] *
           qcg[flist[[i, 5]], {m12, d12}, flist[[i, 3]], {m3, d3}, flist[[i, 4]], {flist[[i, 4]], 1}, flist[[i, 7, 2]]] *
@@ -1911,144 +2198,6 @@ constructfsymbols[] := With[{},
  ];
    
 
-(*checkpentagonorg[] := Module[{maxdev, tempdev},
-   
-   pentholds = True;
-   pentundecidable = False;
-   maxdev = 0;
-   
-   
-   
-   If[pentagontobechecked,
-   If[Not[recheck],Print["Checking the ", Length[pentlist]," pentagon equations..."];];
-   If[recheck,Print["Re-checking the ", Length[pentlist]," pentagon equations..."];];
-   Do[If[Chop[
-        Sum[(fsym[i[[6]], i[[3]], i[[4]], i[[5]], i[[7]], i[[9]], {i[[10, 2]], i[[10, 3]], i[[10, 4]], v1}] *
-        fsym[i[[1]], i[[2]], i[[9]], i[[5]], i[[6]], i[[8]], {i[[10, 1]], v1, i[[10, 5]], i[[10, 6]]}])
-        , {v1, nv[i[[6]], i[[9]], i[[5]]]}] - 
-         Sum[(fsym[i[[1]], i[[2]], i[[3]], i[[7]], i[[6]], h, {i[[10, 1]], i[[10, 2]], v2, v3}]*
-         fsym[i[[1]], h, i[[4]], i[[5]], i[[7]], i[[8]], {v3, i[[10, 3]], v4, i[[10, 6]]}]*
-             fsym[i[[2]], i[[3]], i[[4]], i[[8]], h, i[[9]], {v2, v4, i[[10, 4]], i[[10, 5]]}])
-             , {h, Quiet[Cases[fusion[i[[2]], i[[3]]], x_ /; MemberQ[fusion[i[[1]], x], i[[7]]]
-                  && MemberQ[fusion[x, i[[4]]], i[[8]]]]]}
-             , {v2, nv[i[[2]], i[[3]], h]}, {v3, nv[i[[1]], h, i[[7]]]}, {v4, nv[h, i[[4]], i[[8]]]}], 10^(-(Max[10, precision - 20]))] == 0,
-      Null,
-      
-      pentholds = False;
-      tempdev = 
-       Abs[
-        Sum[(fsym[i[[6]], i[[3]], i[[4]], i[[5]], i[[7]], i[[9]], {i[[10, 2]], i[[10, 3]], i[[10, 4]], v1}]*
-             fsym[i[[1]], i[[2]], i[[9]], i[[5]], i[[6]], i[[8]], {i[[10, 1]], v1, i[[10, 5]], i[[10, 6]]}])
-             , {v1, nv[i[[6]], i[[9]], i[[5]]]}] - 
-         Sum[(fsym[i[[1]], i[[2]], i[[3]], i[[7]], i[[6]], 
-             h, {i[[10, 1]], i[[10, 2]], v2, v3}] *
-             fsym[i[[1]], h, i[[4]], i[[5]], i[[7]], i[[8]], {v3, i[[10, 3]], v4, i[[10, 6]]}]*
-              fsym[i[[2]], i[[3]], i[[4]], i[[8]], h, i[[9]], {v2, v4, i[[10, 4]], i[[10, 5]]}])
-              , {h, Quiet[Cases[fusion[i[[2]], i[[3]]], x_ /; MemberQ[fusion[i[[1]], x], i[[7]]] && 
-               MemberQ[fusion[x, i[[4]]], i[[8]]]]]}
-               , {v2, nv[i[[2]], i[[3]], h]}, {v3, nv[i[[1]], h, i[[7]]]}, {v4, nv[h, i[[4]], i[[8]]]}]];
-      (*If[tempdev > maxdev, maxdev = tempdev];*)
-      (*
-      Max deals beter with high precision numbers than > (Greater).
-      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
-      *)
-      maxdev=Max[maxdev,tempdev];
-      ,
-      If[Not[pentundecidable], 
-        Print["At least one of the pentagon equations is not decidable! Something went wrong :-("];
-        pentundecidable = True;];
-      ];
-    
-    
-    , {i, pentlist}];
-    ,
-     If[Not[recheck],
-     Print["The pentagon equations were not checked, because you opted not \
-to do so. Proceed with care!"];
-     ];
-     If[recheck,
-     Print["The pentagon equations were not (re)-checked, because you opted not \
-to do so. Proceed with care!"];
-    ];
-
-  ];
-   
-   If[pentagontobechecked,
-  If[pentholds && Not[pentundecidable],
-    Print["The pentagon equations are satisfied :-)"];,
-    Print["The pentagon equations are not satisfied :-(, the maximum deviation is: ", maxdev, " something went wrong..."];];
-  ];
-
-   If[Not[recheck],
-   If[multiplicity,
-    If[numoffusmultiplicities == 1,
-     Print["There is one fusion multiplicity."];, 
-     Print["There are ", numoffusmultiplicities," fusion multiplicities."]];
-    Print["The largest fusion multiplicity is: ", maxmultiplicity];
-    ,
-    Print["There are no fusion multiplicities."];
-    ];
-    ];
-    
-   
-   fsymsreal = 
-    And @@ (Element[#, Reals] & /@ 
-       Table[Chop[ fsym[Sequence @@ i] , 10^(-20) ], {i, flist}]);
-   
-   If[
-    And @@ Table[
-       (Chop[ (fmat[Sequence @@ fm].Conjugate[Transpose[fmat[Sequence @@ fm]]] - 
-              IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20) ] // Flatten // Union) == {0}
-       , {fm, fmatlist}] && And @@ Table[(Chop[ (Conjugate[Transpose[fmat[Sequence @@ fm]]].fmat[Sequence @@ fm] - 
-              IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20) ] // Flatten // Union) == {0}
-       , {fm, fmatlist}],
-    fmatunitary = True;
-    Print["The F-matrices are unitary."];,
-    fmatunitary = False;
-    Print[
-     "The F-matrices are not all unitary."];
-    ];
-   
-   
-   If[
-    And @@ Table[
-       ( Chop[ (fmat[Sequence @@ fm].Transpose[fmat[Sequence @@ fm]] - IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20) ] // Flatten // Union) == {0}
-       , {fm, fmatlist}] &&
-    And @@ Table[( Chop[ (Transpose[fmat[Sequence @@ fm]].fmat[Sequence @@ fm] - IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20)] // Flatten // Union) == {0}
-       , {fm, fmatlist}],
-    fsymsFTFone = True;
-    ,
-    fsymsFTFone = False;
-    ];
-   
-   If[fsymsreal && fsymsFTFone,
-    Print["The F-matrices are orthogonal."]
-    ];
-   
-   If[fsymsreal && Not[fsymsFTFone],
-    Print["The F-matrices are real."];
-    Print["The F-matrices do not all satisfy F.(F^T) = (F^T).F = 1. One should check if this is reasonalbe or not!"];
-    ];
-   
-   If[Not[fsymsreal] && fsymsFTFone,
-    Print["The F-matrices are not all real."];
-    Print["The F-matrices satisfy F.(F^T) = (F^T).F = 1"];
-    ];
-   
-   If[Not[fsymsreal] && Not[fsymsFTFone],
-    Print["The F-matrices are not all real."];
-    Print["The F-matrices do not all satisfy F.(F^T) = (F^T).F = 1. One should check if this is reasonalbe or not!"];
-    ];
-    
-    If[(pentagontobechecked && pentholds && Not[pentundecidable]) || Not[pentagontobechecked],
-     fsymbolscalculated = True;
-     If[Not[recheck],
-      Print["You can proceed to calculate the R-symbols :-)"];
-     ];
-    ];
-   
-   ];      
-*)
      
 checkpentagon[] := Module[{maxdev, tempdev},
    
@@ -2060,40 +2209,6 @@ checkpentagon[] := Module[{maxdev, tempdev},
    If[Not[recheck],Print["Checking the ", numofpentagonequations, " pentagon equations..."];];
    If[recheck,Print["Re-checking the ", numofpentagonequations, " pentagon equations..."];];
    
-(*   
-   Do[
-
-       tempdev = 
-       Abs[
-        Sum[(fsym[i[[6]], i[[3]], i[[4]], i[[5]], i[[7]], i[[9]], {i[[10, 2]], i[[10, 3]], i[[10, 4]], v1}]*
-             fsym[i[[1]], i[[2]], i[[9]], i[[5]], i[[6]], i[[8]], {i[[10, 1]], v1, i[[10, 5]], i[[10, 6]]}])
-             , {v1, nv[i[[6]], i[[9]], i[[5]]]}] - 
-         Sum[(fsym[i[[1]], i[[2]], i[[3]], i[[7]], i[[6]], 
-             h, {i[[10, 1]], i[[10, 2]], v2, v3}] *
-             fsym[i[[1]], h, i[[4]], i[[5]], i[[7]], i[[8]], {v3, i[[10, 3]], v4, i[[10, 6]]}]*
-              fsym[i[[2]], i[[3]], i[[4]], i[[8]], h, i[[9]], {v2, v4, i[[10, 4]], i[[10, 5]]}])
-              , {h, Quiet[Cases[fusion[i[[2]], i[[3]]], x_ /; MemberQ[fusion[i[[1]], x], i[[7]]] && 
-               MemberQ[fusion[x, i[[4]]], i[[8]]]]]}
-               , {v2, nv[i[[2]], i[[3]], h]}, {v3, nv[i[[1]], h, i[[7]]]}, {v4, nv[h, i[[4]], i[[8]]]}]];
-               
-               
-               
-       (*If[tempdev > maxdev, maxdev = tempdev];*)
-      (*
-      Max deals beter with high precision numbers than > (Greater).
-      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
-      *)
-      
-      If[NumberQ[tempdev],
-      maxdev=Max[maxdev,tempdev];,
-      If[Not[pentundecidable], 
-        Print["At least one of the pentagon equations is not decidable! Something went wrong :-("];
-        pentundecidable = True;];
-      ];         
-
-      , {i, pentlist}];
-      
-*)   
 
        Do[
        
@@ -2235,7 +2350,12 @@ to do so. Proceed with care!"];
   If[Not[fsymsreal] && fsymbolsallrealorimaginary,
    Print["The F-symbols are all real or purely imaginary."];
     ];  
-    
+
+  If[fsymsreal,
+   Print["The F-symbols are all real or purely imaginary (all real, in fact)."];
+    ];  
+
+        
     If[(pentagontobechecked && pentholds && Not[pentundecidable]) || Not[pentagontobechecked],
      fsymbolscalculated = True;
      If[Not[recheck],
@@ -2250,6 +2370,10 @@ calculatefsymbols[] :=
  With[{},
   
   If[typeranklevelrootinitok,
+  
+  (* Generate the states for all the weights in all the irreps at this level, uniform or non-uniform case *)
+  Print["Initializing the weight spaces..."];
+  initializeweightspaces[irreps];
   
   Print["Constructing the bases for the weightspaces..."];
   initializeweightspacebasis[];
@@ -2291,7 +2415,6 @@ constructrsymbols[] := Module[
     phaseeqleft, goodphasevars, goodphasevarsunion, goodphasefirstpos,
      solphase, firstlinpos, lineqleft},
    
-   Clear[rsym, rmat, sign, phase];
    
    Do[
     hw1 = rlist[[i, 1]];
@@ -2578,166 +2701,6 @@ this issue should be investigated further!"]];
    ];(* End of constructrsymbols[] *)
 
 
-(*
-checkhexagonorg[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
-   
-   hexholds = True;
-   hexrundecidable = False;
-   hexrinvundecidable = False;
-   maxdev = 0;
-   
-   Do[
-    
-    If[
-      Chop[
-        Sum[rsym[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}]*
-           fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
-           rsym[i[[3]], i[[2]], i[[6]]
-           , {v9, i[[7, 3]]}], {v8, nv[i[[1]], i[[2]], i[[5]]]}, {v9, nv[i[[3]], i[[2]], i[[6]]]}]
-           -
-         Sum[fsym[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
-           rsym[j, i[[2]], i[[4]], {v6, v7}]*
-           fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
-          , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
-           MemberQ[fusion[i[[2]], x], i[[4]]]]}
-          , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]
-        , 10^(-(Max[10, precision - 20]))] == 0, Null,
-      
-      hexholds = False;
-      tempdev = Abs[
-        Sum[rsym[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}]*
-           fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
-           rsym[i[[3]], i[[2]], i[[6]]
-           , {v9, i[[7, 3]]}], {v8, nv[i[[1]], i[[2]], i[[5]]]}, {v9, nv[i[[3]], i[[2]], i[[6]]]}]
-           -
-         Sum[fsym[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
-           rsym[j, i[[2]], i[[4]], {v6, v7}]*
-           fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
-          , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
-            MemberQ[fusion[i[[2]], x], i[[4]]]]}
-          , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]
-        
-        ];
-      (*If[tempdev > maxdev, maxdev = tempdev];*)
-      (*
-      Max deals beter with high precision numbers than > (Greater).
-      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
-      *)
-      maxdev=Max[maxdev,tempdev];
-      ,
-      If[Not[hexrundecidable], 
-        Print["At least one of the hexagon equations for R is not decidable! Something went wrong :-("];
-        hexrundecidable = True;];
-      ];
-    
-    
-    , {i, flist}];
-        
-    
-    maxdevhex = maxdev;
-    maxdev = 0;
-   
-   (* Checking the hexagon for the inverses of the R-matrices, 
-   NOT assuming the R-matrices are unitary *)
-   Do[
-    
-    If[
-      Chop[
-        Sum[rsyminv[i[[2]], i[[1]], i[[5]], {i[[7, 1]], v8}]*
-           fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
-           rsyminv[i[[2]], i[[3]], i[[6]], {v9, i[[7, 3]]}]
-           , {v8, nv[i[[1]], i[[2]], i[[5]]]}, {v9, nv[i[[3]], i[[2]], i[[6]]]}]
-           -
-         Sum[fsym[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
-           rsyminv[i[[2]], j , i[[4]], {v6, v7}]*
-           fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
-          , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
-            MemberQ[fusion[i[[2]], x], i[[4]]]]}
-          , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]
-        , 10^(-(Max[10, precision - 20]))] == 0, Null,
-      
-      hexholds = False;
-      tempdev = Abs[
-        Sum[rsyminv[i[[2]], i[[1]], i[[5]], {i[[7, 1]], v8}]*
-           fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
-           rsyminv[i[[2]], i[[3]], i[[6]], {v9, i[[7, 3]]}]
-           , {v8, nv[i[[1]], i[[2]], i[[5]]]}, {v9, nv[i[[3]], i[[2]], i[[6]]]}]
-           -
-         Sum[fsym[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
-           rsyminv[i[[2]], j, i[[4]], {v6, v7}]*
-           fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
-          , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
-            MemberQ[fusion[i[[2]], x], i[[4]]]]}
-            , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]
-        
-        ];
-      (*If[tempdev > maxdev, maxdev = tempdev];*)
-      (*
-      Max deals beter with high precision numbers than > (Greater).
-      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
-      *)
-      maxdev=Max[maxdev,tempdev];
-      ,
-      If[Not[hexrinvundecidable],
-      Print["At least one of the hexagon equations for R is not decidable! Something went wrong :-("];
-      hexrinvundecidable = True;];
-      
-      ];
-    
-    
-    , {i, flist}];
-   maxdevhexinv = maxdev;
-   maxdev = Max[maxdevhex,maxdevhexinv];
-
-   
-   If[hexholds && Not[hexrundecidable] && Not[hexrinvundecidable],
-    Print["The hexagon equations are satisfied :-)"];
-    rsymbolscalculated = True;,
-    Print["The hexagon equations are not satisfied :-(, the maximum deviation is: ", maxdev, " something went wrong..."];
-    ];
-   
-   If[
-    rmatunitary,
-    Print["The R-matrices are unitary."];
-    If[
-     rmatdiagonal,
-     Print["The R-matrices are diagonal."];
-     Print["Thus all the (non-zero) R-symbols are phases. The largest denominator s in R^{a,b}_c = e^(i\[Pi] r/s) one encounters is: ", rmatevalargmaxdenom];
-     ,
-     Print["The R-matrices are not all diagonal."];
-     Print["All the eigenvalues of the R-matrices are phases, because they are unitary. The largest denominator s in R^{a,b}_c = e^(i\[Pi] r/s) one encounters after diagonalization is: ", 
-       rmatevalargmaxdenom];
-     If[pentagontobechecked,
-      Print["The R-matrices can be diagonalized by running diagonalizermatrices[].\n This will change both F- and R-symbols, so by running diagonalizermatrices[], the pentagon and hexagon equations will be checked again."];,
-      Print["The R-matrices can be diagonalized by running diagonalizermatrices[].\n This will change both F- and R-symbols, so by running diagonalizermatrices[], the hexagon equations will be checked again, but not the pentagon equations, because you opted not to do so."];
-      ];
-     ];
-    ];
-   
-   If[
-    Not[rmatunitary],
-    Print[
-     "The R-matrices are not all unitary (at least in the basis used here)."];
-    If[rmatevalsarephases,
-     Print["All the eigenvalues of the R-matrices are phases. The largest denominator s in R^{a,b}_c = e^(i\[Pi] r/s) one encounters after diagonalization is: ", 
-       rmatevalargmaxdenom];
-     If[pentagontobechecked,
-      Print["The R-matrices can be diagonalized by running diagonalizermatrices[].\n This will change both F- and R-symbols, so by running diagonalizermatrices[], the pentagon and hexagon equations will be checked again."];,
-      Print["The R-matrices can be diagonalized by running diagonalizermatrices[].\n This will change both F- and R-symbols, so by running diagonalizermatrices[], the hexagon equations will be checked again, but not the pentagon equations, because you opted not to do so."];
-     ];
-     ,
-     Print["NOT all the eigenvalues of the R-matrices are phases. One should really check if this is reasonable!"]
-     ];
-    ];
-    
-    If[hexholds && Not[hexrundecidable] && Not[hexrinvundecidable] && Not[recheck],
-    Print["You can proceed to calculate the modular data :-)"];
-    ];    
-             
-   ];(* End of checkhexagonorg[] *)
-   
-*)
-   
 checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
    
    hexholds = True;
@@ -2862,7 +2825,7 @@ checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
       Print["The R-matrices can be diagonalized by running diagonalizermatrices[].\n This will change both F- and R-symbols, so by running diagonalizermatrices[], the hexagon equations will be checked again, but not the pentagon equations, because you opted not to do so."];
      ];
      ,
-     Print["NOT all the eigenvalues of the R-matrices are phases. One should really check if this is reasonable!"]
+     Print["NOT all the eigenvalues of the R-matrices are phases. One should check if one can chose a different gauge where they are!"]
      ];
     ];
     
@@ -3085,7 +3048,6 @@ This means that the R-matrices can not all be diagonalized at the same time. Som
 
 
 calculatemodulardata[] := Module[{},
-  Clear[qd, dual, selfdual, pivot, theta, hvalue, frobschur];
   
   If[Not[typeranklevelrootinitok],
   Print["The type of algebra, rank, level and/or rootfactor were not \
@@ -3108,7 +3070,6 @@ before calculating the modular data."];
   If[typeranklevelrootinitok&&fsymbolscalculated&&rsymbolscalculated,
 
   
-  numofirreps = Length[irreps];
   numposroots = Position[roots, Table[0, {i, 1, rank}], 1][[1, 1]] - 1;
   posroots = roots[[1 ;; numposroots]];
   
@@ -3130,28 +3091,6 @@ before calculating the modular data."];
    Table[
     (Cases[Chop[ (N[ nmat[ir] , precision ] // Eigenvalues) , 10^(-(Max[10, precision - 20])) ], x_ /; x \[Element] Reals] // Sort)[[-1]]
    , {ir, irreps}];
-  
-  irrepsdual = 
-   Table[
-   irreps[[Position[nmat[irreps[[i]]], x_ /; x[[1]] == 1][[1, 1]]]]
-      , {i, 1, Length[irreps]}] // Quiet;
-       
-  Do[
-   dual[irreps[[i]]] = irrepsdual[[i]]
-   , {i, 1, Length[irreps]}];
-  
-  selfdualvec = 
-   Table[irreps[[i]] == irrepsdual[[i]], {i, 1, numofirreps}];
-  Do[
-   selfdual[irreps[[i]]] = selfdualvec[[i]]
-   , {i, 1, numofirreps}];
-   
-  simplecurrentvec =
-  Table[
-   Table[Sum[nv[ir1, ir2, ir3], {ir3, fusion[ir1, ir2]}], {ir2, irreps}] == Table[1, {i, 1, numofirreps}]
-   , {ir1, irreps}];
-   
-  numofsimplecurrents = Count[simplecurrentvec, True];
   
   qdim1overfvec = 
    Table[
@@ -3282,6 +3221,16 @@ Presumably, there exists a different pivotal structure, such that all the quantu
    Print[smat // N //Chop // MatrixForm];
    ];
    
+  If[Not[modular] && qdimspositive,
+   Print["The (non-modular!) S-matrix is given by:"]; 
+   Print[smat // N //Chop // MatrixForm];
+   ];
+  If[Not[modular] && Not[qdimspositive],
+   Print["The (non-modular!) S-matrix is given by (up to an overall sign):"];
+   Print[smat // N //Chop // MatrixForm];
+   ];
+   
+   
   If[modular && modularrelationsok,
    Print["The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 = S^2 = C are satisfied :-)"]
   ];
@@ -3311,6 +3260,48 @@ Presumably, there exists a different pivotal structure, such that all the quantu
   
   ];
   
+ ];
+
+
+(* ::Subsection::Closed:: *)
+(*Cleanup*)
+
+
+clearvariables[] := Clear[
+   weights, wdim,
+   raising, lowering, irreps,
+   rootfactor,
+   generalinnerproduct, innerproduct,
+   statespossible, statesneeded,
+   tpstatesraising, basisraising, basislowering, stateraising,
+   statelowering, tpstatevec, tpbasis, basis, basison, gramm,
+   tpstates, fusion, nv, nmat, dualirreps, dualirrep, flist, fmatlist, 
+   pentlist, rlist, rmatlist, nvlist, maxmultiplicity, multiplicity,
+   numoffusmultiplicities, qcg, fsym, fmat, fmatdim, fmatdimtab, rsym,
+   rsyminv, rmat, rmatinv, sign, phase, fsymold, rsymold, fmatold,
+   rmatold, umat, umatinv, numofirreps, numposroots, posroots, qdimvec,
+   qd, qdtot2, qdtot, qdimspositive, fpdimvec, irrepsdual, dual,
+   selfdualvec, selfdual, qdim1overfvec, pivotlist,  pivot, thetalist,
+   theta, hlist, hvalue, frobschurlist, frobschur, smat, cmat, tmat,
+   modular, pplus, pminus, modular2, centralcharge, modularrelationsok,
+   fsymbolsallrealorimaginary, fsymbolarguements, weightspaceorthogonal,
+   weightspacedeviation, orthonormalityok, qCGdeviation,
+   pentagondeviation, pentholds, pentagoncounter, hexrundecidable,
+   hexagonRdeviation, hexrinvundecidable, hexagonRinversedeviation,
+   hexagondeviation, hexholds, simplecurrentvec,
+   qd, pivot, theta, hvalue, frobschur, dual, selfdual,
+   uniform, canbenonuniform, rootfactorsuniform, rootfactorsnonuniform,
+   lval, zval
+   ];
+   
+clearglobalvariables[] := Clear[
+  Global`irreps, Global`flist, Global`fmatlist, Global`rlist, 
+  Global`rmatlist, Global`maxmultiplicity,  Global`multiplicity,
+  Global`numberoffusionmultiplicities, Global`FPdimlist,
+  Global`qdimlist, Global`pivotlist, Global`thetalist, Global`hlist,
+  Global`FSlist, Global`smat, Global`tmat, Global`cmat,
+  Global`centralcharge, Global`modular, Global`unitary,
+  Global`selfduallist, Global`simplecurrentlist
  ];
 
 
