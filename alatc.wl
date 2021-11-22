@@ -166,7 +166,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-11-19\n\
+       "Last revision: 2021-11-22\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -368,31 +368,116 @@ calculating the possible pivotal structures."];
 
 $RecursionLimit=10000;
 
-Clear[arangeok,ccor,acartanmatrix,cartanmatrix,athvec,asrootnorm,amarkvec,acomarkvec,dcoxeter,coxeter];
 
-d[i_,j_]:=KroneckerDelta[i,j];
+dualcoxeter[type_, rank_] :=
+  Piecewise[
+   {
+    {rank + 1, type == "a" && rank >= 1},
+    {2 rank - 1, type == "b" && rank >= 3},
+    {rank + 1, type == "c" && rank >= 2},
+    {2 rank - 2, type == "d" && rank >= 4},
+    {12, type == "e" && rank == 6},
+    {18, type == "e" && rank == 7},
+    {30, type == "e" && rank == 8},
+    {9, type == "f" && rank == 4},
+    {4, type == "g" && rank == 2}
+    }
+  ];
 
-base[i_,j_,x_,y_]:=x d[i,j]+y  d[i,j+1]+y d[i,j-1];
+thvecshort[type_, rank_] :=
+  Piecewise[
+   {
+    {{2}, type == "a" && rank == 1},
+    {Table[If[i == 1 || i == rank, 1, 0], {i, 1, rank}], type == "a" && rank > 1},
+    {Table[If[i == 1, 1, 0], {i, 1, rank}], type == "b" && rank >= 3},
+    {Table[If[i == 2, 1, 0], {i, 1, rank}], type == "c" && rank >= 2},
+    {Table[If[i == 2, 1, 0], {i, 1, rank}], type == "d" && rank >= 4},
+    {{0, 0, 0, 0, 0, 1}, type == "e" && rank == 6},
+    {{1, 0, 0, 0, 0, 0, 0}, type == "e" && rank == 7},
+    {{1, 0, 0, 0, 0, 0, 0, 0}, type == "e" && rank == 8},
+    {{0, 0, 0, 1}, type == "f" && rank == 4},
+    {{0, 1}, type == "g" && rank == 2}
+   }
+  ];
+  
+thveclong[type_, rank_] :=
+  Piecewise[
+   {
+    {{2}, type == "a" && rank == 1},
+    {Table[If[i == 1 || i == rank, 1, 0], {i, 1, rank}], type == "a" && rank > 1},
+    {Table[If[i == 2, 1, 0], {i, 1, rank}], type == "b" && rank >= 3},
+    {Table[If[i == 1, 2, 0], {i, 1, rank}], type == "c" && rank >= 2},
+    {Table[If[i == 2, 1, 0], {i, 1, rank}], type == "d" && rank >= 4},
+    {{0, 0, 0, 0, 0, 1}, type == "e" && rank == 6},
+    {{1, 0, 0, 0, 0, 0, 0}, type == "e" && rank == 7},
+    {{1, 0, 0, 0, 0, 0, 0, 0}, type == "e" && rank == 8},
+    {{1, 0, 0, 0}, type == "f" && rank == 4},
+    {{1, 0}, type == "g" && rank == 2}
+   }
+ ];  
 
-arangeok[atype_,tw_,r_]:=If[r\[Element]Integers,If[tw==1,If[Or[atype==="a"&&r>=1,atype==="b"&&r>=3,atype==="c"&&r>=2,atype==="d"&&r>=4,atype==="e"&&MemberQ[{6,7,8},r],atype==="f"&&r==4,atype==="g"&&r==2],True,False],If[tw==3&&r==2&&atype==="g",True,If[tw==2,If[Or[atype==="a"&&r==1,atype==="b"&&r>=3,atype==="bb"&&r>=2,atype==="c"&&r>=2,atype==="f"&&r==4],True,False],False]]],False];
+cartanmatrix[type_, rank_] :=
+  Piecewise[
+   {
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 -> -1}, {rank, rank}] // Normal, type == "a"},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && j < rank -> -1, {rank - 1, rank} -> -2}, {rank, rank}] // Normal, type == "b" && rank >= 3},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank -> -1, {rank, rank - 1} -> -2}, {rank, rank}] // Normal, type == "c" && rank >= 2},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank && j < rank -> -1, {rank - 2, rank} -> -1, {rank, rank - 2} -> -1}, {rank, rank}] // Normal, type == "d" && rank >= 4},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank && j < rank -> -1, {3, 6} -> -1, {6, 3} -> -1}, {rank, rank}] // Normal, type == "e" && rank == 6},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank && j < rank -> -1, {3, 7} -> -1, {7, 3} -> -1}, {rank, rank}] // Normal, type == "e" && rank == 7},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank && j < rank -> -1, {5, 8} -> -1, {8, 5} -> -1}, {rank, rank}] // Normal, type == "e" && rank == 8},
+    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && {i, j} != {2, 3} -> -1, {2, 3} -> -2}, {rank, rank}] // Normal, type == "f" && rank == 4},
+    {{{2, -3}, {-1, 2}}, type == "g" && rank == 2}
+   }
+  ];
+  
+qfmatrix[type_, rank_] :=
+  With[
+  {ict = Transpose[Inverse[cartanmatrix[type, rank]]],
+   rlfs = rootlengthfactors[type, rank]},
+   Table[1/rlfs[[i]] ict[[i]], {i, 1, rank}]
+   ]; 
+  
 
-ccor[atype_,tw_,r_]:=ccor[atype,tw,r]=Flatten[DeleteCases[MapThread[If,{{atype==="a"&&tw==1,atype==="b"&&tw==1,atype==="c"&&tw==1,atype==="d"&&tw==1,atype==="e"&&tw==1,atype==="f"&&tw==1,atype==="g"&&tw==1,atype==="a"&&tw==2,atype==="b"&&tw==2,atype==="bb"&&tw==2,atype==="c"&&tw==2,atype==="f"&&tw==2,atype==="g"&&tw==3},{{{1,r+1,-1},{r+1,1,-1}},{{1,2,1},{2,1,1},{1,3,-1},{3,1,-1},{r,r+1,-1}},{{1,2,-1},{r+1,r,-1}},{{1,2,1},{2,1,1},{1,3,-1},{3,1,-1},{r,r+1,1},{r+1,r,1},{r-1,r+1,-1},{r+1,r-1,-1}},DeleteCases[{{r,r+1,1},{r+1,r,1},{r-2-Mod[r,2],r+1,-1},{r+1,r-2- Mod[r,2],-1},If[r==6,Sequence@@{{1,2,1},{2,1,1},{1,7,-1},{7,1,-1}}]},Null],{{3,4,-1}},{{2,3,-2}},{{2,1,-3}},{{1,2,1},{2,1,1},{1,3,-1},{3,1,-1},{r+1,r,-1}},{{2,1,-1},{r+1,r,-1}},{{2,1,-1},{r,r+1,-1}},{{4,3,-1}},{{3,2,-2}}}}],Null],1];
 
-acartanmatrix[atype_,tw_,r_]:=acartanmatrix[atype,tw,r]=Table[base[i,j,2,-1]+Sum[ccor[atype,tw,r][[i1,3]]*d[i,ccor[atype,tw,r][[i1,1]]]*d[j,ccor[atype,tw,r][[i1,2]]],{i1,1,Length[ccor[atype,tw,r]]}],{i,1,r+1},{j,1,r+1}];
+tmaxvalue[type_] :=
+  Piecewise[
+   {
+    {1, type == "a" || type == "d" || type == "e"},
+    {2, type == "b" || type == "c" || type == "f"},
+    {3, type == "g"}
+   }
+  ];
 
-cartanmatrix[atype_,tw_,r_]:=cartanmatrix[atype,tw,r]=acartanmatrix[atype,tw,r][[2;;-1,2;;-1]];
 
-athvec[atype_,tw_,r_]:=athvec[atype,tw,r]=Table[d[tw,1](d[i,1](d[atype,"a"]+2 d[atype,"c"]+d[atype,"e"](d[r,7]+d[r,8])+d[atype,"f"]+d[atype,"g"])+d[i,2](d[atype,"b"]+d[atype,"d"])+d[i,r](d[atype,"a"]+d[atype,"e"]*d[r,6]))+d[tw,2](d[i,1](2d[atype,"a"]+2 d[atype,"b"]+2d[atype,"bb"])+d[i,2]*d[atype,"c"]+d[i,r](d[atype,"f"]+d[atype,"c"]*d[r,2]))+d[tw,3]*d[i,r]*d[atype,"g"],{i,1,r}];
+rootlengthfactors[type_, rank_] :=
+  Piecewise[
+   {
+    {Table[1, {i, 1, rank}], (type == "a" && rank >= 1) || (type == "d" && rank >= 4) || (type == "e" && 6 <= rank <= 8)},
+    {Table[If[i < rank, 1, 2], {i, 1, rank}], type == "b" && rank >= 3},
+    {Table[If[i < rank, 2, 1], {i, 1, rank}], type == "c" && rank >= 2},
+    {{1, 1, 2, 2}, type == "f" && rank == 4},
+    {{1, 3}, type == "g" && rank == 2}
+   }
+ ];
+ 
+rootlengthfactorsinverted[type_, rank_] :=
+  tmaxvalue[type] * Table[1/rlf ,{rlf, rootlengthfactors[type, rank]}];
 
-asrootnorm[atype_,tw_,r_]:=asrootnorm[atype,tw,r]=Table[1+d[tw,1]*d[atype,"c"]+d[tw,2](d[atype,"b"]+d[atype,"bb"])+d[i1,r](d[tw,1](d[atype,"b"]-d[atype,"c"]+d[atype,"f"]+2 d[atype,"g"])+d[tw,2](d[atype,"c"]-d[atype,"b"]-d[atype,"bb"]))+d[i1,r-1]*d[tw,1]*d[atype,"f"]+d[i1,2]*d[tw,2]*d[atype,"f"]+ d[i1,1](d[tw,2]*d[atype,"f"]+2d[tw,3]*d[atype,"g"]),{i1,1,r}];
 
-amarkvec[atype_,tw_,r_]:=amarkvec[atype,tw,r]=Prepend[athvec[If[atype=!="bb",atype,"c"],1,r].Inverse[cartanmatrix[If[atype=!="bb",atype,"c"],1,r]]/If[tw>1,asrootnorm[If[atype=!="bb",atype,"a"],1,r],1],If[atype==="bb"||(atype==="a"&&tw==2),2,1]];
-
-acomarkvec[atype_,tw_,r_]:=acomarkvec[atype,tw,r]=Prepend[((athvec[If[atype=!="bb",atype,"c"],1,r].Inverse[cartanmatrix[If[atype=!="bb",atype,"c"],1,r]]*If[tw>1,asrootnorm[If[atype=!="bb",atype,"a"],1,r],1])/asrootnorm[If[atype=!="bb",atype,"a"],1,r])If[atype==="bb"||(atype==="a"&&tw==2),Table[1+d[i,r],{i,1,r}],1],1];
-
-dcoxeter[atype_,tw_,r_]:=dcoxeter[atype,tw,r]=Plus@@acomarkvec[atype,tw,r];
-
-coxeter[atype_,tw_,r_]:=coxeter[atype,tw,r]=Plus@@amarkvec[atype,tw,r];
+rangeok[type_,rank_]:=
+ Piecewise[
+  {
+   {True,rank\[Element]Integers&&type=="a"&&rank>=1},
+   {True,rank\[Element]Integers&&type=="b"&&rank>=3},
+   {True,rank\[Element]Integers&&type=="c"&&rank>=2},
+   {True,rank\[Element]Integers&&type=="d"&&rank>=4},
+   {True,rank\[Element]Integers&&type=="e"&&6<=rank<=8},
+   {True,rank\[Element]Integers&&type=="f"&&rank==4},
+   {True,rank\[Element]Integers&&type=="g"&&rank==2}
+  },
+ False
+];  
 
 
 (* ::Subsection::Closed:: *)
@@ -402,79 +487,41 @@ coxeter[atype_,tw_,r_]:=coxeter[atype,tw,r]=Plus@@amarkvec[atype,tw,r];
 initialize[atype_, rr_] :=
   Module[{},
 
-   tw = 1;
-   If[arangeok[atype, tw, rr],
+   If[rangeok[atype, rr],
     (* General initialization *)
-    typerankinitok=False; (* Will be set to True once we're done *)
-    typeranklevelinitok=False;
-    typeranklevelrootinitok=False;
-    fsymbolscalculated=False;
-    rsymbolscalculated=False;
-    modulardatacalculated=False;
-    pentagontobechecked=True;
-    recheck=False;
+    typerankinitok = False; (* Will be set to True once we're done *)
+    typeranklevelinitok = False;
+    typeranklevelrootinitok = False;
+    fsymbolscalculated = False;
+    rsymbolscalculated = False;
+    modulardatacalculated = False;
+    pentagontobechecked = True;
+    recheck = False;
     clearvariables[];
     clearglobalvariables[];
     
     type = atype;
-    twist = tw;
-    If[tw != 1, 
-     Print["The code only works for the untwisted cases!"]];
     rank = rr;
-    r = rr;
-    c = 0;
-    acartan = acartanmatrix[atype, tw, r];
-    tw2abb = If[tw == 2 && (atype === "a" || atype === "bb"), True, False];
-    tw2abbcor = If[tw2abb, 2, 1];
-    exceptmult = 
-     If[atype === "bb", r, 
-      If[tw == 2 && atype === "b", r - 1, 
-       If[tw == 2 && atype === "f", 2, 1]]];
-    tvnorm = asrootnorm[atype, tw, r];
-    tv = Table[
-    Max[
-      amarkvec[atype, tw, r][[i + 1]]/acomarkvec[atype, tw, r][[i + 1]],
-      acomarkvec[atype, tw, r][[1]]
-      ]
-      , {i, 1, r}];
-    tvc = 
-     Table[
-     Max[
-       acomarkvec[atype, tw, r][[i + 1]]/amarkvec[atype, tw, r][[i + 1]], 
-       amarkvec[atype, tw, r][[1]]
-       ]
-       , {i, 1, r}];
-    th = athvec[atype, tw, r];
-    comark = acomarkvec[atype, tw, r];
-    g = dcoxeter[atype, tw, r];
-    cartan = cartanmatrix[atype, tw, r];
+
+    th = thveclong[type, rank];
+    g = dualcoxeter[type, rank];
+    cartan = cartanmatrix[type, rank];
     icartan = Inverse[cartan];
-    qfm = Table[tw/tvnorm[[i]] Transpose[icartan][[i]], {i, 1, r}];
-    scartan = 
-     If[tw2abb, Table[tw/If[i == r, 2, 1] cartan[[i]], {i, 1, r}], 
-      Table[tw/tvnorm[[i]] Transpose[cartan][[i]], {i, 1, r}]];
-    tmax = Max[tv];
-    tvec = tmax Table[1/i, {i, tv}];
-    ipmat = 
-     1/tmax Inverse[Table[cartan[[i]] 1/tvec[[i]], {i, 1, r}]];
-    rho = Table[1, {j, 1, r}];
+    qfm = qfmatrix[type, rank];
+
+    tmax = tmaxvalue[type];
+    tvec = rootlengthfactorsinverted[type, rank];
+    rho = Table[1, {j, 1, rank}];
     a = icartan.rho;
-    lenl = Max[Table[scartan[[i, i]], {i, 1, r}]];
-    If[tw2abb && r == 1, lenl = 4];
-    lens = Min[Table[scartan[[i, i]], {i, 1, r}]];
-    dm = Table[{0, 0}, {i, 1, r}];
-    Do[If[cartan[[i, j]] < 0, 
-      Do[dm = Insert[dm, j, {i, -3}], {-cartan[[i, j]]}]
-      ],
-      {i, 1, r}, {j, 1, r}];
-    
+
+
     (* Generate the roots of the algebra *)
     
     pos = 1;
     roots = {th};
     While[pos <= Dimensions[roots][[1]], 
      For[
-     i = 1, i <= r, i++, 
+     i = 1, i <= rank, i++, 
       If[roots[[pos, i]] > 0, 
        Do[If[Not[MemberQ[roots, roots[[pos]] - j cartan[[i]]]], 
          roots = Append[roots, roots[[pos]] - j cartan[[i]]]], {j, roots[[pos, i]]}]]
@@ -483,22 +530,12 @@ initialize[atype_, rr_] :=
     ];
     roots = 
      Sort[roots, 
-      Sum[(#1.icartan)[[j]] a[[j]], {j, 1, r}] >= Sum[(#2.icartan)[[j]] a[[j]], {j, 1, r}] &];
+      Sum[(#1.icartan)[[j]] a[[j]], {j, 1, rank}] >= Sum[(#2.icartan)[[j]] a[[j]], {j, 1, rank}] &];
     na = Dimensions[roots][[1]];
-    rootl = Table[roots[[i]].qfm.roots[[i]], {i, 1, na}];
     If[typerankinfo,
-     Print["The type of algebra and rank have been set to ",{type,rank}];
+     Print["The type of algebra and rank have been set to ", {type,rank}];
     ];
     
-    ccor[atype,tw,rr]=.;
-    acartanmatrix[atype,tw,rr]=.;
-    cartanmatrix[atype,tw,rr]=.;
-    athvec[atype,tw,rr]=.;
-    asrootnorm[atype,tw,rr]=.;
-    amarkvec[atype,tw,rr]=.;
-    acomarkvec[atype,tw,rr]=.;
-    dcoxeter[atype,tw,rr]=.;
-
     typerankinitok=True;
     ,
     If[typerankinfo,
@@ -518,16 +555,15 @@ initializelevel[lev_] :=
   Module[{n},  
   If[typerankinitok,
    If[IntegerQ[lev] && lev >= 0,
-     typeranklevelinitok=False; (* will be set to True once we're done *)
-     typeranklevelrootinitok=False;
-     fsymbolscalculated=False;
-     rsymbolscalculated=False;
-     modulardatacalculated=False;
-     pentagontobechecked=True;
-     recheck=False;
+     typeranklevelinitok = False; (* will be set to True once we're done *)
+     typeranklevelrootinitok = False;
+     fsymbolscalculated = False;
+     rsymbolscalculated = False;
+     modulardatacalculated = False;
+     pentagontobechecked = True;
+     recheck = False;
      level = lev;
-     k = lev;
-     rootofunity = 1/(g + k);
+     rootofunity = 1/(g + level);
      canbenonuniform = nonuniformpossible[type, rank, level];
      rootfactorsuniform = possiblerootfactorsuniform[type, rank, level];
      If[canbenonuniform,
@@ -536,7 +572,7 @@ initializelevel[lev_] :=
      ];
      rootfactors = Union[rootfactorsuniform, rootfactorsnonuniform];
      
-     typeranklevelinitok=True;
+     typeranklevelinitok = True;
      If[levelinfo,
      Print["The level has been set to ",level];
      If[canbenonuniform,
@@ -593,10 +629,10 @@ initializerootofunity[rootfac_] := Piecewise[{
        Print["The type of algebra, rank, l and z are initialized, and set to ", {type, rank, lval, zval}, ". This is a non-uniform case."];
        ];       
        typeranklevelrootinitok = True;
-       fsymbolscalculated=False;
-       rsymbolscalculated=False;
-       modulardatacalculated=False;
-       recheck=False;
+       fsymbolscalculated = False;
+       rsymbolscalculated = False;
+       modulardatacalculated = False;
+       recheck = False;
               
        Print["You can proceed to calculate the F-symbols :-)"];
        ,
@@ -638,10 +674,10 @@ There are no non-uniform cases."];
     }];
     
    
-initialize[atype_, rr_, level_] :=
+initialize[type_, rank_, level_] :=
     Module[{typerangeok, levelok},
    
-   If[Not[arangeok[atype, 1, rr]],
+   If[Not[rangeok[type, rank]],
     typerangeok = False;
     Print["The type of algebra and the rank are not compatible!"];,
     typerangeok = True;,
@@ -660,9 +696,9 @@ initialize[atype_, rr_, level_] :=
    If[typerangeok && levelok,
     typerankinfo = False;
     levelinfo = False;
-    initialize[atype, rr];
+    initialize[type, rank];
     initializelevel[level];
-    Print["The type of algebra, rank, and level are initialized, and set to ",{atype,rr,level}];
+    Print["The type of algebra, rank, and level are initialized, and set to ",{type, rank, level}];
     If[canbenonuniform,
      Print["The possible roots of unity are ", 
       Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm,
@@ -685,9 +721,9 @@ There are no non-uniform cases."];
    
    ];   
    
-initialize[atype_, rr_, level_, rootfac_] :=
+initialize[type_, rank_, level_, rootfac_] :=
   Module[{typerangeok, levelok, rootfacok, posrootfacsall, posrootfacsuniform, posrootfacsnonuniform, canbenonuniform},
-      If[Not[arangeok[atype, 1, rr]],
+      If[Not[rangeok[type, rank]],
         typerangeok = False;
         Print["The type of algebra and the rank are not compatible!"];,
         typerangeok = True;,
@@ -704,10 +740,10 @@ initialize[atype_, rr_, level_, rootfac_] :=
         ];
         
     If[typerangeok && levelok,
-     canbenonuniform = nonuniformpossible[atype, rr, level];
-     posrootfacsuniform = possiblerootfactorsuniform[atype, rr, level];
+     canbenonuniform = nonuniformpossible[type, rank, level];
+     posrootfacsuniform = possiblerootfactorsuniform[type, rank, level];
      If[canbenonuniform,
-       posrootfacsnonuniform = possiblerootfactorsnonuniform[atype, rr, level];,
+       posrootfacsnonuniform = possiblerootfactorsnonuniform[type, rank, level];,
        posrootfacsnonuniform = {};
      ];
      posrootfacsall = Union[posrootfacsuniform, posrootfacsnonuniform];
@@ -735,7 +771,7 @@ initialize[atype_, rr_, level_, rootfac_] :=
         typerankinfo = False;
         levelinfo = False;
         rootfacinfo = False;
-        initialize[atype, rr];
+        initialize[type, rank];
         initializelevel[level];
         initializerootofunity[rootfac];
         typerankinfo = True;
@@ -749,7 +785,7 @@ initialize[atype_, rr_, level_, rootfac_] :=
 initializelz[type_, rank_, lvalue_, zvalue_]:=
 Module[{typerangeok, currentlvalueok, currentzvalueok, currentlzvaluesok, lzlevel, lzrootfac},
 
-  If[Not[arangeok[type, 1, rank]],
+  If[Not[rangeok[type, rank]],
    typerangeok = False;
    Print["The type of algebra and the rank are not compatible!"];,
    typerangeok = True;
@@ -861,109 +897,19 @@ nonuniformpossible[type_, rank_, level_] :=
    False
   ];
 
-tmaxval[type_] :=
-  Piecewise[
-   {
-    {1, type == "a" || type == "d" || type == "e"},
-    {2, type == "b" || type == "c" || type == "f"},
-    {3, type == "g"}
-   }
-  ];
-  
-dualcoxeter[type_, rank_] :=
-  Piecewise[
-   {
-    {rank + 1, type == "a" && rank >= 1},
-    {2 rank - 1, type == "b" && rank >= 3},
-    {rank + 1, type == "c" && rank >= 2},
-    {2 rank - 2, type == "d" && rank >= 4},
-    {12, type == "e" && rank == 6},
-    {18, type == "e" && rank == 7},
-    {30, type == "e" && rank == 8},
-    {9, type == "f" && rank == 4},
-    {4, type == "g" && rank == 2}
-    }
-  ];
-  
-thvecshort[type_, 1, rank_] :=
-  Piecewise[
-   {
-    {{2}, type == "a" && rank == 1},
-    {Table[If[i == 1 || i == rank, 1, 0], {i, 1, rank}], type == "a" && rank > 1},
-    {Table[If[i == 1, 1, 0], {i, 1, rank}], type == "b" && rank >= 3},
-    {Table[If[i == 2, 1, 0], {i, 1, rank}], type == "c" && rank >= 2},
-    {Table[If[i == 2, 1, 0], {i, 1, rank}], type == "d" && rank >= 4},
-    {{0, 0, 0, 0, 0, 1}, type == "e" && rank == 6},
-    {{1, 0, 0, 0, 0, 0, 0}, type == "e" && rank == 7},
-    {{1, 0, 0, 0, 0, 0, 0, 0}, type == "e" && rank == 8},
-    {{0, 0, 0, 1}, type == "f" && rank == 4},
-    {{0, 1}, type == "g" && rank == 2}
-   }
-  ];
-  
-thveclong[type_, 1, rank_] :=
-  Piecewise[
-   {
-    {{2}, type == "a" && rank == 1},
-    {Table[If[i == 1 || i == rank, 1, 0], {i, 1, rank}], type == "a" && rank > 1},
-    {Table[If[i == 2, 1, 0], {i, 1, rank}], type == "b" && rank >= 3},
-    {Table[If[i == 1, 2, 0], {i, 1, rank}], type == "c" && rank >= 2},
-    {Table[If[i == 2, 1, 0], {i, 1, rank}], type == "d" && rank >= 4},
-    {{0, 0, 0, 0, 0, 1}, type == "e" && rank == 6},
-    {{1, 0, 0, 0, 0, 0, 0}, type == "e" && rank == 7},
-    {{1, 0, 0, 0, 0, 0, 0, 0}, type == "e" && rank == 8},
-    {{1, 0, 0, 0}, type == "f" && rank == 4},
-    {{1, 0}, type == "g" && rank == 2}
-   }
- ];  
-
-rootlengthfactors[type_, rank_] :=
-  Piecewise[
-   {
-    {Table[1, {i, 1, rank}], (type == "a" && rank >= 1) || (type == "d" && rank >= 4) || (type == "e" && 6 <= rank <= 8)},
-    {Table[If[i < rank, 1, 2], {i, 1, rank}], type == "b" && rank >= 3},
-    {Table[If[i < rank, 2, 1], {i, 1, rank}], type == "c" && rank >= 2},
-    {{1, 1, 2, 2}, type == "f" && rank == 4},
-    {{1, 3}, type == "g" && rank == 2}
-   }
- ];
-
-  
-cartanmat[type_, rank_] :=
-  Piecewise[
-   {
-    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 -> -1}, {rank, rank}] // Normal, type == "a"},
-    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && j < rank -> -1, {rank - 1, rank} -> -2}, {rank, rank}] // Normal, type == "b" && rank >= 3},
-    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank -> -1, {rank, rank - 1} -> -2}, {rank, rank}] // Normal, type == "c" && rank >= 2},
-    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank && j < rank -> -1, {rank - 2, rank} -> -1, {rank, rank - 2} -> -1}, {rank, rank}] // Normal, type == "d" && rank >= 4},
-    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank && j < rank -> -1, {3, 6} -> -1, {6, 3} -> -1}, {rank, rank}] // Normal, type == "e" && rank == 6},
-    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank && j < rank -> -1, {3, 7} -> -1, {7, 3} -> -1}, {rank, rank}] // Normal, type == "e" && rank == 7},
-    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && i < rank && j < rank -> -1, {5, 8} -> -1, {8, 5} -> -1}, {rank, rank}] // Normal, type == "e" && rank == 8},
-    {SparseArray[{{i_, i_} -> 2, {i_, j_} /; Abs[i - j] == 1 && {i, j} != {2, 3} -> -1, {2, 3} -> -2}, {rank, rank}] // Normal, type == "f" && rank == 4},
-    {{{2, -3}, {-1, 2}}, type == "g" && rank == 2}
-   }
-  ];
-  
-qfmat[type_, rank_] :=
-  With[
-  {ict = Transpose[Inverse[cartanmat[type, rank]]],
-   rlfs = rootlengthfactors[type, rank]},
-   Table[1/rlfs[[i]] ict[[i]], {i, 1, rank}]
-   ]; 
-
 irrepsuniform[type_, rank_, level_] :=
   Solve[
-  (Table[avar[i] + 1, {i, 1, rank}]).qfmat[type, rank].thveclong[type, 1, rank] < level + dualcoxeter[type, rank] &&
+  (Table[avar[i] + 1, {i, 1, rank}]).qfmatrix[type, rank].thveclong[type, rank] < level + dualcoxeter[type, rank] &&
   And @@ Table[avar[i] >= 0, {i, 1, rank}], Integers][[All, All, 2]] // Sort;
   
 irrepsnonuniform[type_, rank_, level_] :=
  Solve[
-   tmaxval[type] (Table[avar[i] + 1, {i, 1, rank}]).qfmat[type, rank].thvecshort[type, 1, rank] < level + dualcoxeter[type, rank] && 
+   tmaxvalue[type] (Table[avar[i] + 1, {i, 1, rank}]).qfmatrix[type, rank].thvecshort[type, rank] < level + dualcoxeter[type, rank] && 
    And @@ Table[avar[i] >= 0, {i, 1, rank}], Integers][[All, All, 2]] // Sort;
       
 possiblerootfactorsnonuniform[type_, rank_, level_] :=
   Module[
-   {tmax = tmaxval[type], g = dualcoxeter[type, rank], res},
+   {tmax = tmaxvalue[type], g = dualcoxeter[type, rank], res},
    If[nonuniformpossible[type, rank, level],
     res = Range[tmax (level + g)];
     res = Cases[res, x_ /; Mod[x, tmax] == 0 && GCD[x, level + g] == 1];,
@@ -974,14 +920,14 @@ possiblerootfactorsnonuniform[type_, rank_, level_] :=
 
 possiblerootfactorsuniform[type_, rank_, level_] :=
   Module[
-   {tmax = tmaxval[type], g = dualcoxeter[type, rank], res},
+   {tmax = tmaxvalue[type], g = dualcoxeter[type, rank], res},
    res = Range[tmax (level + g)];
    res = Cases[res, x_ /; GCD[x, tmax(level + g)] == 1]
    ];
    
 possiblerootfactors[type_, rank_, level_] :=
   Module[{tmax, g, rfpossible,rfuniform,rfnonuniform},
-   If[arangeok[type, 1, rank],
+   If[rangeok[type, rank],
     If[IntegerQ[level] && level > 0,
      rfuniform = possiblerootfactorsuniform[type,rank,level];
      rfnonuniform = possiblerootfactorsnonuniform[type,rank,level];
@@ -991,8 +937,6 @@ possiblerootfactors[type_, rank_, level_] :=
     , Print["The type of algebra and rank are not compatible!"];
     ]
    ];    
-   
-
            
 lzvaluesok[type_, rank_Integer, lvalue_Integer, zvalue_Integer] :=
   Piecewise[
@@ -1039,7 +983,6 @@ lvalueok[type_, rank_Integer, lvalue_Integer] :=
    ];
    
 zvalueok[lvalue_Integer, zvalue_Integer]:= (GCD[lvalue,zvalue] == 1) && (0 < zvalue < lvalue);
-         
    
 lzvaluesuniform[type_, rank_Integer, lvalue_Integer, zvalue_Integer] :=
   Piecewise[
@@ -1061,28 +1004,7 @@ lzvaluesuniform[type_, rank_Integer, lvalue_Integer, zvalue_Integer] :=
     {False, type == "g" && rank == 2 && lvalue >= 7 && (Mod[lvalue, 3] == 1 || Mod[lvalue, 3] == 2) && GCD[zvalue, lvalue] == 1 && 0 < zvalue < lvalue}
     }
    ];
-   
-         
-lzvaluespossible[type_,rank_Integer]:=
-  Piecewise[
-  {
-  {Print["Possible values for l (only uniform cases): l >= rank + 1; 0 < z < l such that GCD[z,l]==1."],type == "a" && rank >= 1},
-  {Print["Possible values for l even (uniform case): l >= 4 rank - 2; 0 < z < l such that GCD[z,l]==1.\n\
-Possible values for l odd (non-uniform case): l >= 2 rank + 1; 0 < z < l such that GCD[z,l]==1."],type == "b" && rank >= 3},
-  {Print["Possible values for l even (uniform case): l >= 2 rank + 2; 0 < z < l such that GCD[z,l]==1.\n\
-Possible values for l odd (non-uniform case): l >= 2 rank + 1 ; 0 < z < l such that GCD[z,l]==1."],type == "c" && rank >= 2},
-  {Print["Possible values for l (only uniform cases): l >= 2 rank - 2; 0 < z < l such that GCD[z,l]==1."],type == "d" && rank >= 4},
-  {Print["Possible values for l (only uniform cases): l >= 12; 0 < z < l such that GCD[z,l]==1."],type == "e" && rank == 6},
-  {Print["Possible values for l (only uniform cases): l >= 18; 0 < z < l such that GCD[z,l]==1."],type == "e" && rank == 7},
-  {Print["Possible values for l (only uniform cases): l >= 30; 0 < z < l such that GCD[z,l]==1."],type == "e" && rank == 8},
-  {Print["Possible values for l even (uniform case): l >= 18; 0 < z < l such that GCD[z,l]==1.\n\
-Possible values for l odd (non-uniform case): l >= 13 ; 0 < z < l such that GCD[z,l]==1."],type == "f" && rank == 4},
-  {Print["Possible values for l a multiple of three (uniform case): l >= 12; 0 < z < l such that GCD[z,l]==1.\n\
-Possible values for l not a multiple of three (non-uniform case): l >= 7; 0 < z < l such that GCD[z,l]==1."],type == "g" && rank == 2}
-  },
-  Print["The type and rank are not compatible!"];
- ];
- 
+    
 lvaluespossible[type_,rank_Integer]:=
   Piecewise[
   {
@@ -1102,7 +1024,6 @@ the possible values for l not a multiple of three (non-uniform case): l >= ", 7,
   },
   Print["The type and rank are not compatible!"];
  ];
- 
  
 
 
@@ -1202,169 +1123,79 @@ initializeinnerproduct[] :=
 (*Routine to initialize the weight spaces*)
 
 
-initializeweightspaces[irreps_] := Module[{n, airreps, inprod, fact, w, l, mm, pos, dims, dim, temp, temp1, temp2, p1, p2, p3, p4},
-	airreps =
-	  Table[Prepend[irreps[[i]], level - Plus @@ irreps[[i]]], {i, 1, Length[irreps]}];
-	inprod[lp_, mm_, p_] := lp.qfm.mm + k p/tw2abbcor;
+initializeweightspaces[irreps_] := Module[{inprod, factor, w, pos, dims, dim, temp, p1},
+    
+    inprod[lp_, mm_] := lp.qfm.mm;
+    factor[lp_, hw_] := 2/((hw + rho).qfm.(hw + rho) - (lp + rho).qfm.(lp + rho));
+
+
+    (*
+    The [0] in w[0], dims[0] etc, is a leftover from code to calculate the dimensions of weight spaces of affine representations.
+    Here, we only need the classical case, i.e. 0.
+    *)
    
     Do[
-      l = hw[[2 ;; -1]];
-      fact[lp_, gr_] := 
-       2/((l + rho).qfm.(l + rho) - (lp + rho).qfm.(lp + rho) + 2 gr (k + g)/tw2abbcor);
       Clear[w];
       w[0] = {hw};
-      Do[w[i] = {}, {i, 1, c}];
-      For[mm = 0, mm <= c, mm++, pos = 1;
-       While[pos <= Dimensions[w[mm]][[1]], 
-        For[i = 1, i <= r, i++, 
-         If[w[mm][[pos, i + 1]] > 0, 
-          Do[If[Not[
-             MemberQ[w[mm], w[mm][[pos]] - j acartan[[i + 1]]]], 
-            w[mm] = 
-             Append[w[mm], w[mm][[pos]] - j acartan[[i + 1]]]], {j, w[mm][[pos, i + 1]]}]]]; pos = pos + 1];
        pos = 1;
-       While[pos <= Dimensions[w[mm]][[1]], 
-        If[w[mm][[pos, 1]] > 0, 
-         Do[If[Not[MemberQ[w[mm + n], w[mm][[pos]] - n acartan[[1]]]],
-            w[mm + n] = 
-            Append[w[mm + n], w[mm][[pos]] - n acartan[[1]]]], {n, Min[w[mm][[pos, 1]], c - mm]}]];
-        pos = pos + 1];
-       pos = 1
-       ];
-      
-      (* Strip off the zeroth label *)
-      
-      Do[
-       Do[
-        w[i] = Delete[w[i], {j, 1}]
-        , {j, 1, Dimensions[w[i]][[1]]}]
-        , {i, 0, c}];
+       While[pos <= Dimensions[w[0]][[1]], 
+        For[i = 1, i <= rank, i++, 
+         If[w[0][[pos, i]] > 0, 
+          Do[If[Not[
+             MemberQ[w[0], w[0][[pos]] - j cartan[[i]]]], 
+            w[0] = 
+             Append[w[0], w[0][[pos]] - j cartan[[i]]]], {j, w[0][[pos, i]]}]]
+         ];
+         pos = pos + 1];
       
       (* Sort the weigths according to their `heigth' *)
+      w[0] = 
+        Sort[w[0], 
+         Sum[#1[[j]]* a[[j]], {j, 1, rank}] >= 
+           Sum[#2[[j]] *a[[j]], {j, 1, rank}] &];
       
-      Do[w[i] = 
-        Sort[w[i], 
-         Sum[#1[[j]]* a[[j]], {j, 1, r}] >= 
-           Sum[#2[[j]] *a[[j]], {j, 1, r}] &], {i, 0, c}];
-      
-      weights[l] = w[0];
+      weights[hw] = w[0];
       
       
       (* Create the table of dimensions *)
-      Clear[dims];
-      Do[dims[i] = {}, {i, 0, c}];
-      Do[
-       Do[
-        dims[i] = Insert[dims[i], {}, 1]
-        , {j, 1, Dimensions[w[i]][[1]]}]
-        , {i, 0, c}];
-      dims[0] = Insert[dims[0], 1, {1, 1}];
+     Clear[dims];
+     dims[0] = {};
+     
+     Do[
+      dims[0] = Insert[dims[0], {}, 1]
+     , {j, 1, Dimensions[w[0]][[1]]}];
+     
+     dims[0] = Insert[dims[0], 1, {1, 1}];
       
       (* Generate the dimensions, up to grade c,
       which should be set to zero for our purposes *)
       
-      Do[Do[If[Length[dims[i][[j]]] == 0, 
-         dims[i] = 
-          Insert[dims[i], 
-           fact[w[i][[j]], 
-             i] (Sum[
-               Catch[For[n = tw2abbcor If[rootl[[a]] == lenl, tw, 1]; 
-                  temp2 = 0, True, 
-                  If[MemberQ[w[i - n], w[i][[j]] + roots[[a]]], 
-                   temp2 += 
-                    Catch[For[p1 = 1; temp1 = 0, True, 
-                    If[MemberQ[w[i - n p1], 
-                    w[i][[j]] + p1 roots[[a]]], 
-                    temp1 += 
-                    dims[i - n p1][[
-                    Position[w[i - n p1], w[i][[j]] + p1 roots[[a]]][[
-                    1, 1]], 
-                    1]] (inprod[roots[[a]], w[i][[j]] + p1 roots[[a]],
-                     n]); p1++, Throw[temp1]]]]; 
-                   n += tw2abbcor If[rootl[[a]] == lenl, tw, 1], 
-                   Throw[temp2]]]] + 
-                Catch[For[n = tw2abbcor If[rootl[[a]] == lenl, tw, 1];
-                   temp2 = 0, True, 
-                  If[MemberQ[w[i - n], w[i][[j]] - roots[[a]]], 
-                   temp2 += 
-                    Catch[For[p2 = 1; temp1 = 0, True, 
-                    If[MemberQ[w[i - n p2], 
-                    w[i][[j]] - p2 roots[[a]]], 
-                    temp1 += 
-                    dims[i - n p2][[
-                    Position[w[i - n p2], w[i][[j]] - p2 roots[[a]]][[
-                    1, 1]], 
-                    1]] (inprod[-roots[[a]], 
-                    w[i][[j]] - p2 roots[[a]], n]); p2++, 
-                    Throw[temp1]]]]; 
-                   n += tw2abbcor If[rootl[[a]] == lenl, tw, 1], 
-                   Throw[temp2]]]], {a, 1, (na - 1)/2}] + 
-              Sum[Catch[
-                For[temp = 0; p3 = 1, True, 
-                 If[MemberQ[w[i], w[i][[j]] + p3 roots[[a]]], 
+     Do[
+      If[Length[dims[0][[j]]] == 0, 
+         dims[0] = 
+          Insert[dims[0], 
+           factor[w[0][[j]], hw]*
+              Sum[
+              Catch[
+                For[temp = 0; p1 = 1, True, 
+                 If[MemberQ[w[0], w[0][[j]] + p1 roots[[a]]], 
                   temp += 
-                   dims[i][[
-                    Position[w[i], w[i][[j]] + p3 roots[[a]]][[1, 1]],
-                     1]] (inprod[roots[[a]], 
-                    w[i][[j]] + p3 roots[[a]], 0]); p3++, 
-                  Throw[temp]]]], {a, 1, (na - 1)/2}] + 
-              Catch[For[n = tw2abbcor; temp2 = 0, True, 
-                If[MemberQ[w[i - n], w[i][[j]]], 
-                 temp2 += 
-                  Catch[For[p4 = 1; temp1 = 0, True, 
-                    If[MemberQ[w[i - n p4], w[i][[j]]], 
-                    temp1 += 
-                    If[Mod[p4, tw] == 0, r, 
-                    exceptmult]  k p4 dims[i - n p4][[
-                    Position[w[i - n p4], w[i][[j]]][[1, 1]], 1]]; p4++,
-                     Throw[temp1]]]]; n += tw2abbcor, 
-                 Throw[temp2]]]] + 
-              If[tw2abb, 
-               Sum[If[rootl[[a]] == lenl, 
-                 Catch[For[n = 1; temp2 = 0, True, 
-                    If[MemberQ[w[i - n], w[i][[j]] + 1/2 roots[[a]]], 
-                    temp2 += 
-                    Catch[For[p1 = 1; temp1 = 0, True, 
-                    If[MemberQ[w[i - n p1], 
-                    w[i][[j]] + p1 1/2  roots[[a]]], 
-                    temp1 += 
-                    dims[i - n p1][[
-                    Position[w[i - n p1], 
-                    w[i][[j]] + p1 1/2 roots[[a]]][[1, 1]], 
-                    1]] (inprod[1/2 roots[[a]], 
-                    w[i][[j]] + p1 1/2  roots[[a]], n]); p1++, 
-                    Throw[temp1]]]]; n += 2, Throw[temp2]]]] + 
-                  Catch[For[n = 1; temp2 = 0, True, 
-                    If[MemberQ[w[i - n], w[i][[j]] - 1/2 roots[[a]]], 
-                    temp2 += 
-                    Catch[For[p1 = 1; temp1 = 0, True, 
-                    
-                    If[MemberQ[w[i - n p1], 
-                    w[i][[j]] - p1 1/2  roots[[a]]], 
-                    temp1 += 
-                    dims[i - n p1][[
-                    Position[w[i - n p1], 
-                    w[i][[j]] - p1 1/2 roots[[a]]][[1, 1]], 
-                    1]] (inprod[-1/2 roots[[a]], 
-                    w[i][[j]] - p1 1/2  roots[[a]], n]); p1++, 
-                    Throw[temp1]]]]; n += 2, Throw[temp2]]]], 0], {a, 
-                 1, (na - 1)/2}], 0]), {j, 1}]; 
-               
+                   dims[0][[ Position[w[0], w[0][[j]] + p1 roots[[a]]][[1, 1]] , 1 ]]*
+                     (inprod[roots[[a]],  w[0][[j]] + p1 roots[[a]]]); p1++, 
+                  Throw[temp]]]
                ]
-               
-               , {j, 1, Dimensions[w[i]][[1]]}]
+               , {a, 1, (na - 1)/2}]
+                 , {j, 1}]; 
+            ]
+         , {j, 1, Dimensions[w[0]][[1]]}];
          
-         , {i, 0, c}];
-         
-         
-      Do[dim[l, w[0][[i]]] = dims[0][[i, 1]], {i, 1, Length[dims[0]]}];
+      Do[dim[hw, w[0][[i]]] = dims[0][[i, 1]], {i, 1, Length[dims[0]]}];
       
       
-      Do[wdim[l, weights[l][[i]]] = dim[l, weights[l][[i]]], {i, 1, 
-        Length[weights[l]]}];
+      Do[wdim[hw, weights[hw][[i]]] = dim[hw, weights[hw][[i]]], {i, 1, Length[weights[hw]]}];
       
       
-      , {hw, airreps}];
+      , {hw, irreps}];
      
      Do[
       raising[ir, w, alpha] = 
@@ -1373,7 +1204,7 @@ initializeweightspaces[irreps_] := Module[{n, airreps, inprod, fact, w, l, mm, p
       lowering[ir, w, alpha] = 
        If[MemberQ[weights[ir], w - cartan[[alpha]]], 
         w - cartan[[alpha]], {}];
-      , {ir, irreps}, {w, weights[ir]}, {alpha, 1, r}];
+      , {ir, irreps}, {w, weights[ir]}, {alpha, 1, rank}];
      
      Clear[w, l];
 
@@ -1402,14 +1233,14 @@ generatestatespossible[] :=
     Do[
      
      weightsabove = 
-      DeleteCases[Table[{i, raising[l, currentweight, i]}, {i, 1, r}],
+      DeleteCases[Table[{i, raising[l, currentweight, i]}, {i, 1, rank}],
         x_ /; x[[2]] == {}];
      
      allbasis = Flatten[
        Table[
         Table[
-         Prepend[j, weightsabove[[i, 1]]], {j, 
-          statespossible[l, weightsabove[[i, 2]]]}]
+         Prepend[j, weightsabove[[i, 1]]]
+         , {j, statespossible[l, weightsabove[[i, 2]]]}]
         , {i, 1, Length[weightsabove]}]
        , 1];
      
@@ -1436,7 +1267,7 @@ generatestatesneeded[] :=
     
     Do[
      weightsabove = 
-      DeleteCases[Table[{i, raising[l, currentweight, i]}, {i, 1, r}],
+      DeleteCases[Table[{i, raising[l, currentweight, i]}, {i, 1, rank}],
         x_ /; x[[2]] == {}];
      
      allbasis = Flatten[
@@ -1521,8 +1352,7 @@ constructbasis[] := Module[{norm},
    Do[
     basis[ir, w, i] =
      Table[If[j == i, 1, 0], {j, 1, wdim[ir, w]}] - 
-      Sum[basis[ir, w, j] (basis[ir, w, j].gramm[ir, w])[[i]], {j, 1, 
-        i - 1}];
+      Sum[basis[ir, w, j] (basis[ir, w, j].gramm[ir, w])[[i]], {j, 1, i - 1}];
         
     norm = basis[ir, w, i].gramm[ir, w].basis[ir, w, i];
     
@@ -1659,7 +1489,7 @@ hwtpraisingconditions[hw1_, hw2_, hw3_, alpha_] :=
 hwtpraisingsol[hw1_, hw2_, hw3_] :=
  Chop[Solve[
    Table[(hwtpraisingconditions[hw1, hw2, hw3, alpha]) == 
-     Table[0, {i, 1, Length[tpstatesraising[hw1, hw2, hw3, alpha]]}], {alpha, 1, r}],
+     Table[0, {i, 1, Length[tpstatesraising[hw1, hw2, hw3, alpha]]}], {alpha, 1, rank}],
    Table[vars[i], {i, 1, Length[tpstates[hw1, hw2, hw3, hw3]]}]], 10^(-(Max[10, precision - 20]))];  
    
 generatefr[hw1_, hw2_, hw3_] := 
@@ -1683,8 +1513,8 @@ generatefr[hw1_, hw2_, hw3_] :=
      nv[hw1, hw2, hw3] = tpdim;
      ];
     
-    (* In this case, 
-    we need to find the number of independent solutions *)
+    
+    (* In this case, we need to find the number of independent solutions *)
     
     If[sol != {} && tpdim > Length[sol],
      variables = Union[Flatten[Variables /@ sol[[All, 2]]]];
@@ -1789,25 +1619,25 @@ checkfusionrules[] := Module[{dualpos, tempok, irreppos},
   fusionrulesok = True;
   
   Do[
-   nmat[a] = Table[
-     If[Head[nv[a, b, c]] === Integer, nv[a, b, c], 0]
-     , {b, irreps}, {c, irreps}]
-  , {a, irreps}];
+   nmat[ir1] = Table[
+     If[Head[nv[ir1, ir2, ir3]] === Integer, nv[ir1, ir2, ir3], 0]
+     , {ir2, irreps}, {ir3, irreps}]
+  , {ir1, irreps}];
   
   tempok = True;
   Do[
    dualpos = 
-    Flatten[Position[Table[fusion[a, b], {b, irreps}], x_ /; MemberQ[x, irreps[[1]]]]];
+    Flatten[Position[Table[fusion[ir1, ir2], {ir2, irreps}], x_ /; MemberQ[x, irreps[[1]]]]];
    If[
     Length[dualpos] == 1, Null, fusionrulesok = False; 
     tempok = False;];
-   , {a, irreps}];
+   , {ir1, irreps}];
    
   If[tempok, Null, 
    Print["Not every particle type has a unique dual :-("];];
   
   dualpos = 
-   Table[Position[Table[fusion[a, b], {b, irreps}], x_ /; MemberQ[x, irreps[[1]]]][[1, 1]], {a, irreps}];
+   Table[Position[Table[fusion[ir1, ir2], {ir2, irreps}], x_ /; MemberQ[x, irreps[[1]]]][[1, 1]], {ir1, irreps}];
   dualirreps = irreps[[dualpos]];
   Do[
   dualirrep[irreps[[i]]] = irreps[[dualpos[[i]]]]
@@ -1815,11 +1645,11 @@ checkfusionrules[] := Module[{dualpos, tempok, irreppos},
   
   tempok = True;
   Do[
-   If[nmat[a].nmat[b] == nmat[b].nmat[a], Null,
+   If[nmat[ir1].nmat[ir2] == nmat[ir2].nmat[ir1], Null,
      fusionrulesok = False;
      tempok = False;
      ];
-   , {a, irreps}, {b, irreps}];
+   , {ir1, irreps}, {ir2, irreps}];
   If[tempok, Null, 
    Print["The fusion rules are not associatve :-("];];
   
@@ -1829,15 +1659,15 @@ checkfusionrules[] := Module[{dualpos, tempok, irreppos},
   
   Do[
    If[
-     nmat[a][[irreppos[b], irreppos[c]]] == 
-      nmat[b][[irreppos[a], irreppos[c]]] == 
-      nmat[b][[irreppos[dualirrep[c]], irreppos[dualirrep[a]]]] == 
-      nmat[dualirrep[a]][[irreppos[dualirrep[b]], 
-       irreppos[dualirrep[c]]]]
+     nmat[ir1][[irreppos[ir2], irreppos[ir3]]] == 
+      nmat[ir2][[irreppos[ir1], irreppos[ir3]]] == 
+      nmat[ir2][[irreppos[dualirrep[ir3]], irreppos[dualirrep[ir1]]]] == 
+      nmat[dualirrep[ir1]][[irreppos[dualirrep[ir2]], 
+       irreppos[dualirrep[ir3]]]]
      , Null, fusionrulesok = False;
      tempok = False;
      ];
-   , {a, irreps}, {b, irreps}, {c, irreps}];
+   , {ir1, irreps}, {ir2, irreps}, {ir3, irreps}];
   
   If[tempok, Null, 
    Print["The vertex properties of the fusionrules are not satisfied :-("];];
@@ -2892,7 +2722,7 @@ diagonalizermatrices[] := Module[{tempmat,tempmatinv,rmatdiagonallist,rmatnondia
    
    If[
    Not[rmatnondiagonallist == rmatnondiagonallistswap],
-   Print["There is a non-diagonal R-matrix R^{a,b}_c, such that R^{b,c}_c is diagonal. \
+   Print["There is a non-diagonal R-matrix R^{a,b}_c, such that R^{b,a}_c is diagonal. \
 This means that the R-matrices can not all be diagonalized at the same time. Something seems to have gone wrong."];
    ];
    
@@ -3067,7 +2897,7 @@ If[typeranklevelrootinitok && fsymbolscalculated &&
 before calculating the modular data."];
   ];
   
-  If[typeranklevelrootinitok&&fsymbolscalculated&&rsymbolscalculated,
+  If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated,
 
   
   numposroots = Position[roots, Table[0, {i, 1, rank}], 1][[1, 1]] - 1;
@@ -3305,7 +3135,7 @@ clearglobalvariables[] := Clear[
  ];
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*End `Private` Context*)
 
 
