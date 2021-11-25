@@ -65,7 +65,9 @@ the R-matrices."
 calculatemodulardata::usage =
 	"calculatemodulardata[] calculates the modular data, once the F- and R-symbols are \
 calculated: pivotal structure, Frodenius-Schur indicators, Frobenius-Perron \
-dimensions, quantum dimensions, scaling dimensions, central charge adn the S-matrix."
+dimensions, quantum dimensions, scaling dimensions, central charge adn the S-matrix. \
+calculatemodulardata[pivotalstructure] calculates the modular data, but with the selected \
+pivotal structure (which has to be spherical) instead."
 
 diagonalizermatrices::usage = 
 	"diagonalizermatrices[] diagonalizes the R-matrices, if they are not diagonal already. \
@@ -130,8 +132,12 @@ of vertices of type (a,b,c)."
 
 possiblepivotalstructures::usage =
 	"possiblepivotalstructures[] calculates the solutions to the pivotal equations. \
-Note that only one these solutions is actually realized for any particular choice of \
-algebra, rank, level and rootfactor!"
+Note that only one these solutions is actually realized by the selected quantum group!"
+
+possiblesphericalpivotalstructures::usage =
+	"possiblesphericalpivotalstructures[] calculates the solutions to the pivotal equations, \
+but only returns the spherical ones (i.e., all coefficients equal to either +1 or -1). \
+Note that only one these solutions is actually realized by the selected quantum group!"
 
 
 (* ::Section:: *)
@@ -166,7 +172,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-11-22\n\
+       "Last revision: 2021-11-25\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -360,6 +366,30 @@ calculating the possible pivotal structures."];
     allpivotalstructures
   ]
 ];
+
+possiblesphericalpivotalstructures[]:=Module[{allpivotalstructures,allsphericalpivotalstructures},
+    
+  If[Not[typeranklevelrootinitok],
+  Print["The type of algebra, rank, level and/or rootfactor were not \
+(correctly) initialized, please do so first, followed by calculating \
+the F-symbols, before calculating the possible spherical pivotal structures."];
+  ];
+  If[typeranklevelrootinitok && Not[fsymbolscalculated],
+  Print["The F-symbols were not calculated. Please do so first, before \
+calculating the possible spherical pivotal structures."];
+  ];
+  
+  If[typeranklevelrootinitok && fsymbolscalculated,
+  
+  allpivotalstructures = possiblepivotalstructures[];
+  
+  allsphericalpivotalstructures = Cases[allpivotalstructures, x_/;ContainsOnly[x,{1,-1}]];
+  
+  allsphericalpivotalstructures
+
+ ]
+];
+
 
 
 (* ::Subsection::Closed:: *)
@@ -3010,6 +3040,273 @@ before calculating the modular data."];
    Print["The pivotal equations are satisfied :-)"];,
    Print["The pivotal equations are NOT satisfied :-("];,
    Print["The pivotal equations could not be checked."];];
+  Print["The Frobenius-Schur indicators are: ", frobschurlist];
+  Print["The Frobenius-Perron dimensions are: ", fpdimvec // N];
+  Print["The quantum dimensions are: ", qdimvec // N];
+  Print["The scaling dimensions modulo one (calculated from the twists) are: ", hlist];
+  
+  If[fmatunitary && Not[qdimspositive],
+   Print["The f-matrices are all unitary, but the quantum dimensions are not all positive. \
+Presumably, there exists a different pivotal structure, such that all the quantum dimensions are positive."];
+   ];
+
+  If[Not[fmatunitary] && qdimspositive,
+   Print["The f-matrices are not all unitary, but the quantum dimensions are all positive. Better check!"];
+   ];
+  
+  If[
+   qdimspositive,
+   Print["The theory is unitary."];,
+   Print["The theory is NOT unitary."];
+   ];
+  
+  If[modular,
+   Print["The theory is modular."];,
+   Print["The theory is NOT modular."];,
+   Print["The modularity of the theory could not be determined."];];
+  
+  If[modular && qdimspositive,
+   Print["The central charge is: ", centralcharge, " (determined mod 8)"];
+   ];
+  If[modular && Not[qdimspositive],
+   Print["The central charge is: ", centralcharge, " (determined mod 4)"];
+   ];
+  
+  If[modular && qdimspositive,
+   Print["The S-matrix is given by:"]; 
+   Print[smat // N //Chop // MatrixForm];
+   ];
+  If[modular && Not[qdimspositive],
+   Print["The S-matrix is given by (up to an overall sign):"];
+   Print[smat // N //Chop // MatrixForm];
+   ];
+   
+  If[Not[modular] && qdimspositive,
+   Print["The (non-modular!) S-matrix is given by:"]; 
+   Print[smat // N //Chop // MatrixForm];
+   ];
+  If[Not[modular] && Not[qdimspositive],
+   Print["The (non-modular!) S-matrix is given by (up to an overall sign):"];
+   Print[smat // N //Chop // MatrixForm];
+   ];
+   
+   
+  If[modular && modularrelationsok,
+   Print["The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 = S^2 = C are satisfied :-)"]
+  ];
+  
+  If[modular && Not[modularrelationsok],
+    Print["The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 = S^2 = C are not satisfied :-("]
+  ];
+
+  modulardatacalculated=True;
+  
+  Global`FPdimlist = fpdimvec;
+  Global`qdimlist = qdimvec;
+  Global`selfduallist = selfdualvec;
+  Global`simplecurrentlist = simplecurrentvec;
+  Global`pivotlist = pivotlist;
+  Global`thetalist = thetalist;
+  Global`hlist = hlist;
+  Global`FSlist = frobschurlist;
+  Global`smat = smat;
+  Global`tmat = tmat;
+  Global`cmat = cmat;
+  Global`centralcharge = centralcharge;
+  Global`modular = modular;
+  Global`unitary = qdimspositive;
+  
+  Print["Done :-)"];
+  
+  ];
+  
+ ];
+ 
+
+
+calculatemodulardata[pivotlist_List] := Module[{pivotlistok,pivotlistquantumgroup},
+  
+  If[Not[typeranklevelrootinitok],
+  Print["The type of algebra, rank, level and/or rootfactor were not \
+(correctly) initialized, please do so first, followed by calculating \
+the F- and R-symbols, before calculating the modular data."];
+  ];
+
+If[typeranklevelrootinitok && Not[fsymbolscalculated],
+  Print["The F-symbols were not calculated. Please do so first, \
+followed by calculating the R-symbols, before calculating the modular \
+data."];
+  ];
+
+If[typeranklevelrootinitok && fsymbolscalculated && 
+   Not[rsymbolscalculated],
+  Print["The R-symbols were not calculated. Please do so first, \
+before calculating the modular data."];
+  ];
+  
+  pivotlistok = True;
+  
+  If[Length[pivotlist] != Length[irreps],
+  pivotlistok = False;  
+  Print["The list of pivotal coefficients does not have the correct length (i.e., the \
+number of irreps)."];
+  ,
+  Null,
+  pivotlistok = False;  
+  Print["The list of pivotal coefficients does not have the correct length (i.e., the \
+number of irreps)."];
+  ];
+  
+  If[pivotlist,
+    If[MemberQ[pivotlist,x_/;Not[x==1]&&Not[x==-1]],
+     pivotlistok = False;
+     Print["The pivotal coefficients are not all either +1 or -1, \
+we only allow spherical cases here."];,
+     Null,
+     pivotlistok = False;
+     Print["The pivotal coefficients are not all either +1 or -1, \
+we only allow spherical cases here."];
+    ];
+  ];
+  
+  If[pivotlistok,
+    Do[pivot[irreps[[i]]] = pivotlist[[i]], {i, 1, Length[irreps]}];
+
+    pivoteqnok = (Table[
+        Chop[ N[ pivot[ir1] pivot[ir2]/pivot[ir3] -
+           Sum[fsym[ir1, ir2, dual[ir3], irreps[[1]], ir3, dual[ir1], {v1, 1, v2, 1}]*
+             fsym[ir2, dual[ir3], ir1, irreps[[1]], dual[ir1], dual[ir2], {v2, 1, v3, 1}]*
+             fsym[dual[ir3], ir1, ir2, irreps[[1]], dual[ir2], ir3, {v3, 1, v1, 1}]
+            , {v2, 1, nv[ir2, dual[ir3], dual[ir1]]}, {v3, 1, nv[dual[ir3], ir1, dual[ir2]]}] , precision ] , 10^(-20) ] 
+        , {ir1, irreps}, {ir2, irreps}, {ir3, fusion[ir1, ir2]}, {v1, 1, nv[ir1, ir2, ir3]}] // Flatten // Union) == {0};
+        
+    If[pivoteqnok,
+      Print["The pivotal equations are satisfied :-) "];,
+      pivotlistok = False;
+      Print["The pivotal equations are not satisfied :-("];,
+      pivotlistok = False;
+      Print["The pivotal equations are not satisfied :-("];
+    ];    
+
+  ];
+
+  If[Not[pivoteqnok],
+  Print["Please provide a valid list of pivotal coefficients. \
+These can be obtained by running `possiblesphericalpivotalstructures[]'"];
+  ];
+    
+  
+  If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && pivoteqnok,
+  
+  numposroots = Position[roots, Table[0, {i, 1, rank}], 1][[1, 1]] - 1;
+  posroots = roots[[1 ;; numposroots]];
+  
+  qdim1overfvec = 
+   Table[
+    N[ 1/fsym[irreps[[i]], irrepsdual[[i]], irreps[[i]], irreps[[i]], irreps[[1]], irreps[[1]], {1, 1, 1, 1}] , precision ]
+   , {i, 1, Length[irreps]}];
+
+
+  qdimvec = Table[pivotlist[[i]] * qdim1overfvec[[i]], {i,1, Length[irreps]}];
+  
+  qdimvecquantumgroup = Table[
+    Chop[ N[ Product[
+       nq[tmax (ir + rho).qfm.posroots[[pr]], 1] / nq[ tmax (rho).qfm.posroots[[pr]], 1]
+       , {pr, 1, numposroots}] , precision ] , 10^(-(Max[10, precision - 20])) ]
+    , {ir, irreps}];
+    
+  pivotlistquantumgroup = 
+   Table[qdimvecquantumgroup[[i]]/qdim1overfvec[[i]], {i, 1, Length[irreps]}];
+
+  If[Not[MemberQ[pivotlistquantumgroup, x_ /; Not[Chop[x - 1, 10^(-20)] == 0 || Chop[x + 1, 10^(-20)] == 0 ]]],
+   pivotlistquantumgroup = Round[pivotlistquantumgroup];,
+   Print["The pivotal coefficients coming from the quantum group are \
+not all either +1 or -1, better check!"];,
+   Print["The pivotal coefficients coming from the quantum group are \
+not all either +1 or -1, better check!"];   
+  ];
+  
+  If[pivotlistquantumgroup==pivotlist,
+  Print["The specified pivotal structure is the same as the one coming from the quantum group."];,
+  Print["The specified pivotal structure differs from the one coming form the \
+quantum group, namely ", pivotlistquantumgroup,". The calculated modular data is not \
+realized by the selected quantum group."]
+  ];  
+    
+    
+  Do[
+   qd[irreps[[i]]] = qdimvec[[i]]
+   , {i, 1, Length[irreps]}];
+   
+  qdtot2 = Sum[qdimvec[[i]]^2, {i, 1, Length[irreps]}];
+  qdtot = Sqrt[qdtot2];
+  qdimspositive = And @@ (# > 0 & /@ qdimvec);
+  
+  fpdimvec = 
+   Table[
+    (Cases[Chop[ (N[ nmat[ir] , precision ] // Eigenvalues) , 10^(-(Max[10, precision - 20])) ], x_ /; x \[Element] Reals] // Sort)[[-1]]
+   , {ir, irreps}];
+    
+ 
+  thetalist = Table[
+    1/qd[ir] Sum[qd[ir1] rsym[ir, ir, ir1, {v, v}], {ir1, fusion[ir, ir]}, {v, 1, nv[ir, ir, ir1]}]
+    , {ir, irreps}];
+    
+  Do[
+   theta[irreps[[i]]] = thetalist[[i]]
+   , {i, 1, Length[irreps]}];
+
+  hlist = 
+   Table[Mod[Rationalize[Chop[1/(2 Pi I) Log[thetalist[[i]]], 10^(-20) ]], 1]
+   , {i, 1, Length[irreps]}];
+  
+  Do[
+   hvalue[irreps[[i]]] = hlist[[i]]
+   , {i, 1, numofirreps}];
+  
+  frobschurlist = Chop[ Table[
+     1/qdtot2 Sum[nv[ir, ir1, ir2] qd[ir1] qd[ir2] theta[ir1]^2/theta[ir2]^2, {ir1, irreps}, {ir2, fusion[ir, ir1]}]
+     , {ir, irreps}] , 10^(-20) ];
+  
+  Do[
+   frobschur[irreps[[i]]] = frobschurlist[[i]]
+   , {i, 1, numofirreps}];
+   
+  If[Not[MemberQ[frobschurlist, x_ /; Not[Chop[x - 1, 10^(-20)] == 0 || Chop[x + 1, 10^(-20)] == 0 || Chop[x, 10^(-20)] == 0]]],
+   frobschurlist = Round[frobschurlist];
+  ];
+  
+  smat = Chop[ 1/(qdtot) Table[ 
+      Sum[qd[ir3] theta[ir3] * nv[dual[ir1], ir2, ir3]/(theta[dual[ir1]] * theta[ir2]), {ir3, fusion[dual[ir1], ir2]}]
+        , {ir1, irreps}, {ir2, irreps}] , 10^(-20) ];
+  
+  cmat = SparseArray[
+    Table[{i, Position[irrepsdual, irreps[[i]]][[1, 1]]} -> 1, {i, 1, numofirreps}]
+      ] // Normal;
+  
+  tmat = DiagonalMatrix[thetalist];
+  
+  modular = (Chop[ smat.ConjugateTranspose[smat] - IdentityMatrix[numofirreps] , 10^(-20) ] // Flatten // Union) == {0};
+  
+  pplus = Sum[qd[ir]^2 theta[ir], {ir, irreps}];
+  pminus = Sum[qd[ir]^2 /theta[ir], {ir, irreps}];
+  modular2 = (Chop[ pplus pminus - qdtot2 , 10^(-20) ]) == 0;
+  If[modular != modular2, Print["The two ways of determining modularity do NOT agree!"]];
+  If[modular,
+   centralcharge = Chop[ 8/(2 Pi I) Log[pplus/qdtot] , 10^(-20) ] // Rationalize;
+   centralcharge = Mod[centralcharge, 8];
+   ];
+  
+  If[modular,
+  modularrelationsok =
+   (( Chop[ MatrixPower[smat.tmat, 3] - Exp[2 Pi I/8*centralcharge] smat.smat // Flatten , 10^(-20) ] // Union) == {0}) &&
+   (( Chop[ smat.smat - cmat , 10^(-20) ] // Flatten // Union) == {0});
+  ];
+  
+  
+  Print["The labels of the irreps are: ", irreps];
+  Print["Are the particles selfdual: ", selfdualvec];
+  Print["Are the particles simple currents: ", simplecurrentvec];
   Print["The Frobenius-Schur indicators are: ", frobschurlist];
   Print["The Frobenius-Perron dimensions are: ", fpdimvec // N];
   Print["The quantum dimensions are: ", qdimvec // N];
