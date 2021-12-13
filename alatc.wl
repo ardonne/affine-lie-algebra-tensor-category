@@ -107,6 +107,14 @@ Fsym::usage =
 	"Fsym[a,b,c,d,e,f,{v1,v2,v3,v4}] gives the F-symbol. The a,b,...,f label the particles \
 (lists of length 'rank'), while the v's (integers) label the four vertices."
 
+Fsymexact::usage =
+	"Fsymexact[a,b,c,d,e,f,{v1,v2,v3,v4}] gives the exact representation of the F-symbol. \
+The exact form of the F-symbols is \
+Exp[Pi I \[Alpha]] Sqrt[Sum[a[i] Cos[2 Pi z / l]^i, {i, 0, EulerPhi[l]/2 - 1}]], \
+where \[Alpha] and a[i] are rational. Typically, \[Alpha] \[Element] {0,1/2,1,-1/2} \
+(if one does not diagonalize the R-matrices). The exact F-symbols are given in terms of \
+\[Alpha] and a[i] as {\[Alpha], {a[0], a[1], ... }}."
+
 Fmat::usage =
 	"Fmat[a,b,c,d] gives the F-matrix. a,b,c,d label the particles \
 (lists of length 'rank')."
@@ -114,6 +122,24 @@ Fmat::usage =
 Rsym::usage =
 	"Rsym[a,b,c,{v1,v2}] gives the R-symbol. a,b,c label the particles \
 (lists of length 'rank'), while the v's (integers) label the two vertices."
+
+Rsyminv::usage =
+	"Rsyminv[a,b,c,{v1,v2}] gives the inverse R-symbol, calculated by taking the \
+approriate elements of the inverse of the R-matrix. a,b,c label the particles \
+(lists of length 'rank'), while the v's (integers) label the two vertices."
+
+Rsymexact::usage =
+	"Rsymexact[a,b,c,{v1,v2}] gives the exact representation of the R-symbol. \
+The exact form of the R-symbols is \
+Exp[Pi I \[Alpha]] Sqrt[Sum[a[i] Cos[2 Pi z / l]^i, {i, 0, EulerPhi[l]/2 - 1}]], \
+where \[Alpha] and a[i] are rational. \
+For the R-symbols corresponding to diagonal R-matrices, the R-symbol is a pure phase, so that
+the square root factor equals one. \
+The exact R-symbols are given in terms of \[Alpha] and a[i] as {\[Alpha], {a[0], a[1], ... }}."
+
+Rsyminvexact::usage =
+	"Rsyminvexact[a,b,c,{v1,v2}] gives the exact representation of the inverse R-symbol. \
+For the format, see the documentation in the accompanying notebook."
 
 Rmat::usage =
 	"Rmat[a,b,c,d] gives the R-matrix. a,b,c label the particles \
@@ -138,6 +164,25 @@ possiblesphericalpivotalstructures::usage =
 	"possiblesphericalpivotalstructures[] calculates the solutions to the pivotal equations, \
 but only returns the spherical ones (i.e., all coefficients equal to either +1 or -1). \
 Note that only one these solutions is actually realized by the selected quantum group!"
+
+findexactfsymbols::usage = 
+	"findexactfsymbols[] takes the numerical values of the F-symbols, and converts them \
+into an exact representation. If q = Exp[2 Pi I z / l], it is assumed that the F-symbols \
+take the form \
+Exp[Pi I \[Alpha]] Sqrt[Sum[a[i] Cos[2 Pi z / l]^i, {i, 0, EulerPhi[l]/2 - 1}]], \
+where \[Alpha] and a[i] are rational. Typically, \[Alpha] \[Element] {0,1/2,1,-1/2} \
+(if one does not diagonalize the R-matrices). The exact F-symbols are given in terms of \
+\[Alpha] and a[i] as {\[Alpha], {a[0], a[1], ... }}."
+	
+findexactrsymbols::usage = 
+	"findexactrsymbols[] takes the numerical values of the R-symbols, and converts them \
+into an exact representation. If q = Exp[2 Pi I z / l], it is assumed that the R-symbols \
+take the form \
+Exp[Pi I \[Alpha]] Sqrt[Sum[a[i] Cos[2 Pi z / l]^i, {i, 0, EulerPhi[l]/2 - 1}]], \
+where \[Alpha] and a[i] are rational. \
+For the R-symbols corresponding to diagonal R-matrices, the R-symbol is a pure phase, so that
+the square root factor equals one. \
+The exact R-symbols are given in terms of \[Alpha] and a[i] as {\[Alpha], {a[0], a[1], ... }}."	
 
 
 (* ::Section:: *)
@@ -172,7 +217,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-11-25\n\
+       "Last revision: 2021-12-13\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -298,6 +343,8 @@ typerankinfo=True;
 levelinfo=True;
 rootfacinfo=True;
 initfromlz=False;
+fsymbolsexactfound=False;
+rsymbolsexactfound=False;
 
 
 (* ::Subsection::Closed:: *)
@@ -308,9 +355,17 @@ qCG[j1_,m1x_,j2_,m2x_,j3_,m3x_,v_]:=qcg[j1,m1x,j2,m2x,j3,m3x,v];
 
 Fsym[a_,b_,c_,d_,e_,f_,vvec_]:=fsym[a,b,c,d,e,f,vvec];
 
+Fsymexact[a_,b_,c_,d_,e_,f_,vvec_]:=fsymexact[a,b,c,d,e,f,vvec];
+
 Fmat[a_,b_,c_,d_]:=fmat[a,b,c,d];
 
 Rsym[a_,b_,c_,vvec_]:=rsym[a,b,c,vvec];
+
+Rsyminv[a_,b_,c_,vvec_]:=rsyminv[a,b,c,vvec];
+
+Rsymexact[a_,b_,c_,vvec_]:=rsymexact[a,b,c,vvec];
+
+Rsyminvexact[a_,b_,c_,vvec_]:=rsyminvexact[a,b,c,vvec];
 
 Rmat[a_,b_,c_]:=rmat[a,b,c];
 
@@ -524,6 +579,8 @@ initialize[atype_, rr_] :=
     typeranklevelrootinitok = False;
     fsymbolscalculated = False;
     rsymbolscalculated = False;
+    fsymbolsexactfound = False;
+    rsymbolsexactfound = False;
     modulardatacalculated = False;
     pentagontobechecked = True;
     recheck = False;
@@ -589,6 +646,8 @@ initializelevel[lev_] :=
      typeranklevelrootinitok = False;
      fsymbolscalculated = False;
      rsymbolscalculated = False;
+     fsymbolsexactfound = False;
+     rsymbolsexactfound = False;
      modulardatacalculated = False;
      pentagontobechecked = True;
      recheck = False;
@@ -661,6 +720,8 @@ initializerootofunity[rootfac_] := Piecewise[{
        typeranklevelrootinitok = True;
        fsymbolscalculated = False;
        rsymbolscalculated = False;
+       fsymbolsexactfound = False;
+       rsymbolsexactfound = False;
        modulardatacalculated = False;
        recheck = False;
               
@@ -1408,7 +1469,7 @@ checkweightspaceorthogonality[] := Module[{maxdev, tempdev},
      Max[(Abs /@ Flatten[(basison[ir, w].gramm[ir, w].Transpose[basison[ir, w]] - IdentityMatrix[wdim[ir, w]])])];
     (*If[tempdev > maxdev, maxdev = tempdev];*)
     (*
-      Max deals beter with high precision numbers than > (Greater).
+      Max deals better with high precision numbers than > (Greater).
       This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
     *)
     maxdev=Max[maxdev,tempdev];   
@@ -1942,7 +2003,7 @@ checkorthonormality[] := Module[{maxdev, tempdev},
 
     (*If[tempdev > maxdev, maxdev = tempdev];*)
     (*
-     Max deals beter with high precision numbers than > (Greater).
+     Max deals better with high precision numbers than > (Greater).
      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
     *)
     maxdev=Max[maxdev,tempdev];           
@@ -2089,7 +2150,7 @@ checkpentagon[] := Module[{maxdev, tempdev},
                
        (*If[tempdev > maxdev, maxdev = tempdev];*)
       (*
-      Max deals beter with high precision numbers than > (Greater).
+      Max deals better with high precision numbers than > (Greater).
       This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
       *)
       
@@ -2587,7 +2648,7 @@ checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
 
       (*If[tempdev > maxdev, maxdev = tempdev];*)
       (*
-      Max deals beter with high precision numbers than > (Greater).
+      Max deals better with high precision numbers than > (Greater).
       This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
       *)
       If[NumberQ[tempdev],
@@ -2623,7 +2684,7 @@ checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
         
       (*If[tempdev > maxdev, maxdev = tempdev];*)
       (*
-      Max deals beter with high precision numbers than > (Greater).
+      Max deals better with high precision numbers than > (Greater).
       This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 .
       *)
       If[NumberQ[tempdev],
@@ -3391,6 +3452,466 @@ Presumably, there exists a different pivotal structure, such that all the quantu
 
 
 (* ::Subsection::Closed:: *)
+(*Routines to find an exact representation of the F - and R - symbols*)
+
+
+findexactabs[number_, cosdenom_, cosnum_] :=
+  Module[
+  {numberok, numberinternal, numprec, cosvec, matrix, matrixreduced, resultvec},
+   (* This routine gives the exact representation non-
+   negative real numbers *)
+   (* List with coefficients is returned *)
+   
+   numberok = False;
+   If[Chop[number, 10^(-20)] \[Element] Reals && Chop[number, 10^(-20)] >= 0, numberok = True];
+   
+   If[numberok,
+    
+    If[number == 0, 
+     resultvec = Table[0, {i, 0, EulerPhi[cosdenom]/2 - 1}]];
+    
+    If[number != 0,
+     If[ExactNumberQ[number], numberinternal = N[number, 100], numberinternal = number];
+     numprec = Floor[Precision[numberinternal]];
+     cosvec = Table[
+     N[Cos[2 Pi cosnum/cosdenom]^i, numprec]
+     , {i, 0, EulerPhi[cosdenom]/2 - 1}];
+     
+     AppendTo[cosvec, N[numberinternal, numprec]];
+     
+     matrix = 
+      Append[IdentityMatrix[Length[cosvec]], Round[10^numprec cosvec]] // Transpose;
+     
+     (* LatticeReduce implements the LLL algorithm. *)
+     
+     matrixreduced = LatticeReduce[matrix];
+     resultvec = -matrixreduced[[1, 1 ;; -3]]/matrixreduced[[1, -2]];
+     
+     ];
+    
+    resultvec,
+    
+    Print["The number is not a non-negative real number!"];
+    
+    ]
+   
+   ];
+
+
+makefsymbolsexact[cosdenom_, cosnum_] := Module[
+   {arglist, abs2fsyms, abs2rationalfsyms, abs2rationalfsymsunion, 
+    abs2result, firstpos, ratiotoresult, resultlist},
+   
+   (* We do not assume anymore that the fsymbols are either real, 
+      or purely imaginary (this is the case after calculating the 
+      f-symbols, i.e., if one does not diagonalize the R-matrices *)
+   (* So we write the f-symbols as a square root times a phase.  *)
+   (* In the exact representation, the square root is implicit, so only
+      the phase (converted to a rational number -1 < r/s \[LessEqual] 1) and the
+      coefficients under the square root are returned. *)
+   
+   arglist = Rationalize[Arg[Chop[fsym[Sequence @@ #] & /@ flist , 10^(-20)]]/Pi];
+   
+   abs2fsyms = Table[Abs[fsym[Sequence @@ fs]]^2, {fs, flist}];
+   
+   abs2rationalfsyms = Rationalize[#, 10^(-40)] & /@ abs2fsyms;
+   
+   abs2rationalfsymsunion = abs2rationalfsyms // Union;
+   
+   firstpos = Table[
+     Position[abs2rationalfsyms, abs2rationalfsymsunion[[i]], 1][[1, 1]]
+     , {i, 1, Length[abs2rationalfsymsunion]}];
+   
+   abs2result = 
+    Table[findexactabs[abs2fsyms[[firstpos[[i]]]], cosdenom, cosnum]
+      , {i, 1, Length[abs2rationalfsymsunion]}];
+   
+   Do[
+    ratiotoresult[abs2rationalfsymsunion[[i]]] = abs2result[[i]]
+    , {i, 1, Length[abs2rationalfsymsunion]}];
+   
+   resultlist = Table[
+     {arglist[[i]], ratiotoresult[abs2rationalfsyms[[i]]]}
+     , {i, 1, Length[abs2rationalfsyms]}];
+   
+   Do[
+    fsymexact[Sequence @@ flist[[i]]] = resultlist[[i]]
+    , {i, 1, Length[flist]}];
+   
+   Clear[arglist, abs2fsyms, abs2rationalfsyms, 
+    abs2rationalfsymsunion, firstpos, abs2result, ratiotoresult, 
+    resultlist];
+   
+   ];
+
+
+makersymbolsexact[cosdenom_, cosnum_] := Module[
+   {arglist, abs2rsyms, abs2rationalrsyms, abs2rationalrsymsunion, 
+    abs2result, firstpos, ratiotoresult, resultlist},
+   
+   (* We assume that the rsymbols take the same form as the fsymbols *)
+   (* So we write it as a square root times a phase *)
+   (* In the exact representation, the square root is implicit, so only
+      the overall phase and the coefficients under the square root are
+      returned. *)
+   
+   (* The R-symbols *)
+   
+   arglist = 
+    Rationalize[
+     Arg[Chop[rsym[Sequence @@ #] & /@ rlist , 10^(-20)]]/Pi];
+   
+   abs2rsyms = Table[Abs[rsym[Sequence @@ rs]]^2, {rs, rlist}];
+   
+   abs2rationalrsyms = Rationalize[#, 10^(-40)] & /@ abs2rsyms;
+   
+   abs2rationalrsymsunion = abs2rationalrsyms // Union;
+   
+   firstpos = Table[
+     Position[abs2rationalrsyms, abs2rationalrsymsunion[[i]], 1][[1, 1]]
+     , {i, 1, Length[abs2rationalrsymsunion]}];
+   
+   abs2result = 
+    Table[findexactabs[abs2rsyms[[firstpos[[i]]]], cosdenom,  cosnum]
+    , {i, 1, Length[abs2rationalrsymsunion]}];
+   
+   Do[
+    ratiotoresult[abs2rationalrsymsunion[[i]]] = abs2result[[i]]
+    , {i, 1, Length[abs2rationalrsymsunion]}];
+   
+   resultlist = Table[
+     {arglist[[i]], ratiotoresult[abs2rationalrsyms[[i]]]}
+     , {i, 1, Length[abs2rationalrsyms]}];
+   
+   Do[
+    rsymexact[Sequence @@ rlist[[i]]] = resultlist[[i]]
+    , {i, 1, Length[rlist]}];
+   
+   
+   (* The inverse R-symbols *)
+   
+   arglist = 
+    Rationalize[
+     Arg[Chop[rsyminv[Sequence @@ #] & /@ rlist , 10^(-20)]]/Pi];
+   
+   abs2rsyms = Table[Abs[rsyminv[Sequence @@ rs]]^2, {rs, rlist}];
+   
+   abs2rationalrsyms = Rationalize[#, 10^(-40)] & /@ abs2rsyms;
+   
+   abs2rationalrsymsunion = abs2rationalrsyms // Union;
+   
+   firstpos = Table[
+     Position[abs2rationalrsyms, abs2rationalrsymsunion[[i]], 1][[1, 1]]
+     , {i, 1, Length[abs2rationalrsymsunion]}];
+   
+   abs2result = 
+    Table[findexactabs[abs2rsyms[[firstpos[[i]]]], cosdenom, cosnum]
+    , {i, 1, Length[abs2rationalrsymsunion]}];
+   
+   Do[
+    ratiotoresult[abs2rationalrsymsunion[[i]]] = abs2result[[i]]
+    , {i, 1, Length[abs2rationalrsymsunion]}];
+   
+   resultlist = Table[
+     {arglist[[i]], ratiotoresult[abs2rationalrsyms[[i]]]}
+     , {i, 1, Length[abs2rationalrsyms]}];
+   
+   Do[
+    rsyminvexact[Sequence @@ rlist[[i]]] = resultlist[[i]]
+    , {i, 1, Length[rlist]}];
+   
+   Clear[arglist, abs2rsyms, abs2rationalrsyms, 
+    abs2rationalrsymsunion, firstpos, abs2result, ratiotoresult, 
+    resultlist];
+   
+   ];
+
+
+toexactvalue[fsexact_, cosdenom_, cosnum_] :=
+  Exp[fsexact[[1]]*Pi*I] *
+    Sqrt[fsexact[[2]].Table[Cos[2 Pi cosnum/cosdenom]^i, {i, 0, EulerPhi[cosdenom]/2 - 1}]];
+    
+toexactnumericalvalue[fsexact_, cosdenom_, cosnum_, prec_] :=
+  N[Exp[fsexact[[1]]*Pi*I] * 
+    Sqrt[fsexact[[2]].Table[Cos[2 Pi cosnum/cosdenom]^i, {i, 0, EulerPhi[cosdenom]/2 - 1}]], prec];    
+
+
+checkpentagonexactform[cosdenom_, cosnum_, prec_] := Module[
+   {maxdev, tempdev, cosvec, fsymexnum},
+   
+   If[prec < 100,
+    Print[
+      "The selected precision for checking the pentagon equations \
+with the exact F-symbols is smaller than 100. The value should be at \
+least 100; the default used is 200."];
+    ];
+   
+   If[prec >= 100,
+    pentholdsexact = False;
+    maxdev = 0;
+    cosvec = N[Table[Cos[2 Pi cosnum/cosdenom]^i, {i, 0, EulerPhi[cosdenom]/2 - 1}], prec];
+    
+    Do[
+     fsymexnum[Sequence @@ fs] = 
+       Exp[fsymexact[Sequence @@ fs][[1]]*Pi*I]*
+        Sqrt[(fsymexact[Sequence @@ fs][[2]]).cosvec];
+     , {fs, flist}];
+
+  Do[
+       tempdev = 
+        Abs[
+        Sum[(fsymexnum[f, c, d, e, g, gp, {v2, v3, v4, v1s}]*
+           fsymexnum[a, b, gp, e, f, fp, {v1, v1s, v5, v6}])
+        , {v1s, nv[f, gp, e]}] - 
+        Sum[(fsymexnum[a, b, c, g, f, h, {v1, v2, v2s, v3s}] *
+           fsymexnum[a, h, d, e, g, fp, {v3s, v3, v4s, v6}]*
+           fsymexnum[b, c, d, fp, h, gp, {v2s, v4s, v4, v5}])
+        , {h,  Quiet[Cases[fusion[b, c],
+            x_ /; MemberQ[fusion[a, x], g] && 
+            MemberQ[fusion[x, d], fp]]]}
+        , {v2s, nv[b, c, h]}
+        , {v3s, nv[a, h, g]}
+        , {v4s, nv[h, d, fp]}]];
+
+    (* If[tempdev > maxdev, maxdev = tempdev]; *)
+    (*
+     Max deals better with high precision numbers than > (Greater).
+     This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 . *)
+     maxdev = Max[maxdev, tempdev];
+
+      , {a, irreps}, {b, irreps}, {c, irreps}, {d, irreps}
+      , {f, fusion[a, b]}
+      , {g, fusion[f, c]}
+      , {e, fusion[g, d]}
+      , {gp, Cases[fusion[c, d], x_ /; MemberQ[fusion[f, x], e]]}
+      , {fp, Cases[fusion[b, gp], x_ /; MemberQ[fusion[a, x], e]]}
+      , {v1, nv[a, b, f]}
+      , {v2, nv[f, c, g]}
+      , {v3, nv[g, d, e]}
+      , {v4, nv[c, d, gp]}
+      , {v5, nv[b, gp, fp]}
+      , {v6, nv[a, fp, e]}
+   ];
+    
+    If[Chop[maxdev, 10^(prec - 20)] != 0,
+     Print["The pentagon equations were checked with the exact form of \
+the F-symbols, with precision ", prec, " but the pentagon equations are \
+not satisfied with accuracy ", prec - 20, ". The maximum deviation is ", maxdev, " :-( \
+Better check what went wrong!"];
+     ];
+    
+    If[Chop[maxdev, 10^(prec - 20)] == 0,
+     pentholdsexact = True;
+     Print["The pentagon euqations were checked with the exact form of the \
+F-symbols, with precision ", prec, " and they hold with accuracy ", 
+      Floor[Accuracy[maxdev]], " :-)"];
+     ];
+    
+    ];
+   
+   ];
+
+
+checkhexagonexactform[cosdenom_, cosnum_, prec_] := Module[
+   {maxdev, tempdev, cosvec, fsymexnum, rsymexnum, rsyminvexnum, accuracyobtained},
+   
+   If[prec < 100,
+    Print["The selected precision for checking the hexagon equations with \
+the exact F- and R-symbols is smaller than 100. The value should be at least 100; \
+the default used is 200."];
+   ];
+   
+   If[prec >= 100,
+    hexholdsexact = False;
+    maxdev = 0;
+    cosvec = N[Table[Cos[2 Pi cosnum/cosdenom]^i, {i, 0, EulerPhi[cosdenom]/2 - 1}], prec];
+    
+    Do[
+     fsymexnum[Sequence @@ fs] = 
+       Exp[fsymexact[Sequence @@ fs][[1]]*Pi*I] *
+        Sqrt[(fsymexact[Sequence @@ fs][[2]]).cosvec];
+     , {fs, flist}];
+     
+    Do[
+     rsymexnum[Sequence @@ rs] = 
+       Exp[rsymexact[Sequence @@ rs][[1]]*Pi*I] *
+        Sqrt[(rsymexact[Sequence @@ rs][[2]]).cosvec];
+     , {rs, rlist}];
+     
+    Do[
+     rsyminvexnum[Sequence @@ rs] = 
+       Exp[rsyminvexact[Sequence @@ rs][[1]]*Pi*I] *
+        Sqrt[(rsyminvexact[Sequence @@ rs][[2]]).cosvec];
+     , {rs, rlist}];
+    
+    Do[
+     tempdev = Abs[
+       Sum[
+       rsymexnum[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}]*
+       fsymexnum[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
+       rsymexnum[i[[3]], i[[2]], i[[6]], {v9, i[[7, 3]]}]
+       , {v8, nv[i[[1]], i[[2]], i[[5]]]}
+       , {v9, nv[i[[3]], i[[2]], i[[6]]]}]
+       -
+       Sum[
+       fsymexnum[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
+       rsymexnum[j, i[[2]], i[[4]], {v6, v7}]*
+       fsymexnum[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
+       , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
+             MemberQ[fusion[i[[2]], x], i[[4]]]]}
+       , {v5, nv[i[[1]], i[[3]], j]}
+       , {v6, nv[i[[2]], j, i[[4]]]}
+       , {v7, nv[i[[2]], j, i[[4]]]}]
+     ];
+     
+    (*If[tempdev > maxdev, maxdev =  tempdev];*)
+    (* Max deals better with high precision numbers than > (Greater).
+    This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 . *)
+     
+     maxdev = Max[maxdev, tempdev];
+ , {i, flist}];
+
+  Do[
+     tempdev = Abs[
+       Sum[
+       rsymexnum[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}]*
+       fsymexnum[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
+       rsymexnum[i[[3]], i[[2]], i[[6]], {v9, i[[7, 3]]}]
+       , {v8, nv[i[[1]], i[[2]], i[[5]]]}
+       , {v9, nv[i[[3]], i[[2]], i[[6]]]}]
+       -
+       Sum[
+       fsymexnum[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
+       rsymexnum[j, i[[2]], i[[4]], {v6, v7}]*
+       fsymexnum[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
+       , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
+             MemberQ[fusion[i[[2]], x], i[[4]]]]}
+       , {v5, nv[i[[1]], i[[3]], j]}
+       , {v6, nv[i[[2]], j, i[[4]]]}
+       , {v7, nv[i[[2]], j, i[[4]]]}]
+               
+    ];
+     
+    (*If[tempdev > maxdev, maxdev = tempdev];*)
+    (*Max deals better with high precision numbers than > (Greater).
+    This caused maxdev to remain 0,  even if it should have been f.i. 0``73.93384483647623 . *)
+     
+     maxdev = Max[maxdev, tempdev];
+        
+  , {i, flist}];
+    
+    If[Chop[maxdev, 10^(prec - 20)] != 0,
+     Print["The hexagon euqations were checked with the exact form of the \
+F- and R-symbols, with precision ", prec, " but the hexagon equations are not \
+satisfied with accuracy ", prec - 20, ". The maximum deviation is ", maxdev, " :-( \
+Better check what went wrong!"];
+     ];
+    
+    
+    If[Chop[maxdev, 10^(prec - 20)] == 0,
+     hexholdsexact = True;
+     Print["The hexagon euqations were checked with the exact form of the \
+F- and R-symbols, with precision ", prec, " and they hold with accuracy ", 
+     Floor[Accuracy[maxdev]], " :-)"];
+     ];
+    
+    
+    ];
+   
+   ];
+
+
+findexactfsymbols[] := With[{},
+      If[Not[typeranklevelrootinitok],
+       Print["The type of algebra, rank, level and/or rootfactor were not \
+(correctly) initialized, please do so first, followed by \
+calculating the F-symbols, before trying to find the exact form of the \
+F-symbols."];
+       ];
+   
+     If[typeranklevelrootinitok && Not[fsymbolscalculated],
+      Print["The F-symbols were not calculated. Please do so first, \
+before trying to find the exact form of the F-symbols."];
+      ];
+   
+    If[typeranklevelrootinitok && fsymbolscalculated,
+     Print["Trying to find the exact form of the F-symbols..."];
+    
+     If[uniform,
+     makefsymbolsexact[1/rootofunity*tmax, rootfactor];,
+     makefsymbolsexact[1/rootofunity, rootfactor/tmax];
+     ];
+    
+     If[pentagontobechecked,
+     Print["Checking the ", numofpentagonequations, 
+      " pentagon equations, using the exact form of the F-symbols..."];
+     
+     If[uniform,
+      checkpentagonexactform[1/rootofunity*tmax, rootfactor, 200];,
+      checkpentagonexactform[1/rootofunity, rootfactor/tmax, 200]
+      ];
+     
+     ,
+      Print["The pentagon equations were not checked using the exact form \
+of the F-symbols, because you opted to not check the pentagon equations. Proceed \
+with care!"];
+     ];
+    
+    fsymbolsexactfound = True;
+    
+    ];
+   
+   ];
+
+
+findexactrsymbols[] := With[{},
+      If[Not[typeranklevelrootinitok],
+       Print["The type of algebra, rank, level and/or rootfactor were not \
+(correctly) initialized, please do so first, followed by calculating \
+the F- and R-symbols, before trying to find the exact form of the R-symbols."];
+       ];
+   
+     If[typeranklevelrootinitok && Not[fsymbolscalculated],
+      Print["The F-symbols were not calculated. Please do so first, \
+followed by calculating the R-symbols, before trying to find the exact \
+form of the R-symbols."];
+      ];
+   
+    If[typeranklevelrootinitok && fsymbolscalculated && Not[rsymbolscalculated],
+      Print["The R-symbols were not calculated. Please do so first, before \
+trying to find the exact form of the R-symbols."];
+      ];
+   
+    If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated,
+       
+    Print["Trying to find the exact form of the R-symbols..."];
+    
+    If[uniform,
+     makersymbolsexact[1/rootofunity*tmax, rootfactor];,
+     makersymbolsexact[1/rootofunity, rootfactor/tmax];
+     ];
+    
+    If[fsymbolsexactfound,
+     Print["Checking the ", 2*Length[flist], " hexagon equations, \
+using the exact form of the F- and R-symbols..."];
+     If[uniform,
+      checkhexagonexactform[1/rootofunity*tmax, rootfactor, 200];,
+      checkhexagonexactform[1/rootofunity, rootfactor/tmax, 200];
+      ];
+     
+     ,
+     Print["The hexagon equations were not checked with the exact form of \
+the R-symbols, because the exact form of the F-symbols was not obtained."];
+     ];
+    
+    rsymbolsexactfound = True;
+    
+    ];
+   
+   ];
+
+
+(* ::Subsection::Closed:: *)
 (*Cleanup*)
 
 
@@ -3418,7 +3939,9 @@ clearvariables[] := Clear[
    hexagondeviation, hexholds, simplecurrentvec,
    qd, pivot, theta, hvalue, frobschur, dual, selfdual,
    uniform, canbenonuniform, rootfactorsuniform, rootfactorsnonuniform,
-   lval, zval
+   lval, zval,
+   fsymexact, rsymexact, rsyminvexact,
+   pentholdsexact, hexholdsexact
    ];
    
 clearglobalvariables[] := Clear[
@@ -3432,7 +3955,7 @@ clearglobalvariables[] := Clear[
  ];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*End `Private` Context*)
 
 
@@ -3443,4 +3966,4 @@ End[];
 (*End Package*)
 
 
-EndPackage[]
+EndPackage[];
