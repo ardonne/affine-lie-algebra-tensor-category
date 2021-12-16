@@ -3476,7 +3476,7 @@ Presumably, there exists a different pivotal structure, such that all the quantu
  ];
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Routines to find an exact representation of the F - and R - symbols*)
 
 
@@ -3885,6 +3885,7 @@ with care!"];
      ];
     
     fsymbolsexactfound = True;
+    Print["Done :-)"];
     
     ];
    
@@ -3935,6 +3936,8 @@ the R-symbols, because the exact form of the F-symbols was not obtained."];
     
     rsymbolsexactfound = True;
     
+    Print["Done :-)"];
+
     ];
    
    ];
