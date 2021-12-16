@@ -182,7 +182,25 @@ Exp[Pi I \[Alpha]] Sqrt[Sum[a[i] Cos[2 Pi z / l]^i, {i, 0, EulerPhi[l]/2 - 1}]],
 where \[Alpha] and a[i] are rational. \
 For the R-symbols corresponding to diagonal R-matrices, the R-symbol is a pure phase, so that
 the square root factor equals one. \
-The exact R-symbols are given in terms of \[Alpha] and a[i] as {\[Alpha], {a[0], a[1], ... }}."	
+The exact R-symbols are given in terms of \[Alpha] and a[i] as {\[Alpha], {a[0], a[1], ... }}."
+
+checkpentagonalgebraically::usage = 
+	"checkpentagonexactformalgebraically[] checks the pentagon equations algebraically, using \
+the exact form of the F-symbols. Note that this is much slower than checking the pentagon \
+equations for the exact form of the F-symbols numercially with high precision (say 200 digits)!"
+
+checkhexagonalgebraically::usage = 
+	"checkhexagonexactformalgebraically[] checks the hexagon equations algebraically, using \
+the exact form of the F- and R-symbols. Note that this is much slower than checking the hexagon \
+equations for the exact form of the F- and R-symbols numercially with high precision (say 200 digits)!"
+
+checkpentagonexactformnumerically::usage =
+	"checkpentagonexactformnumerically[] numerically checks the pentagon equations, using the exact \
+form of the F-symbols. The precision used is 200 digits."
+
+checkhexagonexactformnumerically::usage =
+	"checkhexagonexactformnumerically[] numerically checks the hexagon equations, using the exact \
+form of the F- and R-symbols. The precision used is 200 digits."
 
 
 (* ::Section:: *)
@@ -217,7 +235,7 @@ displayinfo[] := With[{},
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-12-13\n\
+       "Last revision: 2021-12-16\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -699,6 +717,13 @@ initializerootofunity[rootfac_] := Piecewise[{
        q = N[Exp[2 Pi I rootfactor rootofunity/tmax], precision];
        
        If[MemberQ[rootfactorsuniform, rootfac], uniform = True;, uniform = False;];
+       
+       If[uniform,
+       cosdenominator = 1/rootofunity*tmax;
+       cosnumerator = rootfactor;,
+       cosdenominator = 1/rootofunity;
+       cosnumerator = rootfactor/tmax;
+       ];
        
        If[uniform, irreps = irrepsuniform[type, rank, level];, irreps = irrepsnonuniform[type, rank, level];];       
        
@@ -3451,7 +3476,7 @@ Presumably, there exists a different pivotal structure, such that all the quantu
  ];
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Routines to find an exact representation of the F - and R - symbols*)
 
 
@@ -3702,7 +3727,7 @@ Better check what went wrong!"];
     
     If[Chop[maxdev, 10^(prec - 20)] == 0,
      pentholdsexact = True;
-     Print["The pentagon euqations were checked with the exact form of the \
+     Print["The pentagon equations were checked with the exact form of the \
 F-symbols, with precision ", prec, " and they hold with accuracy ", 
       Floor[Accuracy[maxdev]], " :-)"];
      ];
@@ -3801,7 +3826,7 @@ the default used is 200."];
   , {i, flist}];
     
     If[Chop[maxdev, 10^(prec - 20)] != 0,
-     Print["The hexagon euqations were checked with the exact form of the \
+     Print["The hexagon equations were checked with the exact form of the \
 F- and R-symbols, with precision ", prec, " but the hexagon equations are not \
 satisfied with accuracy ", prec - 20, ". The maximum deviation is ", maxdev, " :-( \
 Better check what went wrong!"];
@@ -3810,7 +3835,7 @@ Better check what went wrong!"];
     
     If[Chop[maxdev, 10^(prec - 20)] == 0,
      hexholdsexact = True;
-     Print["The hexagon euqations were checked with the exact form of the \
+     Print["The hexagon equations were checked with the exact form of the \
 F- and R-symbols, with precision ", prec, " and they hold with accuracy ", 
      Floor[Accuracy[maxdev]], " :-)"];
      ];
@@ -3841,6 +3866,8 @@ before trying to find the exact form of the F-symbols."];
      makefsymbolsexact[1/rootofunity*tmax, rootfactor];,
      makefsymbolsexact[1/rootofunity, rootfactor/tmax];
      ];
+     
+    Print["Found the exact form of the F-symbols :-)"];
     
      If[pentagontobechecked,
      Print["Checking the ", numofpentagonequations, 
@@ -3891,6 +3918,8 @@ trying to find the exact form of the R-symbols."];
      makersymbolsexact[1/rootofunity, rootfactor/tmax];
      ];
     
+    Print["Found the exact form of the R-symbols :-)"];
+    
     If[fsymbolsexactfound,
      Print["Checking the ", 2*Length[flist], " hexagon equations, \
 using the exact form of the F- and R-symbols..."];
@@ -3909,6 +3938,823 @@ the R-symbols, because the exact form of the F-symbols was not obtained."];
     ];
    
    ];
+
+
+(* ::Subsection::Closed:: *)
+(*Routines to check the exact representation of the F - and R - symbols numerically*)
+
+
+checkpentagonexactformnumerically[]:=With[{},
+
+If[Not[typeranklevelrootinitok],
+  Print["The type of algebra, rank, level and/or rootfactor were not \
+(correctly) initialized, please do so first, followed by \
+calculating the F-symbols and obtaining the exact form of the F-symbols \
+before trying to check the pentagon equations numerically, using the \
+exact form of the F-symbols."];
+];
+
+If[typeranklevelrootinitok && Not[fsymbolscalculated],
+  Print["The F-symbols were not calculated. Please do so first, \
+followd by obtaining the exact form of the F-symbols, \
+before trying to check the pentagon equations numerically, using the \
+exact form of the F-symbols."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && Not[fsymbolsexactfound],
+  Print["The exact form of the F-symbols was not obtained. Please do \
+so first, before trying to check the pentagon equations numerically, using the \
+exact form of the F-symbols."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && fsymbolsexactfound,
+  Print["Checking the ", numofpentagonequations, 
+      " pentagon equations numerically, using the exact form of the F-symbols..."];
+
+  checkpentagonexactform[cosdenominator, cosnumerator, 200];
+];
+
+];
+
+
+checkhexagonexactformnumerically[]:=With[{},
+
+If[Not[typeranklevelrootinitok],
+  Print["The type of algebra, rank, level and/or rootfactor were not \
+(correctly) initialized, please do so first, followed by \
+calculating the F- and R-symbols and obtaining the exact form of the \
+F- and R-symbols before trying to check the hexagon equations numerically, using the \
+exact form of the F- and R-symbols."];
+];
+
+If[typeranklevelrootinitok && Not[fsymbolscalculated],
+  Print["The F-symbols were not calculated. Please do so first, \
+followd by calculating the R-symbols and obtaining the exact form of \
+the F- and R-symbols, before trying to check the hexagon equations \
+numerically, using the exact form of the F- and R-symbols."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && Not[fsymbolsexactfound] && Not[rsymbolscalculated],
+  Print["The R-symbols were not calculated. Please do so first, \
+followd by obtaining the exact form of the F- and R-symbols, before \
+trying to check the hexagon equations numerically, using the \
+exact form of the F- and R-symbols."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && fsymbolsexactfound && Not[rsymbolscalculated],
+  Print["The R-symbols were not calculated. Please do so first, \
+followd by obtaining the exact form of the R-symbols, before \
+trying to check the hexagon equations numerically, using the \
+exact form of the F- and R-symbols."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && Not[fsymbolsexactfound] && Not[rsymbolsexactfound],
+  Print["The exact form of the F- and R-symbols were not obtained. Please do so first, \
+before trying to check the hexagon equations numerically, using the \
+exact form of the F- and R-symbols."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && Not[fsymbolsexactfound] && rsymbolsexactfound,
+  Print["The exact form of the F-symbols was not obtained. Please do so first, \
+before trying to check the hexagon equations numerically, using the \
+exact form of the F- and R-symbols."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && fsymbolsexactfound && Not[rsymbolsexactfound],
+  Print["The exact form of the R-symbols was not obtained. Please do so first, \
+before trying to check the hexagon equations numerically, using the \
+exact form of the F- and R-symbols."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && fsymbolsexactfound && rsymbolsexactfound,
+  Print["Checking the ", 2*Length[flist], " hexagon equations numerically, \
+using the exact form of the F- and R-symbols..."];
+  checkhexagonexactform[cosdenominator, cosnumerator, 200];
+];
+
+];
+
+
+(* ::Subsection::Closed:: *)
+(*Routines to check the exact representation of the F - and R - symbols algebraically*)
+
+
+removezeroes[coefs_, len_] := Module[{currlen, res},
+   res = coefs;
+   currlen = Length[res];
+   While[
+    currlen > len && res[[-1]] == 0,
+    res = res[[1 ;; -2]];
+    currlen = Length[res];
+    ];
+   res
+   ];
+   
+exactproduct[cosdenom_, factor1_, factor2_] := 
+  Module[{factor, sqrtproduct, len, currlen, minpol, minpolcoefs, 
+    reductioncoefs},
+   factor = factor1[[1]] + factor2[[1]];
+   factor = Mod[factor, 2, -1];
+   If[factor == -1, factor = 1];
+   minpol = MinimalPolynomial[Cos[2 Pi/cosdenom], x];
+   minpolcoefs = CoefficientList[minpol, x];
+   reductioncoefs = -minpolcoefs[[1 ;; -2]]/minpolcoefs[[-1]];
+   len = Length[factor1[[2]]];
+   sqrtproduct = 
+    Table[Sum[
+      factor1[[2, j1 + 1]]*factor2[[2, i - j1 + 1]]
+      , {j1, Max[0, i + 1 - len], Min[len - 1, i]}]
+    , {i, 0, 2 len - 2}];
+   sqrtproduct = removezeroes[sqrtproduct, len];
+   currlen = Length[sqrtproduct];
+   While[
+    currlen > len,
+    sqrtproduct = 
+     PadLeft[reductioncoefs, currlen - 1]*sqrtproduct[[-1]] +  sqrtproduct[[1 ;; -2]];
+    sqrtproduct = removezeroes[sqrtproduct, len];
+    currlen = Length[sqrtproduct];
+    ];
+   {factor, sqrtproduct}
+   ];
+
+exactproduct[cosdenom_, factor1_, factor2_, factor3_] := 
+  exactproduct[cosdenom, exactproduct[cosdenom, factor1, factor2], factor3];
+  
+exactproductnophase[cosdenom_, factor1_, factor2_] := 
+  Module[{sqrtproduct, len, currlen, minpol, minpolcoefs, 
+    reductioncoefs},
+   minpol = MinimalPolynomial[Cos[2 Pi/cosdenom], x];
+   minpolcoefs = CoefficientList[minpol, x];
+   reductioncoefs = -minpolcoefs[[1 ;; -2]]/minpolcoefs[[-1]];
+   len = Length[factor1];
+   sqrtproduct = 
+    Table[Sum[
+      factor1[[j1 + 1]]*factor2[[i - j1 + 1]]
+      , {j1, Max[0, i + 1 - len], Min[len - 1, i]}]
+    , {i, 0, 2 len - 2}];
+   sqrtproduct = removezeroes[sqrtproduct, len];
+   currlen = Length[sqrtproduct];
+   While[
+    currlen > len,
+    sqrtproduct = 
+     PadLeft[reductioncoefs, currlen - 1]*sqrtproduct[[-1]] + sqrtproduct[[1 ;; -2]];
+    sqrtproduct = removezeroes[sqrtproduct, len];
+    currlen = Length[sqrtproduct];
+    ];
+   sqrtproduct
+   ];  
+   
+   
+exactproductnophase[cosdenom_, factor1_, factor2_, factor3_] := 
+  exactproductnophase[cosdenom, exactproductnophase[cosdenom, factor1, factor2], factor3];
+  
+findsqrt[cosdenom_, cosnum_, factor_] := 
+  Module[{eqncoefs, numofvars, vars, sols, sol1, sol2, res, cosvec},
+   numofvars = EulerPhi[cosdenom]/2;
+   cosvec = 
+    Table[Cos[2 Pi cosnum/cosdenom]^i, {i, 0, numofvars - 1}];
+   If[Not[factor.cosvec >= 0], 
+    Print["The numerical value corresponding to the input does not \
+correspond to a non-negative number, the evaluation is aborted!"];
+    res = {};
+    ,
+    vars = Table[a[i], {i, 0, numofvars - 1}];
+    eqncoefs = exactproductnophase[cosdenom, vars, vars];
+    sols = Solve[eqncoefs == factor, vars, Rationals];
+    If[Length[sols] == 0,
+     res = {};
+     Print["No solution for the sqare root was found."];
+     ];
+    If[Length[sols] == 2,
+     sol1 = sols[[1, All, 2]];
+     sol2 = sols[[2, All, 2]];
+     If[
+      sol1.cosvec >= 0,
+      res = sol1;,
+      res = sol2;
+      ];
+     ];
+    If[Length[sols] != 2 && Length[sols] != 0,
+     res = {};
+     Print[
+      "The number of solutions to the equations was neither zero nor \
+two, something went wrong!" ];
+     ];
+    ];
+   res
+   ];   
+
+
+checkeqn[cosdenom_, cosnum_, equation_] := 
+  Module[
+  {eqn, eqntemp, lhs, rhs, lhsnum, rhsnum, eqnnumok, maxdenom, 
+    maxdenomfirstpos, value, nofractions, lhsnonnegative, 
+    rhsnonnegative, sqsumlhs, sqsumrhs},
+    
+   eqn = equation;
+   eqntemp = False;
+   If[eqn[[1]] == eqn[[2]], eqntemp = True];
+   lhs = Sum[toexactvalue[eqn[[1, i]], cosdenom, cosnum]
+   , {i, 1, Length[eqn[[1]]]}];
+   rhs = Sum[toexactvalue[eqn[[2, i]], cosdenom, cosnum]
+   , {i, 1, Length[eqn[[2]]]}];
+   lhsnum = N[lhs, 200];
+   rhsnum = N[rhs, 200];
+   eqnnumok = Chop[lhsnum - rhsnum, 10^(-190)] == 0;
+   If[Not[eqnnumok],
+    Print[
+      "Numerically, the equation does not hold, something went wrong!"];
+    ];
+   
+   If[Not[eqntemp] && eqnnumok,
+    
+    maxdenom = (Denominator /@ eqn[[All, All, 1]]) // Flatten // Max;
+    If[maxdenom > 1,
+     maxdenomfirstpos = 
+      Position[eqn[[All, All, 1]], x_ /; Denominator[x] == maxdenom][[1]];
+     value = eqn[[All, All, 1]][[Sequence @@ maxdenomfirstpos]];
+     eqn = {
+       Table[{eqn[[1, j, 1]] - value, eqn[[1, j, 2]]}
+       , {j, 1, Length[eqn[[1]]]}],
+       Table[{eqn[[2, j, 1]] - value, eqn[[2, j, 2]]}
+       , {j, 1, Length[eqn[[2]]]}]
+       };
+     ];
+    
+    
+    nofractions = FreeQ[eqn[[All, All, 1]] // Flatten, _Rational];
+    
+    If[nofractions,
+     
+     lhsnonnegative = Sum[
+        toexactvalue[eqn[[1, i]], cosdenom, cosnum]
+        , {i, 1, Length[eqn[[1]]]}] >= 0;
+     rhsnonnegative = Sum[
+        toexactvalue[eqn[[2, i]], cosdenom, cosnum]
+        , {i, 1, Length[eqn[[2]]]}] >= 0;
+     
+     If[
+      (lhsnonnegative && Not[rhsnonnegative]) || (rhsnonnegative && Not[lhsnonnegative]),
+      Print[
+       "The lhs is negative, the rhs is positve (or the otherway around). Something's wrong!"];
+      eqntemp = False;
+      ,
+      
+      If[Not[lhsnonnegative] && Not[rhsnonnegative],
+       (* Change the overall sign *)
+       eqn = {
+          Table[{Mod[eqn[[1, j, 1]] + 1, 2], eqn[[1, j, 2]]}
+          , {j, 1, Length[eqn[[1]]]}]
+          ,
+          Table[{Mod[eqn[[2, j, 1]] + 1, 2], eqn[[2, j, 2]]}
+          , {j, 1, Length[eqn[[2]]]}]
+          };
+       ,
+       (* Keep sign the same, 
+       make sure the phase argument is 0 or 1 (not -1 f.i.) *)
+       
+       eqn = {
+          Table[{Mod[eqn[[1, j, 1]], 2], eqn[[1, j, 2]]}
+          , {j, 1, Length[eqn[[1]]]}]
+          ,
+          Table[{Mod[eqn[[2, j, 1]], 2], eqn[[2, j, 2]]}
+          , {j, 1, Length[eqn[[2]]]}]
+          };
+       ];
+      
+      (* now we take the square of the lhs and rhs, 
+      for each term in the square, 
+      we find the square root (should be possible), 
+      and sum the result *)
+      
+      sqsumlhs = Sum[
+        If[i == j,
+        eqn[[1, i, 2]],
+         2 (-1)^(eqn[[1, i, 1]] + eqn[[1, j, 1]]) *
+         findsqrt[cosdenom, cosnum, exactproductnophase[cosdenom, eqn[[1, i, 2]], eqn[[1, j, 2]]]]
+         ]
+        , {i, 1, Length[eqn[[1]]]}, {j, i, Length[eqn[[1]]]}];
+      
+      sqsumrhs = Sum[
+        If[i == j,
+         eqn[[2, i, 2]],
+         2 (-1)^(eqn[[2, i, 1]] + eqn[[2, j, 1]]) *
+         findsqrt[cosdenom, cosnum, exactproductnophase[cosdenom, eqn[[2, i, 2]], eqn[[2, j, 2]]]]
+         ]
+        , {i, 1, Length[eqn[[2]]]}, {j, i, Length[eqn[[2]]]}];
+      
+      If[
+       sqsumlhs == sqsumrhs,
+       eqntemp = True,
+       eqntemp = False,
+       eqntemp = False
+       ];
+      
+      
+      ];
+     
+     ,
+     (*Print["There are complex phases left!"];*)
+     (*eqntemp=
+     eqn;*)
+     (* In this case, we need the method with phases, 
+     to check the equation. *)
+      
+     eqntemp = checkeqnwithphase[cosdenom, cosnum, eqn];
+     ];
+    
+    ];
+   eqntemp
+   ];   
+
+
+checkeqnwithphase[cosdenom_, cosnum_, equation_] := 
+  Module[
+  {eqn, eqnok, realpartok, imaginarypartok, eqnnumok, lhs, rhs,
+     lhsnum, rhsnum, arglhs, sqsumrhs, sqsumlhs, rhstab, rhstabsum, 
+    lhstab, lhstabsum, cosexpression, cosexpressionok, sign, rhseqn, 
+    lhseqn, rhseqntab, lhseqntab, sqsumrhsimpart, sqsumrhsimpartsum, 
+    sqsumlhsimpart, sqsumlhsimpartsum, cos2expression, 
+    cos2expressionok, sinexpression},
+   eqn = equation;
+   eqnok = False;
+   realpartok = False;
+   imaginarypartok = False;
+   lhs = Sum[toexactvalue[eqn[[1, i]], cosdenom, cosnum]
+   , {i, 1, Length[eqn[[1]]]}];
+   rhs = Sum[toexactvalue[eqn[[2, i]], cosdenom, cosnum]
+   , {i, 1, Length[eqn[[2]]]}];
+   lhsnum = N[lhs, 200];
+   rhsnum = N[rhs, 200];
+   eqnnumok = Chop[lhsnum - rhsnum, 10^(-190)] == 0;
+   If[Not[eqnnumok],
+    Print[
+      "Numerically, the equation does not hold, something went wrong!"];
+    ];
+   If[eqn[[1]] == eqn[[2]], eqnok = True;];
+   If[eqnnumok && Not[eqnok],
+    (* make sure that both the lhs and rhs are non-
+    negative real numbers *)
+    
+    arglhs = Rationalize[Arg[lhsnum]/Pi];
+    eqn = {
+      Table[{eqn[[1, j, 1]] - arglhs, eqn[[1, j, 2]]}
+      , {j, 1, Length[eqn[[1]]]}]
+      ,
+      Table[{eqn[[2, j, 1]] - arglhs, eqn[[2, j, 2]]}
+      , {j, 1, Length[eqn[[2]]]}]
+      };
+    
+    (* We first check that the real part of the lhs and rhs match up, 
+    below we check that the
+    imaginary parts of the lhs and rhs are zero *)
+    
+    (* we first take the square of both lhs and rhs, 
+    and find expressions for the square roots, 
+    so that in the resutls, there are no square roots left *)
+    
+    sqsumrhs = Flatten[Table[
+       If[i == j,
+        {2 eqn[[2, i, 1]], eqn[[2, i, 2]]},
+        {(eqn[[2, i, 1]] + eqn[[2, j, 1]]),
+        2 findsqrt[cosdenom, cosnum, exactproductnophase[cosdenom, eqn[[2, i, 2]], eqn[[2, j, 2]]]]}
+        ]
+       , {i, 1, Length[eqn[[2]]]}, {j, i, Length[eqn[[2]]]}], 1];
+    
+    sqsumlhs = Flatten[Table[
+       If[i == j,
+        {2 eqn[[1, i, 1]], eqn[[1, i, 2]]},
+        {(eqn[[1, i, 1]] + eqn[[1, j, 1]]),
+         2 findsqrt[cosdenom, cosnum, exactproductnophase[cosnum, eqn[[1, i, 2]], eqn[[1, j, 2]]]]}
+        ]
+       , {i, 1, Length[eqn[[1]]]}, {j, i, Length[eqn[[1]]]}], 1];
+    
+    (* to take the phases into account, we write e^i\phi = cos\phi + 
+    I sin\phi, and find an expression
+    for the cos\phi part, in terms of the numberfield we are using, 
+    and multiply it with results, which
+    do not contain square roots anymore  *)
+    
+    rhstab = DeleteCases[Table[
+       sign = Sign[Cos[Pi sqsumrhs[[i, 1]]]];
+       cosexpression = 
+        findexactabs[N[sign Cos[Pi sqsumrhs[[i, 1]]], 200], cosdenom, cosnum];
+       cosexpressionok = 
+        FullSimplify[
+         toexactvalue[{0, cosexpression}, cosdenom, cosnum]^2 - sign*Cos[Pi sqsumrhs[[i, 1]]] == 0
+           ];
+       If[cosexpressionok, Null,
+        Print[
+          "An expression for a cosine could not be checked exactly!"];,
+        Print[
+          "An expression for a cosine could not be checked \
+exactly!"];
+        ];
+       If[sign == 1,
+        cosexpression = 
+          exactproduct[cosdenom, {0, cosexpression}, {0, sqsumrhs[[i, 2]]}];
+        ];
+       If[sign == -1,
+        cosexpression = 
+          exactproduct[cosdenom, {1, cosexpression}, {0, sqsumrhs[[i, 2]]}];
+        ];
+       If[sign == 0,
+        cosexpression = Null;
+        ];
+       cosexpression
+       , {i, 1, Length[sqsumrhs]}], Null];
+    rhstabsum = 
+     Sum[((-1)^rhstab[[i, 1]]) rhstab[[i, 2]], {i, 1, Length[rhstab]}];
+    
+    lhstab = DeleteCases[Table[
+       sign = Sign[Cos[Pi sqsumlhs[[i, 1]]]];
+       cosexpression = 
+        findexactabs[N[sign Cos[Pi sqsumlhs[[i, 1]]], 200], cosdenom, cosnum];
+       cosexpressionok = 
+        FullSimplify[
+         toexactvalue[{0, cosexpression}, cosdenom, cosnum]^2 - sign*Cos[Pi sqsumlhs[[i, 1]]] == 0
+           ];
+       If[cosexpressionok, Null,
+        Print[
+          "An expression for a cosine could not be checked exactly!"];,
+        Print[
+          "An expression for a cosine could not be checked exactly!"];
+        ];
+       If[sign == 1,
+        cosexpression = 
+          exactproduct[cosdenom, {0, cosexpression}, {0, sqsumlhs[[i, 2]]}];
+        ];
+       If[sign == -1,
+        cosexpression = 
+          exactproduct[cosdenom, {1, cosexpression}, {0, sqsumlhs[[i, 2]]}];
+        ];
+       If[sign == 0,
+        cosexpression = Null;
+        ];
+       cosexpression
+       , {i, 1, Length[sqsumlhs]}], Null];
+    lhstabsum = 
+     Sum[((-1)^lhstab[[i, 1]]) lhstab[[i, 2]], {i, 1, Length[lhstab]}];
+    
+    (* checking the result *)
+    If[lhstabsum == rhstabsum,
+     realpartok = True;,
+     Print["The real parts of the equation to not match!"];,
+     Print["The real parts of the equation to not match!"];
+     ];
+    
+    (* for the imaginary part, we first evaluate sin\phi = +/- sqrt(1-cos\phi^2),
+    and multiply it with the sqrts of the equation. 
+    we then take the sqruare of the result, 
+    and find expressions for the sqrts appearing, 
+    which turns out to be possible.
+    finally, we add things upp to see if it all sums to zero as it should *)
+    
+    rhseqn = eqn[[2]];
+    rhseqntab = DeleteCases[
+      Table[
+       sign = Sign[Sin[Pi rhseqn[[i, 1]]]];
+       cos2expression = 
+        findexactabs[N[Cos[Pi rhseqn[[i, 1]]]^2, 200], cosdenom, cosnum];
+       cos2expressionok = 
+        FullSimplify[
+         toexactvalue[{0, cos2expression}, cosdenom, cosnum]^2 - Cos[Pi rhseqn[[i, 1]]]^2 == 0
+           ];
+       If[cos2expressionok, Null,
+        Print[
+          "An expression for a cosine could not be checked exactly!"];,
+        Print[
+          "An expression for a cosine could not be checked exactly!"];
+        ];
+       If[sign == 1, 
+        sinexpression = {0, Table[If[i == 1, 1, 0], {i, 1, Length[cos2expression]}] - cos2expression}];
+       If[sign == -1, 
+        sinexpression = {1, Table[If[i == 1, 1, 0], {i, 1, Length[cos2expression]}] - cos2expression}];
+       If[sign == 0, Null, 
+        exactproduct[cosdenom, sinexpression, {0, rhseqn[[i, 2]]}]]
+       , {i, 1, Length[rhseqn]}]
+      , Null];
+    sqsumrhsimpart = Flatten[Table[
+       If[i == j,
+        {2 rhseqntab[[i, 1]], rhseqntab[[i, 2]]}
+        ,
+        {(rhseqntab[[i, 1]] + rhseqntab[[j, 1]])
+        ,
+        2 findsqrt[cosdenom, cosnum, exactproductnophase[cosdenom, rhseqntab[[i, 2]], rhseqntab[[j, 2]]]]}
+        ]
+       , {i, 1, Length[rhseqntab]}, {j, i, Length[rhseqntab]}], 1];
+    sqsumrhsimpartsum = 
+     Sum[(-1)^(sqsumrhsimpart[[i, 1]]) sqsumrhsimpart[[i, 2]]
+     , {i, 1, Length[sqsumrhsimpart]}];
+    If[sqsumrhsimpartsum == 0, 
+     sqsumrhsimpartsum = Table[0, {i, 1, Length[cos2expression]}];];
+    
+    lhseqn = eqn[[1]];
+    lhseqntab = DeleteCases[
+      Table[
+       sign = Sign[Sin[Pi lhseqn[[i, 1]]]];
+       cos2expression = 
+        findexactabs[N[Cos[Pi lhseqn[[i, 1]]]^2, 200], cosdenom, cosnum];
+       cos2expressionok = 
+        FullSimplify[
+         toexactvalue[{0, cos2expression}, cosdenom, cosnum]^2 - Cos[Pi lhseqn[[i, 1]]]^2 == 0
+           ];
+       If[cos2expressionok, Null,
+        Print[
+          "An expression for a cosine could not be checked exactly!"];,
+        Print[
+          "An expression for a cosine could not be checked exactly!"];
+        ];
+       
+       If[sign == 1, 
+        sinexpression = {0, Table[If[i == 1, 1, 0], {i, 1, Length[cos2expression]}] - cos2expression}];
+       If[sign == -1, 
+        sinexpression = {1, Table[If[i == 1, 1, 0], {i, 1, Length[cos2expression]}] - cos2expression}];
+       
+       If[sign == 0, Null, 
+        exactproduct[cosdenom, sinexpression, {0, lhseqn[[i, 2]]}]]
+       , {i, 1, Length[lhseqn]}]
+      , Null];
+    sqsumlhsimpart = Flatten[Table[
+       If[i == j,
+        {2 lhseqntab[[i, 1]], lhseqntab[[i, 2]]}
+        ,
+        {(lhseqntab[[i, 1]] + lhseqntab[[j, 1]]),
+         2 findsqrt[cosdenom, cosnum, exactproductnophase[cosdenom, lhseqntab[[i, 2]], lhseqntab[[j, 2]]]]}
+        ]
+       , {i, 1, Length[lhseqntab]}, {j, i, Length[lhseqntab]}], 1];
+    sqsumlhsimpartsum = 
+     Sum[(-1)^(sqsumlhsimpart[[i, 1]]) sqsumlhsimpart[[i, 2]]
+     , {i, 1, Length[sqsumlhsimpart]}];
+    If[sqsumlhsimpartsum == 0, 
+     sqsumlhsimpartsum = Table[0, {i, 1, Length[cos2expression]}];];
+    
+    (* check the result *)
+    
+    If[sqsumlhsimpartsum == sqsumrhsimpartsum == 
+      Table[0, {i, 1, Length[cos2expression]}],
+     imaginarypartok = True;,
+     Print["The imaginary parts of the equation to not match!"];,
+     Print["The imaginary parts of the equation to not match!"];
+     ];
+    
+    If[realpartok && imaginarypartok,
+     eqnok = True;
+     ];
+    
+    ];
+   
+   eqnok
+   
+   ];
+
+
+checkpentagonexactformalgebraically[cosdenom_, cosnum_] := Module[
+   {eqnok, eqn},
+   
+   Do[
+    eqn = {
+      Table[
+       exactproduct[
+        cosdenom,
+        fsymexact[f, c, d, e, g, gp, {v2, v3, v4, v1s}],
+        fsymexact[a, b, gp, e, f, fp, {v1, v1s, v5, v6}]
+        ]
+       , {v1s, alatc`Private`nv[f, gp, e]}]
+      ,
+      Flatten[
+       Table[
+        exactproduct[
+         cosdenom,
+         fsymexact[a, b, c, g, f, h, {v1, v2, v2s, v3s}],
+         fsymexact[a, h, d, e, g, fp, {v3s, v3, v4s, v6}],
+         fsymexact[b, c, d, fp, h, gp, {v2s, v4s, v4, v5}]
+         ]
+        , {h, Quiet[Cases[fusion[b, c], x_ /; MemberQ[fusion[a, x], g] && MemberQ[fusion[x, d], fp]]]}
+        , {v2s, nv[b, c, h]}
+        , {v3s, nv[a, h, g]}
+        , {v4s, nv[h, d, fp]}
+        ]
+       , 3]
+      };
+    
+    eqnok = checkeqn[cosdenom, cosnum, eqn];
+    
+    If[Not[eqnok],
+     pentholdsalgebraically = False;
+     Print[
+      "The exact form of the F-symbols do not satisfy at least one of \
+the pentagon equations. The check will be aborted :-("];
+     Break[];
+     ];
+    
+    , {a, irreps}
+    , {b, irreps}
+    , {c, irreps}
+    , {d, irreps}
+    , {f, fusion[a, b]}
+    , {g, fusion[f, c]}
+    , {e, fusion[g, d]}
+    , {gp, Cases[fusion[c, d], x_ /; MemberQ[fusion[f, x], e]]}
+    , {fp, Cases[fusion[b, gp], x_ /; MemberQ[fusion[a, x], e]]}
+    , {v1, nv[a, b, f]}
+    , {v2, nv[f, c, g]}
+    , {v3, nv[g, d, e]}
+    , {v4, nv[c, d, gp]}
+    , {v5, nv[b, gp, fp]}
+    , {v6, nv[a, fp, e]}
+    ];
+   
+   If[eqnok,
+    pentholdsalgebraically = True;
+    Print[
+     "It was checked algebraically that the exact form of the \
+F-symbols satisfy the pentagon equations :-)"];
+    ];
+   
+   ];
+
+
+checkhexagonexactformalgebraically[cosdenom_, cosnum_] := Module[
+   {eqnok, eqn},
+   
+   Do[
+    eqn = {
+      Flatten[
+       Table[
+        exactproduct[
+         cosdenom,
+         rsymexact[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}],
+         fsymexact[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}],
+         rsymexact[i[[3]], i[[2]], i[[6]], {v9, i[[7, 3]]}]
+         ]
+        , {v8, nv[i[[1]], i[[2]], i[[5]]]}
+        , {v9, nv[i[[3]], i[[2]], i[[6]]]}]
+       , 1]
+      ,
+      Flatten[
+       Table[
+        exactproduct[
+         cosdenom,
+         fsymexact[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}], 
+         rsymexact[j, i[[2]], i[[4]], {v6, v7}],
+         fsymexact[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
+         ]
+        , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] && MemberQ[fusion[i[[2]], x], i[[4]]]]}
+        , {v5, nv[i[[1]], i[[3]], j]}
+        , {v6, nv[i[[2]], j, i[[4]]]}
+        , {v7, nv[i[[2]], j, i[[4]]]}
+        ]
+       , 3]
+      };
+    
+    eqnok = checkeqn[cosdenom, cosnum, eqn];
+    
+    If[Not[eqnok],
+     hexholdsalgebraically = False;
+     Print[
+      "The exact form of the F- and R-symbols do not satisfy at least \
+one of the hexagon equations. The check will be aborted :-("];
+     Break[];
+     ];
+    
+    , {i, flist}];
+   
+   
+   If[eqnok,
+    
+    Do[
+      eqn = {
+        Flatten[
+         Table[
+          exactproduct[
+           cosdenom,
+           rsyminvexact[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}],
+           fsymexact[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}],
+           rsyminvexact[i[[3]], i[[2]], i[[6]], {v9, i[[7, 3]]}]
+           ]
+          , {v8, nv[i[[1]], i[[2]], i[[5]]]}
+          , {v9, nv[i[[3]], i[[2]], i[[6]]]}]
+         , 1]
+        ,
+        Flatten[
+         Table[
+          exactproduct[
+           cosdenom,
+           fsymexact[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}], 
+           rsyminvexact[j, i[[2]], i[[4]], {v6, v7}],
+           fsymexact[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
+           ]
+          , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] && MemberQ[fusion[i[[2]], x], i[[4]]]]}
+          , {v5, nv[i[[1]], i[[3]], j]}
+          , {v6, nv[i[[2]], j, i[[4]]]}
+          , {v7, nv[i[[2]], j, i[[4]]]}
+          ]
+         , 3]
+        };
+      
+      eqnok = checkeqn[cosdenom, cosnum, eqn];
+      
+      If[Not[eqnok],
+       hexholdsalgebraically = False;
+       Print[
+        "The exact form of the F- and R-symbols do not satisfy at \
+least one of the hexagon equations. The check will be aborted :-("];
+       Break[];
+       ];
+      
+      , {i, flist}];
+    
+    ];
+   
+   If[eqnok,
+    hexholdsalgebraically = True;
+    Print[
+     "It was checked algebraically that the exact form of the F- and \
+R-symbols satisfy the hexagon equations :-)"];
+    ];
+   
+   ];
+
+
+checkpentagonalgebraically[]:=With[{},
+
+If[Not[typeranklevelrootinitok],
+  Print["The type of algebra, rank, level and/or rootfactor were not \
+(correctly) initialized, please do so first, followed by \
+calculating the F-symbols and obtaining the exact form of the F-symbols \
+before trying to check the pentagon equations algebraically."];
+];
+
+If[typeranklevelrootinitok && Not[fsymbolscalculated],
+  Print["The F-symbols were not calculated. Please do so first, \
+followd by obtaining the exact form of the F-symbols, \
+before trying to check the pentagon equations algebraically."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && Not[fsymbolsexactfound],
+  Print["The exact form of the F-symbols was not obtained. Please do \
+so first, before trying to check the pentagon equations algebraically."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && fsymbolsexactfound,
+  Print["Checking the ", numofpentagonequations, 
+      " pentagon equations algebraically..."];
+  checkpentagonexactformalgebraically[cosdenominator,cosnumerator];
+];
+
+];
+
+
+checkhexagonalgebraically[]:=With[{},
+
+If[Not[typeranklevelrootinitok],
+  Print["The type of algebra, rank, level and/or rootfactor were not \
+(correctly) initialized, please do so first, followed by \
+calculating the F- and R-symbols and obtaining the exact form of the \
+F- and R-symbols before trying to check the hexagon equations algebraically."];
+];
+
+If[typeranklevelrootinitok && Not[fsymbolscalculated],
+  Print["The F-symbols were not calculated. Please do so first, \
+followd by calculating the R-symbols and obtaining the exact form of \
+the F- and R-symbols, before trying to check the hexagon equations \
+algebraically."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && Not[fsymbolsexactfound] && Not[rsymbolscalculated],
+  Print["The R-symbols were not calculated. Please do so first, \
+followd by obtaining the exact form of the F- and R-symbols, before \
+trying to check the hexagon equations algebraically."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && fsymbolsexactfound && Not[rsymbolscalculated],
+  Print["The R-symbols were not calculated. Please do so first, \
+followd by obtaining the exact form of the R-symbols, before \
+trying to check the hexagon equations algebraically."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && Not[fsymbolsexactfound] && Not[rsymbolsexactfound],
+  Print["The exact form of the F- and R-symbols were not obtained. Please do so first, \
+before trying to check the hexagon equations algebraically."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && Not[fsymbolsexactfound] && rsymbolsexactfound,
+  Print["The exact form of the F-symbols was not obtained. Please do so first, \
+before trying to check the hexagon equations algebraically."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && fsymbolsexactfound && Not[rsymbolsexactfound],
+  Print["The exact form of the R-symbols was not obtained. Please do so first, \
+before trying to check the hexagon equations algebraically."];
+];
+
+If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && fsymbolsexactfound && rsymbolsexactfound,
+  Print["Checking the ", 2*Length[flist], " hexagon equations algebraically..."];
+  checkhexagonexactformalgebraically[cosdenominator,cosnumerator];
+];
+
+];
 
 
 (* ::Subsection::Closed:: *)
@@ -3941,7 +4787,9 @@ clearvariables[] := Clear[
    uniform, canbenonuniform, rootfactorsuniform, rootfactorsnonuniform,
    lval, zval,
    fsymexact, rsymexact, rsyminvexact,
-   pentholdsexact, hexholdsexact
+   pentholdsexact, hexholdsexact,
+   cosdenominator, cosnumerator,
+   pentholdsalgebraically, hexholdsalgebraically
    ];
    
 clearglobalvariables[] := Clear[
