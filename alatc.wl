@@ -210,7 +210,7 @@ form of the F- and R-symbols. The precision used is 200 digits."
 Begin["`Private`"];
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*General functions*)
 
 
@@ -229,13 +229,14 @@ displayinfo[] := With[{},
        FontFamily -> "Source Sans Pro"],
       Style[ "Authors: Eddy Ardonne\n" , FontSize -> 15, 
        FontFamily -> "Source Sans Pro", Bold],
-      Style[ "Many thanks to: Eric Rowell, Steve Simon, Joost Slingerland, Gert Vercleyen\n" , 
+      Style[ "Many thanks to: Fran\[CCedilla]ois Brunault, Achim Krause, Eric Rowell, \
+Steve Simon, Joost Slingerland, Gert Vercleyen\n" , 
        FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-12-16\n\
+       "Last revision: 2021-12-17\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
