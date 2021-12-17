@@ -210,7 +210,7 @@ form of the F- and R-symbols. The precision used is 200 digits."
 Begin["`Private`"];
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*General functions*)
 
 
@@ -3719,14 +3719,14 @@ least 100; the default used is 200."];
       , {v6, nv[a, fp, e]}
    ];
     
-    If[Chop[maxdev, 10^(prec - 20)] != 0,
+    If[Chop[maxdev, 10^(-(prec - 20))] != 0,
      Print["The pentagon equations were checked with the exact form of \
 the F-symbols, with precision ", prec, " but the pentagon equations are \
 not satisfied with accuracy ", prec - 20, ". The maximum deviation is ", maxdev, " :-( \
 Better check what went wrong!"];
      ];
     
-    If[Chop[maxdev, 10^(prec - 20)] == 0,
+    If[Chop[maxdev, 10^(-(prec - 20))] == 0,
      pentholdsexact = True;
      Print["The pentagon equations were checked with the exact form of the \
 F-symbols, with precision ", prec, " and they hold with accuracy ", 
@@ -3826,7 +3826,7 @@ the default used is 200."];
         
   , {i, flist}];
     
-    If[Chop[maxdev, 10^(prec - 20)] != 0,
+    If[Chop[maxdev, 10^(-(prec - 20))] != 0,
      Print["The hexagon equations were checked with the exact form of the \
 F- and R-symbols, with precision ", prec, " but the hexagon equations are not \
 satisfied with accuracy ", prec - 20, ". The maximum deviation is ", maxdev, " :-( \
@@ -3834,7 +3834,7 @@ Better check what went wrong!"];
      ];
     
     
-    If[Chop[maxdev, 10^(prec - 20)] == 0,
+    If[Chop[maxdev, 10^(-(prec - 20))] == 0,
      hexholdsexact = True;
      Print["The hexagon equations were checked with the exact form of the \
 F- and R-symbols, with precision ", prec, " and they hold with accuracy ", 
