@@ -184,6 +184,9 @@ For the R-symbols corresponding to diagonal R-matrices, the R-symbol is a pure p
 the square root factor equals one. \
 The exact R-symbols are given in terms of \[Alpha] and a[i] as {\[Alpha], {a[0], a[1], ... }}."
 
+findexactmodulardata::usage =
+	"findexactmodulardata[] converts the numerical modular data into an exact representation."
+
 checkpentagonalgebraically::usage = 
 	"checkpentagonexactformalgebraically[] checks the pentagon equations algebraically, using \
 the exact form of the F-symbols. Note that this is much slower than checking the pentagon \
@@ -193,6 +196,11 @@ checkhexagonalgebraically::usage =
 	"checkhexagonexactformalgebraically[] checks the hexagon equations algebraically, using \
 the exact form of the F- and R-symbols. Note that this is much slower than checking the hexagon \
 equations for the exact form of the F- and R-symbols numercially with high precision (say 200 digits)!"
+
+checkmodulardataalgebraically::usage = 
+	"checkmodulardataalgebraically[] checks the exact form of the modular data algebraically using \
+the exact form of the F- and R-symbols. Note that this is much slower than the standard check of \
+the exact form of the modular data, which is done numerically with high (i.e., 200 digit) precision."
 
 checkpentagonexactformnumerically::usage =
 	"checkpentagonexactformnumerically[] numerically checks the pentagon equations, using the exact \
@@ -236,7 +244,7 @@ Steve Simon, Joost Slingerland, Gert Vercleyen\n" ,
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2021-12-17\n\
+       "Last revision: 2022-02-05\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -364,6 +372,7 @@ rootfacinfo=True;
 initfromlz=False;
 fsymbolsexactfound=False;
 rsymbolsexactfound=False;
+modulardataexactfound=False;
 
 
 (* ::Subsection::Closed:: *)
@@ -601,6 +610,7 @@ initialize[atype_, rr_] :=
     fsymbolsexactfound = False;
     rsymbolsexactfound = False;
     modulardatacalculated = False;
+    modulardataexactfound = False;
     pentagontobechecked = True;
     recheck = False;
     clearvariables[];
@@ -668,6 +678,7 @@ initializelevel[lev_] :=
      fsymbolsexactfound = False;
      rsymbolsexactfound = False;
      modulardatacalculated = False;
+     modulardataexactfound = False;
      pentagontobechecked = True;
      recheck = False;
      level = lev;
@@ -749,6 +760,7 @@ initializerootofunity[rootfac_] := Piecewise[{
        fsymbolsexactfound = False;
        rsymbolsexactfound = False;
        modulardatacalculated = False;
+       modulardataexactfound = False;
        recheck = False;
               
        Print["You can proceed to calculate the F-symbols :-)"];
@@ -3133,12 +3145,12 @@ before calculating the modular data."];
   Print["The scaling dimensions modulo one (calculated from the twists) are: ", hlist];
   
   If[fmatunitary && Not[qdimspositive],
-   Print["The f-matrices are all unitary, but the quantum dimensions are not all positive. \
+   Print["The F-matrices are all unitary, but the quantum dimensions are not all positive. \
 Presumably, there exists a different pivotal structure, such that all the quantum dimensions are positive."];
    ];
 
   If[Not[fmatunitary] && qdimspositive,
-   Print["The f-matrices are not all unitary, but the quantum dimensions are all positive. Better check!"];
+   Print["The F-matrices are not all unitary, but the quantum dimensions are all positive. Better check!"];
    ];
   
   If[
@@ -3317,7 +3329,8 @@ not all either +1 or -1, better check!"];
   Print["The specified pivotal structure is the same as the one coming from the quantum group."];,
   Print["The specified pivotal structure differs from the one coming form the \
 quantum group, namely ", pivotlistquantumgroup,". The calculated modular data is not \
-realized by the selected quantum group."]
+realized by the selected quantum group. If you later want to obtain the exact representation
+of the modular data for the quantum group, you should run calculatemodulardata[] first."]
   ];  
     
     
@@ -3400,12 +3413,12 @@ realized by the selected quantum group."]
   Print["The scaling dimensions modulo one (calculated from the twists) are: ", hlist];
   
   If[fmatunitary && Not[qdimspositive],
-   Print["The f-matrices are all unitary, but the quantum dimensions are not all positive. \
+   Print["The F-matrices are all unitary, but the quantum dimensions are not all positive. \
 Presumably, there exists a different pivotal structure, such that all the quantum dimensions are positive."];
    ];
 
   If[Not[fmatunitary] && qdimspositive,
-   Print["The f-matrices are not all unitary, but the quantum dimensions are all positive. Better check!"];
+   Print["The F-matrices are not all unitary, but the quantum dimensions are all positive. Better check!"];
    ];
   
   If[
@@ -3453,7 +3466,7 @@ Presumably, there exists a different pivotal structure, such that all the quantu
     Print["The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 = S^2 = C are not satisfied :-("]
   ];
 
-  modulardatacalculated=True;
+  modulardatacalculated = pivotlistquantumgroup==pivotlist;
   
   Global`FPdimlist = fpdimvec;
   Global`qdimlist = qdimvec;
@@ -3472,6 +3485,8 @@ Presumably, there exists a different pivotal structure, such that all the quantu
   
   Print["Done :-)"];
   
+  
+  
   ];
   
  ];
@@ -3484,8 +3499,7 @@ Presumably, there exists a different pivotal structure, such that all the quantu
 findexactabs[number_, cosdenom_, cosnum_] :=
   Module[
   {numberok, numberinternal, numprec, cosvec, matrix, matrixreduced, resultvec},
-   (* This routine gives the exact representation non-
-   negative real numbers *)
+   (* This routine gives the exact representation non-negative real numbers *)
    (* List with coefficients is returned *)
    
    numberok = False;
@@ -3500,7 +3514,7 @@ findexactabs[number_, cosdenom_, cosnum_] :=
      If[ExactNumberQ[number], numberinternal = N[number, 100], numberinternal = number];
      numprec = Floor[Precision[numberinternal]];
      cosvec = Table[
-     N[Cos[2 Pi cosnum/cosdenom]^i, numprec]
+     N[If[i > 0, Cos[2 Pi cosnum/cosdenom]^i, 1], numprec]
      , {i, 0, EulerPhi[cosdenom]/2 - 1}];
      
      AppendTo[cosvec, N[numberinternal, numprec]];
@@ -3655,11 +3669,11 @@ makersymbolsexact[cosdenom_, cosnum_] := Module[
 
 toexactvalue[fsexact_, cosdenom_, cosnum_] :=
   Exp[fsexact[[1]]*Pi*I] *
-    Sqrt[fsexact[[2]].Table[Cos[2 Pi cosnum/cosdenom]^i, {i, 0, EulerPhi[cosdenom]/2 - 1}]];
+    Sqrt[fsexact[[2]].Table[If[i > 0, Cos[2 Pi cosnum/cosdenom]^i, 1], {i, 0, EulerPhi[cosdenom]/2 - 1}]];
     
 toexactnumericalvalue[fsexact_, cosdenom_, cosnum_, prec_] :=
   N[Exp[fsexact[[1]]*Pi*I] * 
-    Sqrt[fsexact[[2]].Table[Cos[2 Pi cosnum/cosdenom]^i, {i, 0, EulerPhi[cosdenom]/2 - 1}]], prec];    
+    Sqrt[fsexact[[2]].Table[If[i > 0, Cos[2 Pi cosnum/cosdenom]^i, 1], {i, 0, EulerPhi[cosdenom]/2 - 1}]], prec];    
 
 
 checkpentagonexactform[cosdenom_, cosnum_, prec_] := Module[
@@ -3675,7 +3689,7 @@ least 100; the default used is 200."];
    If[prec >= 100,
     pentholdsexact = False;
     maxdev = 0;
-    cosvec = N[Table[Cos[2 Pi cosnum/cosdenom]^i, {i, 0, EulerPhi[cosdenom]/2 - 1}], prec];
+    cosvec = N[Table[If[i > 0, Cos[2 Pi cosnum/cosdenom]^i, 1], {i, 0, EulerPhi[cosdenom]/2 - 1}], prec];
     
     Do[
      fsymexnum[Sequence @@ fs] = 
@@ -3750,7 +3764,7 @@ the default used is 200."];
    If[prec >= 100,
     hexholdsexact = False;
     maxdev = 0;
-    cosvec = N[Table[Cos[2 Pi cosnum/cosdenom]^i, {i, 0, EulerPhi[cosdenom]/2 - 1}], prec];
+    cosvec = N[Table[If[i > 0, Cos[2 Pi cosnum/cosdenom]^i, 1], {i, 0, EulerPhi[cosdenom]/2 - 1}], prec];
     
     Do[
      fsymexnum[Sequence @@ fs] = 
@@ -3960,7 +3974,7 @@ exact form of the F-symbols."];
 
 If[typeranklevelrootinitok && Not[fsymbolscalculated],
   Print["The F-symbols were not calculated. Please do so first, \
-followd by obtaining the exact form of the F-symbols, \
+followed by obtaining the exact form of the F-symbols, \
 before trying to check the pentagon equations numerically, using the \
 exact form of the F-symbols."];
 ];
@@ -3993,21 +4007,21 @@ exact form of the F- and R-symbols."];
 
 If[typeranklevelrootinitok && Not[fsymbolscalculated],
   Print["The F-symbols were not calculated. Please do so first, \
-followd by calculating the R-symbols and obtaining the exact form of \
+followed by calculating the R-symbols and obtaining the exact form of \
 the F- and R-symbols, before trying to check the hexagon equations \
 numerically, using the exact form of the F- and R-symbols."];
 ];
 
 If[typeranklevelrootinitok && fsymbolscalculated && Not[fsymbolsexactfound] && Not[rsymbolscalculated],
   Print["The R-symbols were not calculated. Please do so first, \
-followd by obtaining the exact form of the F- and R-symbols, before \
+followed by obtaining the exact form of the F- and R-symbols, before \
 trying to check the hexagon equations numerically, using the \
 exact form of the F- and R-symbols."];
 ];
 
 If[typeranklevelrootinitok && fsymbolscalculated && fsymbolsexactfound && Not[rsymbolscalculated],
   Print["The R-symbols were not calculated. Please do so first, \
-followd by obtaining the exact form of the R-symbols, before \
+followed by obtaining the exact form of the R-symbols, before \
 trying to check the hexagon equations numerically, using the \
 exact form of the F- and R-symbols."];
 ];
@@ -4078,6 +4092,9 @@ exactproduct[cosdenom_, factor1_, factor2_] :=
     sqrtproduct = removezeroes[sqrtproduct, len];
     currlen = Length[sqrtproduct];
     ];
+   If[sqrtproduct == zerorep[cosdenom][[2]],
+    factor = 0;
+   ];     
    {factor, sqrtproduct}
    ];
 
@@ -4113,18 +4130,28 @@ exactproductnophase[cosdenom_, factor1_, factor2_, factor3_] :=
   exactproductnophase[cosdenom, exactproductnophase[cosdenom, factor1, factor2], factor3];
   
 findsqrt[cosdenom_, cosnum_, factor_] := 
-  Module[{eqncoefs, numofvars, vars, sols, sol1, sol2, res, cosvec},
+  Module[{eqncoefs, numofvars, vars, sols, sol1, sol2, res, cosvec, done},
+   done = False;
    numofvars = EulerPhi[cosdenom]/2;
+   (* check if the factor corresponds to zero (routine below would give only one
+   solution, causing troubles ) *)
+   If[factor == Table[0,numofvars],
+   res = factor;
+   done = True;
+   ];
+   
+   If[Not[done],
    cosvec = 
-    Table[Cos[2 Pi cosnum/cosdenom]^i, {i, 0, numofvars - 1}];
+    Table[If[i > 0, Cos[2 Pi cosnum/cosdenom]^i, 1], {i, 0, numofvars - 1}];
    If[Not[factor.cosvec >= 0], 
     Print["The numerical value corresponding to the input does not \
 correspond to a non-negative number, the evaluation is aborted!"];
     res = {};
     ,
-    vars = Table[a[i], {i, 0, numofvars - 1}];
+    vars = Table[var[i], {i, 0, numofvars - 1}];
     eqncoefs = exactproductnophase[cosdenom, vars, vars];
     sols = Solve[eqncoefs == factor, vars, Rationals];
+    sols = Cases[sols, x_/;FreeQ[x,ConditionalExpression]];
     If[Length[sols] == 0,
      res = {};
      Print["No solution for the sqare root was found."];
@@ -4145,364 +4172,203 @@ correspond to a non-negative number, the evaluation is aborted!"];
 two, something went wrong!" ];
      ];
     ];
+    ];
    res
-   ];   
-
-
-checkeqn[cosdenom_, cosnum_, equation_] := 
-  Module[
-  {eqn, eqntemp, lhs, rhs, lhsnum, rhsnum, eqnnumok, maxdenom, 
-    maxdenomfirstpos, value, nofractions, lhsnonnegative, 
-    rhsnonnegative, sqsumlhs, sqsumrhs},
-    
-   eqn = equation;
-   eqntemp = False;
-   If[eqn[[1]] == eqn[[2]], eqntemp = True];
-   lhs = Sum[toexactvalue[eqn[[1, i]], cosdenom, cosnum]
-   , {i, 1, Length[eqn[[1]]]}];
-   rhs = Sum[toexactvalue[eqn[[2, i]], cosdenom, cosnum]
-   , {i, 1, Length[eqn[[2]]]}];
-   lhsnum = N[lhs, 200];
-   rhsnum = N[rhs, 200];
-   eqnnumok = Chop[lhsnum - rhsnum, 10^(-190)] == 0;
-   If[Not[eqnnumok],
-    Print[
-      "Numerically, the equation does not hold, something went wrong!"];
+   ];
+   
+newabsrep[cosdenom_, cosnum_, altcosdenom_, oldrep_] := 
+  Module[{exactvalue, numvalue, ok, newabsrep, newexactvalue},
+   
+   (* It is assumed that the oldrep corresponds to a non-
+   negative arguement of the square root! *)
+   
+   exactvalue = toexactvalue[{0, oldrep}, cosdenom, cosnum]^2;
+   numvalue = toexactnumericalvalue[{0, oldrep}, cosdenom, cosnum, 100]^2;
+   
+   newabsrep = findexactabs[numvalue, altcosdenom, 1];
+   newexactvalue = toexactvalue[{0, newabsrep}, altcosdenom, 1]^2;
+   
+   ok = FullSimplify[exactvalue == newexactvalue];
+   
+   If[ok, Null,
+    Print["The new representation is not equal to the old one!"];,
+    Print["It could not be established if the new representation is equal \
+to the old one or not!"];
     ];
    
-   If[Not[eqntemp] && eqnnumok,
-    
-    maxdenom = (Denominator /@ eqn[[All, All, 1]]) // Flatten // Max;
-    If[maxdenom > 1,
-     maxdenomfirstpos = 
-      Position[eqn[[All, All, 1]], x_ /; Denominator[x] == maxdenom][[1]];
-     value = eqn[[All, All, 1]][[Sequence @@ maxdenomfirstpos]];
-     eqn = {
-       Table[{eqn[[1, j, 1]] - value, eqn[[1, j, 2]]}
-       , {j, 1, Length[eqn[[1]]]}],
-       Table[{eqn[[2, j, 1]] - value, eqn[[2, j, 2]]}
-       , {j, 1, Length[eqn[[2]]]}]
-       };
-     ];
-    
-    
-    nofractions = FreeQ[eqn[[All, All, 1]] // Flatten, _Rational];
-    
-    If[nofractions,
-     
-     lhsnonnegative = Sum[
-        toexactvalue[eqn[[1, i]], cosdenom, cosnum]
-        , {i, 1, Length[eqn[[1]]]}] >= 0;
-     rhsnonnegative = Sum[
-        toexactvalue[eqn[[2, i]], cosdenom, cosnum]
-        , {i, 1, Length[eqn[[2]]]}] >= 0;
-     
-     If[
-      (lhsnonnegative && Not[rhsnonnegative]) || (rhsnonnegative && Not[lhsnonnegative]),
-      Print[
-       "The lhs is negative, the rhs is positve (or the otherway around). Something's wrong!"];
-      eqntemp = False;
-      ,
-      
-      If[Not[lhsnonnegative] && Not[rhsnonnegative],
-       (* Change the overall sign *)
-       eqn = {
-          Table[{Mod[eqn[[1, j, 1]] + 1, 2], eqn[[1, j, 2]]}
-          , {j, 1, Length[eqn[[1]]]}]
-          ,
-          Table[{Mod[eqn[[2, j, 1]] + 1, 2], eqn[[2, j, 2]]}
-          , {j, 1, Length[eqn[[2]]]}]
-          };
-       ,
-       (* Keep sign the same, 
-       make sure the phase argument is 0 or 1 (not -1 f.i.) *)
-       
-       eqn = {
-          Table[{Mod[eqn[[1, j, 1]], 2], eqn[[1, j, 2]]}
-          , {j, 1, Length[eqn[[1]]]}]
-          ,
-          Table[{Mod[eqn[[2, j, 1]], 2], eqn[[2, j, 2]]}
-          , {j, 1, Length[eqn[[2]]]}]
-          };
-       ];
-      
-      (* now we take the square of the lhs and rhs, 
-      for each term in the square, 
-      we find the square root (should be possible), 
-      and sum the result *)
-      
-      sqsumlhs = Sum[
-        If[i == j,
-        eqn[[1, i, 2]],
-         2 (-1)^(eqn[[1, i, 1]] + eqn[[1, j, 1]]) *
-         findsqrt[cosdenom, cosnum, exactproductnophase[cosdenom, eqn[[1, i, 2]], eqn[[1, j, 2]]]]
-         ]
-        , {i, 1, Length[eqn[[1]]]}, {j, i, Length[eqn[[1]]]}];
-      
-      sqsumrhs = Sum[
-        If[i == j,
-         eqn[[2, i, 2]],
-         2 (-1)^(eqn[[2, i, 1]] + eqn[[2, j, 1]]) *
-         findsqrt[cosdenom, cosnum, exactproductnophase[cosdenom, eqn[[2, i, 2]], eqn[[2, j, 2]]]]
-         ]
-        , {i, 1, Length[eqn[[2]]]}, {j, i, Length[eqn[[2]]]}];
-      
-      If[
-       sqsumlhs == sqsumrhs,
-       eqntemp = True,
-       eqntemp = False,
-       eqntemp = False
-       ];
-      
-      
-      ];
-     
-     ,
-     (*Print["There are complex phases left!"];*)
-     (*eqntemp=
-     eqn;*)
-     (* In this case, we need the method with phases, 
-     to check the equation. *)
-      
-     eqntemp = checkeqnwithphase[cosdenom, cosnum, eqn];
-     ];
-    
+   newabsrep
+   
+   ];         
+
+  
+newabsrep[cosdenom_, cosnum_, altcosdenom_, altcosnum_, oldrep_] := 
+  Module[{exactvalue, numvalue, ok, newabsrep, newexactvalue},
+   
+   (* It is assumed that the oldrep corresponds to a non-
+   negative arguement of the square root! *)
+   
+   exactvalue = toexactvalue[{0, oldrep}, cosdenom, cosnum]^2;
+   numvalue = toexactnumericalvalue[{0, oldrep}, cosdenom, cosnum, 100]^2;
+   
+   newabsrep = findexactabs[numvalue, altcosdenom, altcosnum];
+   newexactvalue = toexactvalue[{0, newabsrep}, altcosdenom, altcosnum]^2;
+   
+   ok = FullSimplify[exactvalue == newexactvalue];
+   
+   If[ok, Null,
+    Print["The new representation is not equal to the old one!"];,
+    Print["It could not be established if the new representation is equal \
+to the old one or not!"];
     ];
-   eqntemp
-   ];   
+   
+   newabsrep
+   
+   ];         
 
 
-checkeqnwithphase[cosdenom_, cosnum_, equation_] := 
-  Module[
-  {eqn, eqnok, realpartok, imaginarypartok, eqnnumok, lhs, rhs,
-     lhsnum, rhsnum, arglhs, sqsumrhs, sqsumlhs, rhstab, rhstabsum, 
-    lhstab, lhstabsum, cosexpression, cosexpressionok, sign, rhseqn, 
-    lhseqn, rhseqntab, lhseqntab, sqsumrhsimpart, sqsumrhsimpartsum, 
-    sqsumlhsimpart, sqsumlhsimpartsum, cos2expression, 
-    cos2expressionok, sinexpression},
+reduceabs2[cosdenom_, cosnum_, sumlist_] :=
+  reducesum[cosdenom, cosnum,
+   combinesum[
+    removepairs[cosdenom,
+     combinesumsymmetricphases[cosdenom, cosnum,
+      combinesum[
+       removepairs[cosdenom,
+        abs2[cosdenom, sumlist]
+        ]
+       ]
+      ]
+     ]
+    ]
+   ];
+
+
+impartzerocheck[cosdenom_, cosnum_, sumlist_] := Module[
+   {sintab, sign, cos2expnum, cos2expression, cos2expressionok, 
+    sinexpression,
+    sintababs2, result},
+   
+   (* It is assumed that the overall phase has been removed!! *)
+   
+   (* for the imaginary part, we first evaluate sin\phi = +/- sqrt(1-
+   cos\phi^2),
+       and multiply it with the sqrts of the equation. 
+       we then take the square of the result, 
+       and find expressions for the sqrts appearing, 
+       which turns out to be possible.
+       finally, 
+   we add things upp to see if it all sums to zero as it should *)
+
+   sintab = DeleteCases[
+     Table[
+      sign = Sign[N[Sin[Pi sumlist[[i, 1]]], 200] // Chop];
+      cos2expnum = N[Cos[Pi sumlist[[i, 1]]]^2, 200];
+      cos2expression = findexactabs[cos2expnum, cosdenom, cosnum];
+      cos2expressionok = 
+       FullSimplify[
+        toexactvalue[{0, cos2expression}, cosdenom, cosnum]^2 -
+        Cos[Pi sumlist[[i, 1]]]^2 == 0];
+      If[cos2expressionok, Null, 
+       Print["An expression for a cos^2 could not be checked \
+exactly!"];, 
+       Print["An expression for a cos^2 could not be checked \
+exactly!"];];
+      
+      If[sign == 1, 
+       sinexpression = {0, Table[If[i == 1, 1, 0], {i, 1, Length[cos2expression]}] - 
+          cos2expression}];
+      If[sign == -1, 
+       sinexpression = {1, Table[If[i == 1, 1, 0], {i, 1, Length[cos2expression]}] - 
+          cos2expression}];
+      
+      If[sign == 0,
+       Null,
+       exactproduct[cosdenom, sinexpression, {0, sumlist[[i, 2]]}]
+       ]
+      
+      , {i, 1, Length[sumlist]}]
+     
+     , Null];
+   
+   (* We only want to know if the result is zero, 
+   so we can take the absolute value, and check if that is zero. *)
+   
+   If[sintab == {},
+    sintababs2 = zerorep[cosdenom];
+    ];
+   
+   If[sintab =!= {},
+    sintababs2 = reduceabs2[cosdenom, cosnum, sintab];
+    ];
+   
+   
+   If[sintababs2 == zerorep[cosdenom],
+    result = True;,
+    result = False;,
+    result = False;
+    ];
+   
+   result
+   
+   ];
+
+
+checkeqn[cosdenom_, cosnum_, equation_] := Module[
+   {eqn, eqnok, lhs, rhs, lhsnum, rhsnum, eqnnumok,
+    arglhs, argrhs, lhsimok, rhsimok, lhsabs2, rhsabs2, abs2ok},
+   
    eqn = equation;
    eqnok = False;
-   realpartok = False;
-   imaginarypartok = False;
-   lhs = Sum[toexactvalue[eqn[[1, i]], cosdenom, cosnum]
-   , {i, 1, Length[eqn[[1]]]}];
-   rhs = Sum[toexactvalue[eqn[[2, i]], cosdenom, cosnum]
-   , {i, 1, Length[eqn[[2]]]}];
-   lhsnum = N[lhs, 200];
-   rhsnum = N[rhs, 200];
-   eqnnumok = Chop[lhsnum - rhsnum, 10^(-190)] == 0;
-   If[Not[eqnnumok],
-    Print[
-      "Numerically, the equation does not hold, something went wrong!"];
+   
+    If[eqn[[1]] == eqn[[2]], eqnok = True];
+    lhs = Sum[toexactvalue[eqn[[1, i]], cosdenom, cosnum], {i, 1, Length[eqn[[1]]]}];
+    rhs = Sum[toexactvalue[eqn[[2, i]], cosdenom, cosnum], {i, 1, Length[eqn[[2]]]}];
+    lhsnum = N[#, 200] & /@ lhs;
+    rhsnum = N[#, 200] & /@ rhs;
+    eqnnumok = Chop[lhsnum - rhsnum, 10^(-190)] == 0;
+    If[Not[eqnnumok],
+     Print["Numerically, the equation does not hold, something went \
+wrong!"];
     ];
-   If[eqn[[1]] == eqn[[2]], eqnok = True;];
-   If[eqnnumok && Not[eqnok],
+   
+   If[Not[eqnok] && eqnnumok,
+    
     (* make sure that both the lhs and rhs are non-
     negative real numbers *)
     
     arglhs = Rationalize[Arg[lhsnum]/Pi];
-    eqn = {
-      Table[{eqn[[1, j, 1]] - arglhs, eqn[[1, j, 2]]}
-      , {j, 1, Length[eqn[[1]]]}]
-      ,
-      Table[{eqn[[2, j, 1]] - arglhs, eqn[[2, j, 2]]}
-      , {j, 1, Length[eqn[[2]]]}]
-      };
+    argrhs = Rationalize[Arg[rhsnum]/Pi];
+    (* This should not be possible after the numerical check, but let's check if the
+       arguemtent of the lhs and rhs match in any case *)
+    If[arglhs =!= argrhs,
+    Print["The arguement of the lhs and rhs are not equal to each other. \
+Something went wrong!"];
+    ];
     
-    (* We first check that the real part of the lhs and rhs match up, 
-    below we check that the
+    eqn =
+     {
+     Table[{Mod[eqn[[1, j, 1]] - arglhs, 2, -1], eqn[[1, j, 2]]}
+     , {j, 1, Length[eqn[[1]]]}]
+     , 
+     Table[{Mod[eqn[[2, j, 1]] - arglhs, 2, -1], eqn[[2, j, 2]]}
+     , {j, 1, Length[eqn[[2]]]}]};
+    
+    (* check that the imaginary part of the lhs and rhs are indeed \
+zero *)
+    
+    lhsimok = impartzerocheck[cosdenom, cosnum, eqn[[1]]];
+    rhsimok = impartzerocheck[cosdenom, cosnum, eqn[[2]]];
+    
+    (* calculate the abs2 of both the lhs and rhs *)
+    
+    lhsabs2 = reduceabs2[cosdenom, cosnum, eqn[[1]]];
+    rhsabs2 = reduceabs2[cosdenom, cosnum, eqn[[2]]];
+    
+    abs2ok = lhsabs2 == rhsabs2;
+    
+    (* the eqn holds if the absolute values match, and the
     imaginary parts of the lhs and rhs are zero *)
     
-    (* we first take the square of both lhs and rhs, 
-    and find expressions for the square roots, 
-    so that in the resutls, there are no square roots left *)
-    
-    sqsumrhs = Flatten[Table[
-       If[i == j,
-        {2 eqn[[2, i, 1]], eqn[[2, i, 2]]},
-        {(eqn[[2, i, 1]] + eqn[[2, j, 1]]),
-        2 findsqrt[cosdenom, cosnum, exactproductnophase[cosdenom, eqn[[2, i, 2]], eqn[[2, j, 2]]]]}
-        ]
-       , {i, 1, Length[eqn[[2]]]}, {j, i, Length[eqn[[2]]]}], 1];
-    
-    sqsumlhs = Flatten[Table[
-       If[i == j,
-        {2 eqn[[1, i, 1]], eqn[[1, i, 2]]},
-        {(eqn[[1, i, 1]] + eqn[[1, j, 1]]),
-         2 findsqrt[cosdenom, cosnum, exactproductnophase[cosnum, eqn[[1, i, 2]], eqn[[1, j, 2]]]]}
-        ]
-       , {i, 1, Length[eqn[[1]]]}, {j, i, Length[eqn[[1]]]}], 1];
-    
-    (* to take the phases into account, we write e^i\phi = cos\phi + 
-    I sin\phi, and find an expression
-    for the cos\phi part, in terms of the numberfield we are using, 
-    and multiply it with results, which
-    do not contain square roots anymore  *)
-    
-    rhstab = DeleteCases[Table[
-       sign = Sign[Cos[Pi sqsumrhs[[i, 1]]]];
-       cosexpression = 
-        findexactabs[N[sign Cos[Pi sqsumrhs[[i, 1]]], 200], cosdenom, cosnum];
-       cosexpressionok = 
-        FullSimplify[
-         toexactvalue[{0, cosexpression}, cosdenom, cosnum]^2 - sign*Cos[Pi sqsumrhs[[i, 1]]] == 0
-           ];
-       If[cosexpressionok, Null,
-        Print[
-          "An expression for a cosine could not be checked exactly!"];,
-        Print[
-          "An expression for a cosine could not be checked \
-exactly!"];
-        ];
-       If[sign == 1,
-        cosexpression = 
-          exactproduct[cosdenom, {0, cosexpression}, {0, sqsumrhs[[i, 2]]}];
-        ];
-       If[sign == -1,
-        cosexpression = 
-          exactproduct[cosdenom, {1, cosexpression}, {0, sqsumrhs[[i, 2]]}];
-        ];
-       If[sign == 0,
-        cosexpression = Null;
-        ];
-       cosexpression
-       , {i, 1, Length[sqsumrhs]}], Null];
-    rhstabsum = 
-     Sum[((-1)^rhstab[[i, 1]]) rhstab[[i, 2]], {i, 1, Length[rhstab]}];
-    
-    lhstab = DeleteCases[Table[
-       sign = Sign[Cos[Pi sqsumlhs[[i, 1]]]];
-       cosexpression = 
-        findexactabs[N[sign Cos[Pi sqsumlhs[[i, 1]]], 200], cosdenom, cosnum];
-       cosexpressionok = 
-        FullSimplify[
-         toexactvalue[{0, cosexpression}, cosdenom, cosnum]^2 - sign*Cos[Pi sqsumlhs[[i, 1]]] == 0
-           ];
-       If[cosexpressionok, Null,
-        Print[
-          "An expression for a cosine could not be checked exactly!"];,
-        Print[
-          "An expression for a cosine could not be checked exactly!"];
-        ];
-       If[sign == 1,
-        cosexpression = 
-          exactproduct[cosdenom, {0, cosexpression}, {0, sqsumlhs[[i, 2]]}];
-        ];
-       If[sign == -1,
-        cosexpression = 
-          exactproduct[cosdenom, {1, cosexpression}, {0, sqsumlhs[[i, 2]]}];
-        ];
-       If[sign == 0,
-        cosexpression = Null;
-        ];
-       cosexpression
-       , {i, 1, Length[sqsumlhs]}], Null];
-    lhstabsum = 
-     Sum[((-1)^lhstab[[i, 1]]) lhstab[[i, 2]], {i, 1, Length[lhstab]}];
-    
-    (* checking the result *)
-    If[lhstabsum == rhstabsum,
-     realpartok = True;,
-     Print["The real parts of the equation to not match!"];,
-     Print["The real parts of the equation to not match!"];
-     ];
-    
-    (* for the imaginary part, we first evaluate sin\phi = +/- sqrt(1-cos\phi^2),
-    and multiply it with the sqrts of the equation. 
-    we then take the sqruare of the result, 
-    and find expressions for the sqrts appearing, 
-    which turns out to be possible.
-    finally, we add things upp to see if it all sums to zero as it should *)
-    
-    rhseqn = eqn[[2]];
-    rhseqntab = DeleteCases[
-      Table[
-       sign = Sign[Sin[Pi rhseqn[[i, 1]]]];
-       cos2expression = 
-        findexactabs[N[Cos[Pi rhseqn[[i, 1]]]^2, 200], cosdenom, cosnum];
-       cos2expressionok = 
-        FullSimplify[
-         toexactvalue[{0, cos2expression}, cosdenom, cosnum]^2 - Cos[Pi rhseqn[[i, 1]]]^2 == 0
-           ];
-       If[cos2expressionok, Null,
-        Print[
-          "An expression for a cosine could not be checked exactly!"];,
-        Print[
-          "An expression for a cosine could not be checked exactly!"];
-        ];
-       If[sign == 1, 
-        sinexpression = {0, Table[If[i == 1, 1, 0], {i, 1, Length[cos2expression]}] - cos2expression}];
-       If[sign == -1, 
-        sinexpression = {1, Table[If[i == 1, 1, 0], {i, 1, Length[cos2expression]}] - cos2expression}];
-       If[sign == 0, Null, 
-        exactproduct[cosdenom, sinexpression, {0, rhseqn[[i, 2]]}]]
-       , {i, 1, Length[rhseqn]}]
-      , Null];
-    sqsumrhsimpart = Flatten[Table[
-       If[i == j,
-        {2 rhseqntab[[i, 1]], rhseqntab[[i, 2]]}
-        ,
-        {(rhseqntab[[i, 1]] + rhseqntab[[j, 1]])
-        ,
-        2 findsqrt[cosdenom, cosnum, exactproductnophase[cosdenom, rhseqntab[[i, 2]], rhseqntab[[j, 2]]]]}
-        ]
-       , {i, 1, Length[rhseqntab]}, {j, i, Length[rhseqntab]}], 1];
-    sqsumrhsimpartsum = 
-     Sum[(-1)^(sqsumrhsimpart[[i, 1]]) sqsumrhsimpart[[i, 2]]
-     , {i, 1, Length[sqsumrhsimpart]}];
-    If[sqsumrhsimpartsum == 0, 
-     sqsumrhsimpartsum = Table[0, {i, 1, Length[cos2expression]}];];
-    
-    lhseqn = eqn[[1]];
-    lhseqntab = DeleteCases[
-      Table[
-       sign = Sign[Sin[Pi lhseqn[[i, 1]]]];
-       cos2expression = 
-        findexactabs[N[Cos[Pi lhseqn[[i, 1]]]^2, 200], cosdenom, cosnum];
-       cos2expressionok = 
-        FullSimplify[
-         toexactvalue[{0, cos2expression}, cosdenom, cosnum]^2 - Cos[Pi lhseqn[[i, 1]]]^2 == 0
-           ];
-       If[cos2expressionok, Null,
-        Print[
-          "An expression for a cosine could not be checked exactly!"];,
-        Print[
-          "An expression for a cosine could not be checked exactly!"];
-        ];
-       
-       If[sign == 1, 
-        sinexpression = {0, Table[If[i == 1, 1, 0], {i, 1, Length[cos2expression]}] - cos2expression}];
-       If[sign == -1, 
-        sinexpression = {1, Table[If[i == 1, 1, 0], {i, 1, Length[cos2expression]}] - cos2expression}];
-       
-       If[sign == 0, Null, 
-        exactproduct[cosdenom, sinexpression, {0, lhseqn[[i, 2]]}]]
-       , {i, 1, Length[lhseqn]}]
-      , Null];
-    sqsumlhsimpart = Flatten[Table[
-       If[i == j,
-        {2 lhseqntab[[i, 1]], lhseqntab[[i, 2]]}
-        ,
-        {(lhseqntab[[i, 1]] + lhseqntab[[j, 1]]),
-         2 findsqrt[cosdenom, cosnum, exactproductnophase[cosdenom, lhseqntab[[i, 2]], lhseqntab[[j, 2]]]]}
-        ]
-       , {i, 1, Length[lhseqntab]}, {j, i, Length[lhseqntab]}], 1];
-    sqsumlhsimpartsum = 
-     Sum[(-1)^(sqsumlhsimpart[[i, 1]]) sqsumlhsimpart[[i, 2]]
-     , {i, 1, Length[sqsumlhsimpart]}];
-    If[sqsumlhsimpartsum == 0, 
-     sqsumlhsimpartsum = Table[0, {i, 1, Length[cos2expression]}];];
-    
-    (* check the result *)
-    
-    If[sqsumlhsimpartsum == sqsumrhsimpartsum == 
-      Table[0, {i, 1, Length[cos2expression]}],
-     imaginarypartok = True;,
-     Print["The imaginary parts of the equation to not match!"];,
-     Print["The imaginary parts of the equation to not match!"];
-     ];
-    
-    If[realpartok && imaginarypartok,
+    If[abs2ok && lhsimok && rhsimok,
      eqnok = True;
      ];
     
@@ -4513,8 +4379,88 @@ exactly!"];
    ];
 
 
+reducereal[cosdenom_, cosnum_, list_] := Module[
+   {sumlist, allphases, nophases, numvalue, sign, abs2list, res, 
+    positive, abs2listnosqrt, abs2listnosqrtsum,
+    numvaluecheck},
+   
+   (* Make sure that the `phases' are in [0,2) *)
+   
+   sumlist = Table[{Mod[list[[i, 1]], 2], list[[i, 2]]}, {i, 1, Length[list]}];
+   
+   allphases = sumlist[[All, 1]] // Union;
+   
+   nophases = ContainsOnly[allphases, {0, 1}];
+   
+   If[nophases,
+    
+    numvalue = 
+     Sum[toexactnumericalvalue[sumlist[[i]], cosdenom, cosnum, 200], {i, 1, Length[sumlist]}];
+    
+    If[
+     Chop[numvalue, 10^(-190)] == 0, sign = 0;,
+     sign = Sign[Chop[numvalue, 10^(-190)]];
+     ];
+    
+    If[sign != 0,
+     positive = FullSimplify[
+       Sum[toexactvalue[sumlist[[i]], cosdenom, cosnum], {i, 1, Length[sumlist]}] > 0
+       ];
+     If[(positive && sign == 1) || (Not[positive] && sign == -1), Null,
+      Print["Something went wrong while checking the sign of the expression!"];,
+      Print["Something went wrong while checking the sign of the expression!"];
+      ];
+     ];
+    
+    
+    (* take the absolute value squared, and sum the result *)
+ 
+    abs2listnosqrtsum = 
+     Sum[
+      If[i == j, sumlist[[i, 2]],
+         2*(-1)^(sumlist[[i, 1]] + sumlist[[j, 1]])*
+         findsqrt[cosdenom, cosnum, exactproductnophase[cosdenom, sumlist[[i, 2]], sumlist[[j, 2]]]]
+      ]
+     , {i, 1, Length[sumlist]}, {j, i, Length[sumlist]}]; 
+       
+    
+    If[sign == 0 && abs2listnosqrtsum != zerorep[cosdenom][[2]],
+     Print["The sign was determined to be zero, but the result is not \
+zero, something went wrong!"];,
+     Null,
+     Print["The sign was determined to be zero, but the result is not \
+zero, something went wrong!"];
+     ];
+    
+    res = {If[sign == -1, 1, 0], abs2listnosqrtsum};
+    
+    numvaluecheck = toexactnumericalvalue[res, cosdenom, cosnum, 200];
+    
+    If[Chop[numvalue - numvaluecheck, 10^(-190)] == 0, Null,
+     Print["The calculated value is not equal to the original one. \
+Something went wrong!"];,
+     Print["The calculated value is not equal to the original one. \
+Something went wrong!"];
+     ];
+    
+    ,
+    res = sumlist;
+    Print[
+     "The sum contains phases, reducereal is only for real \
+expressions! The original list is returned."];,
+    res = sumlist;
+    Print[
+     "The sum contains phases, reducereal is only for real \
+expressions! The original list is returned."];
+    ];
+   
+   res
+   
+   ];
+
+
 checkpentagonexactformalgebraically[cosdenom_, cosnum_] := Module[
-   {eqnok, eqn},
+   {eqnok, eqn, lhs, rhs, nophases, allphases},
    
    Do[
     eqn = {
@@ -4524,7 +4470,7 @@ checkpentagonexactformalgebraically[cosdenom_, cosnum_] := Module[
         fsymexact[f, c, d, e, g, gp, {v2, v3, v4, v1s}],
         fsymexact[a, b, gp, e, f, fp, {v1, v1s, v5, v6}]
         ]
-       , {v1s, alatc`Private`nv[f, gp, e]}]
+       , {v1s, nv[f, gp, e]}]
       ,
       Flatten[
        Table[
@@ -4541,13 +4487,53 @@ checkpentagonexactformalgebraically[cosdenom_, cosnum_] := Module[
         ]
        , 3]
       };
+      
+    If[eqn[[1]] == {}, eqn[[1]] = {zerorep[cosdenom]}];  
+    If[eqn[[2]] == {}, eqn[[2]] = {zerorep[cosdenom]}];  
     
-    eqnok = checkeqn[cosdenom, cosnum, eqn];
     
-    If[Not[eqnok],
+    eqnok = False;
+    If[eqn[[1]] == eqn[[2]], eqnok = True;];
+    
+    
+    
+   If[Not[eqnok],
+    
+    eqn[[1]] = removepairs[cosdenom, combinesum[eqn[[1]]]];
+    eqn[[2]] = removepairs[cosdenom, combinesum[eqn[[2]]]];
+    
+
+    nophases = False;
+    allphases = (eqn[[All, All, 1]]) // Flatten // Union;
+
+    If[ContainsOnly[allphases, {0, 1}],
+     nophases = True;
+    ];
+    
+    If[ContainsOnly[allphases, {-1/2, 1/2}],
+     nophases = True;
+     eqn[[1]] = Table[{eqn[[1, i, 1]] + 1/2, eqn[[1, i, 2]]}, {i, 1, Length[eqn[[1]]]}];
+     eqn[[2]] = Table[{eqn[[2, i, 1]] + 1/2, eqn[[2, i, 2]]}, {i, 1, Length[eqn[[2]]]}];
+    ];
+    
+    If[nophases,
+     lhs = reducereal[cosdenom, cosnum, eqn[[1]]];
+     rhs = reducereal[cosdenom, cosnum, eqn[[2]]];
+     eqnok = lhs == rhs;,
+     (* this should not happen with the original form of the F-symbols, but could
+        happen if one diagonalizes the R-matrices, *)
+     eqnok = checkeqn[cosdenom, cosnum, eqn];
+    ];
+   ];
+    
+    If[eqnok,
+     Null,
      pentholdsalgebraically = False;
-     Print[
-      "The exact form of the F-symbols do not satisfy at least one of \
+     Print["The exact form of the F-symbols do not satisfy at least one of \
+the pentagon equations. The check will be aborted :-("];
+     Break[];,
+     pentholdsalgebraically = False;
+     Print["The exact form of the F-symbols could not be verified for at least one of \
 the pentagon equations. The check will be aborted :-("];
      Break[];
      ];
@@ -4580,7 +4566,19 @@ F-symbols satisfy the pentagon equations :-)"];
 
 
 checkhexagonexactformalgebraically[cosdenom_, cosnum_] := Module[
-   {eqnok, eqn},
+   {eqnok, eqn, allphasedenominators, altdenom, needaltdenom, neweqn},
+   
+   allphasedenominators = Table[
+     Denominator[rsymexact[Sequence @@ rs][[1]]]
+     ,{rs,rlist}]//Union;
+   
+   altdenom = LCM[Sequence @@ allphasedenominators, cosdenom];
+   
+   If[altdenom != cosdenom, needaltdenom = True, needaltdenom = False,
+     needaltdenom = False;
+     Print["Something went wrong while checking if a new denominator for the \
+cosines is necesarry, better check!"];
+   ];
    
    Do[
     eqn = {
@@ -4611,15 +4609,28 @@ checkhexagonexactformalgebraically[cosdenom_, cosnum_] := Module[
         ]
        , 3]
       };
+      
+    If[eqn[[1]] == {}, eqn[[1]] = {zerorep[cosdenom]}];  
+    If[eqn[[2]] == {}, eqn[[2]] = {zerorep[cosdenom]}];  
+      
     
+    If[Not[needaltdenom],
     eqnok = checkeqn[cosdenom, cosnum, eqn];
+    ];
+    
+    If[needaltdenom,
+     neweqn = Table[ 
+     {eqn[[i, j, 1]], newabsrep[cosdenom, cosnum, altdenom, eqn[[i, j, 2]]]}
+     , {i, 1, 2}, {j, 1, Length[eqn[[i]]]}];
+    eqnok = checkeqn[altdenom, 1, neweqn];
+    ];
+    
     
     If[Not[eqnok],
      hexholdsalgebraically = False;
-     Print[
-      "The exact form of the F- and R-symbols do not satisfy at least \
+     Print["The exact form of the F- and R-symbols do not satisfy at least \
 one of the hexagon equations. The check will be aborted :-("];
-     Break[];
+    Break[];
      ];
     
     , {i, flist}];
@@ -4656,13 +4667,22 @@ one of the hexagon equations. The check will be aborted :-("];
           ]
          , 3]
         };
+        
+    If[Not[needaltdenom],
+    eqnok = checkeqn[cosdenom, cosnum, eqn];
+    ];
+    
+    If[needaltdenom,
+     neweqn = Table[ 
+     {eqn[[i, j, 1]], newabsrep[cosdenom, cosnum, altdenom, eqn[[i, j, 2]]]}
+     , {i, 1, 2}, {j, 1, Length[eqn[[i]]]}];
+    eqnok = checkeqn[altdenom, 1, neweqn];
+    ];        
       
-      eqnok = checkeqn[cosdenom, cosnum, eqn];
       
       If[Not[eqnok],
        hexholdsalgebraically = False;
-       Print[
-        "The exact form of the F- and R-symbols do not satisfy at \
+       Print["The exact form of the F- and R-symbols do not satisfy at \
 least one of the hexagon equations. The check will be aborted :-("];
        Break[];
        ];
@@ -4671,10 +4691,10 @@ least one of the hexagon equations. The check will be aborted :-("];
     
     ];
    
+
    If[eqnok,
     hexholdsalgebraically = True;
-    Print[
-     "It was checked algebraically that the exact form of the F- and \
+    Print["It was checked algebraically that the exact form of the F- and \
 R-symbols satisfy the hexagon equations :-)"];
     ];
    
@@ -4692,7 +4712,7 @@ before trying to check the pentagon equations algebraically."];
 
 If[typeranklevelrootinitok && Not[fsymbolscalculated],
   Print["The F-symbols were not calculated. Please do so first, \
-followd by obtaining the exact form of the F-symbols, \
+followed by obtaining the exact form of the F-symbols, \
 before trying to check the pentagon equations algebraically."];
 ];
 
@@ -4721,20 +4741,20 @@ F- and R-symbols before trying to check the hexagon equations algebraically."];
 
 If[typeranklevelrootinitok && Not[fsymbolscalculated],
   Print["The F-symbols were not calculated. Please do so first, \
-followd by calculating the R-symbols and obtaining the exact form of \
+followed by calculating the R-symbols and obtaining the exact form of \
 the F- and R-symbols, before trying to check the hexagon equations \
 algebraically."];
 ];
 
 If[typeranklevelrootinitok && fsymbolscalculated && Not[fsymbolsexactfound] && Not[rsymbolscalculated],
   Print["The R-symbols were not calculated. Please do so first, \
-followd by obtaining the exact form of the F- and R-symbols, before \
+followed by obtaining the exact form of the F- and R-symbols, before \
 trying to check the hexagon equations algebraically."];
 ];
 
 If[typeranklevelrootinitok && fsymbolscalculated && fsymbolsexactfound && Not[rsymbolscalculated],
   Print["The R-symbols were not calculated. Please do so first, \
-followd by obtaining the exact form of the R-symbols, before \
+followed by obtaining the exact form of the R-symbols, before \
 trying to check the hexagon equations algebraically."];
 ];
 
@@ -4762,6 +4782,1419 @@ If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && fsymbo
 
 
 (* ::Subsection::Closed:: *)
+(*Routines to find an exact representation for the modular data*)
+
+
+zerorep[cosdenom_]:={0,Table[0,EulerPhi[cosdenom]/2]};
+onerep[cosdenom_]:={0,Table[If[i==1,1,0],{i,1,EulerPhi[cosdenom]/2}]};
+minusonerep[cosdenom_] := {1, Table[If[i == 1, 1, 0], {i, 1, EulerPhi[cosdenom]/2}]};
+phaserep[cosdenom_,arg_]:={arg,Table[If[i==1,1,0],{i,1,EulerPhi[cosdenom]/2}]};
+
+
+findexactmodulardata[] := 
+  Module[{FPdimlistexactnum, qdimlistexactnum, qdtot2exactnum, 
+    qdtotexactnum, qdtot1overexactnum, 
+    qdim1overfexactlistnum,
+    thetasum, sumres, qd, res, thetalistexactnum,
+    arg, abs2, coscoefs, smatexactnum, tmatexactnum,
+    ssdagmaxdev, sdagsmaxdev, pivotmaxdev,
+    twistsarephases, st3maxdev, s2maxdev},
+   
+   If[Not[typeranklevelrootinitok],
+    Print["The type of algebra, rank, level and/or rootfactor were not \
+(correctly) initialized, please do so first, followed by \
+calculating the F- and R-symbols, \
+the modular data and obtaining the exact form of the F- and \
+R-symbols before calculating the \
+exact form of the modular data."];
+    ];
+   
+   If[typeranklevelrootinitok && Not[fsymbolscalculated],
+    Print["The F-symbols were not calculated. Please do so first, followed \
+by calculating the R-symbols \
+and obtaining the exact form of the F- and R-symbols, the \
+modular data and obtaining the exact form of the \
+F- and R-symbols before calculating the exact form of the \
+modular data."];
+    ];
+   
+   If[typeranklevelrootinitok && fsymbolscalculated && 
+     Not[fsymbolsexactfound] && Not[rsymbolscalculated], 
+    Print["The R-symbols were not calculated. Please do so first, \
+followed by obtaining the exact form \
+of the F- and R-symbols, the modular data and obtaining the \
+exact form of the F- and R-symbols before calculating the exact form of the \
+modular data."];
+    ];
+   
+   If[typeranklevelrootinitok && fsymbolscalculated && 
+     fsymbolsexactfound && Not[rsymbolscalculated], 
+    Print["The R-symbols were not calculated. Please do so first, \
+followed by obtaining the exact form of the R-symbols, the modular \
+data and obtaining the exact form of the R-symbols before calculating \
+the exact form of the modular data."];
+    ];
+   
+   If[typeranklevelrootinitok && fsymbolscalculated && 
+     fsymbolsexactfound && rsymbolscalculated && 
+     Not[modulardatacalculated] && Not[fsymbolsexactfound] && 
+     Not[rsymbolsexactfound],
+    Print["The modular data was not calculated. Please do so first, \
+followed by obtaining the exact form of the F- and R-symbols, \
+before calculating the exact form of the modular data."];
+    ];
+   
+   If[typeranklevelrootinitok && fsymbolscalculated && 
+     fsymbolsexactfound && rsymbolscalculated && 
+     Not[modulardatacalculated] && fsymbolsexactfound && 
+     Not[rsymbolsexactfound],
+    Print["The modular data was not calculated. Please do so first, \
+followed by obtaining the exact form of the R-symbols, before \
+calculating the exact form of the modular data."];
+    ];
+   
+   If[typeranklevelrootinitok && fsymbolscalculated && 
+     fsymbolsexactfound && rsymbolscalculated && 
+     Not[modulardatacalculated] && Not[fsymbolsexactfound] && 
+     rsymbolsexactfound,
+    Print["The modular data was not calculated. Please do so first, \
+followed by obtaining the exact form of the F-symbols, before \
+calculating the exact form of the modular data."];
+    ];
+   
+   If[typeranklevelrootinitok && fsymbolscalculated && 
+     fsymbolsexactfound && rsymbolscalculated && 
+     Not[modulardatacalculated] && fsymbolsexactfound && 
+     rsymbolsexactfound,
+    Print["The modular data was not calculated. Please do so first, \
+before calculating the exact form of the modular data."];
+    ];
+   
+   If[typeranklevelrootinitok && fsymbolscalculated && 
+     fsymbolsexactfound && rsymbolscalculated && 
+     modulardatacalculated && Not[fsymbolsexactfound] && 
+     Not[rsymbolsexactfound],
+    Print["The exact form of the F- and R-symbols was not obtained. \
+Please do so first, before calculating the exact form of the \
+modular data."];
+    ];
+   
+   If[typeranklevelrootinitok && fsymbolscalculated && 
+     fsymbolsexactfound && rsymbolscalculated && 
+     modulardatacalculated && Not[fsymbolsexactfound] && 
+     rsymbolsexactfound,
+    Print["The exact form of the F-symbols was not obtained. Please do so \
+first, before calculating the exact form of the modular data."];
+    ];
+   
+   If[typeranklevelrootinitok && fsymbolscalculated && 
+     fsymbolsexactfound && rsymbolscalculated && 
+     modulardatacalculated && fsymbolsexactfound && 
+     Not[rsymbolsexactfound],
+    Print["The exact form of the R-symbols was not obtained. Please do so \
+first, before calculating the exact form of the modular data."];
+    ];
+   
+   
+   
+   If[typeranklevelrootinitok && fsymbolscalculated && fsymbolsexactfound && 
+   rsymbolscalculated && modulardatacalculated && fsymbolsexactfound &&
+   rsymbolsexactfound,
+    
+    
+    (* Here comes the actual calculation !! *)
+    
+    
+    pivotlistexact = pivotlist;
+    
+    Do[
+     pivotexact[irreps[[i]]] = pivotlistexact[[i]];
+     , {i, 1, Length[irreps]}];
+    
+    pivotmaxdev =
+     Max[(Abs /@ (Table[
+           pivotexact[ir1]*pivotexact[ir2]/pivotexact[ir3] -
+            Sum[
+            toexactnumericalvalue[
+            fsymexact[ir1, ir2, dual[ir3], irreps[[1]], ir3, dual[ir1], {v1, 1, v2, 1}]
+            , cosdenominator, cosnumerator, 200]*
+            toexactnumericalvalue[
+            fsymexact[ir2, dual[ir3], ir1, irreps[[1]], dual[ir1], dual[ir2], {v2, 1, v3, 1}]
+            , cosdenominator, cosnumerator, 200]*
+            toexactnumericalvalue[
+            fsymexact[dual[ir3], ir1, ir2, irreps[[1]], dual[ir2], ir3, {v3, 1, v1, 1}]
+            , cosdenominator, cosnumerator, 200]
+            , {v2, 1, nv[ir2, dual[ir3], dual[ir1]]}
+            , {v3, 1, nv[dual[ir3], ir1, dual[ir2]]}
+            ]
+            , {ir1, irreps}
+            , {ir2, irreps}
+            , {ir3, fusion[ir1, ir2]}
+            , {v1, 1, nv[ir1, ir2, ir3]}] // Flatten))];
+            
+    pivotexactok = Chop[pivotmaxdev, 10^(-180)] == 0;
+    
+    pivotlistexact = Table[ 
+     Which[
+      pivotlistexact[[i]] == 1, onerep[cosdenominator],
+      pivotlistexact[[i]] == -1, phaserep[cosdenominator,1]
+     ]
+     , {i,1,Length[irreps]}];
+     
+     Do[
+     pivotexact[irreps[[i]]] = pivotlistexact[[i]];
+     , {i, 1, Length[irreps]}];
+    
+    frobschurlistexact = Table[
+    Which[
+    frobschurlist[[i]] == 1, onerep[cosdenominator],
+    frobschurlist[[i]] == -1, phaserep[cosdenominator,1],
+    frobschurlist[[i]] == 0, zerorep[cosdenominator],
+    True, Print["The Frobenius-Schur indicator is not +1, -1 or 0, something went wrong!"]; frobschurlist[[i]]
+   ]
+    , {i, 1, Length[irreps]}];
+    
+    FPdimlistexact = Table[
+      {Arg[fp]/Pi, findexactabs[fp^2, cosdenominator, cosnumerator]}
+      , {fp, fpdimvec}];
+    
+    FPdimlistexactnum = 
+     Table[
+     toexactnumericalvalue[fpe, cosdenominator, cosnumerator, 200]
+     , {fpe, FPdimlistexact}];
+    
+    FPdimexactok = 
+    (Chop[FPdimlistexactnum - fpdimvec, 10^(-Max[10, precision - 20])] // Union) == {0};
+    
+    If[FPdimexactok, Null,
+     Print["The exact representations of the Frobenius-Perron dimensions \
+do not agree with the numerical ones :-("];,
+     Print["The exact representations of the Frobenius-Perron dimensions \
+do not agree with the numerical ones :-("];
+     ];
+    
+    qdimlistexact = Table[
+      {Arg[qdim]/Pi, findexactabs[qdim^2, cosdenominator, cosnumerator]}
+      , {qdim, qdimvec}];
+    Do[
+     qdimexact[irreps[[i]]] = qdimlistexact[[i]]
+     , {i, 1, Length[irreps]}];
+    
+    qdimspositiveexact = (qdimlistexact[[All, 1]] // Union) == {0};
+    
+    qdimlistexactnum = 
+     Table[
+     toexactnumericalvalue[qde, cosdenominator, cosnumerator, 200]
+     , {qde, qdimlistexact}];
+    
+    qdimexactok = 
+    (Chop[qdimlistexactnum - qdimvec, 10^(-Max[10, precision - 20])] // Union) == {0};
+    
+    If[qdimexactok, Null,
+     Print["The exact representations of the quantum dimensions do not \
+agree with the numerical ones :-("];,
+     Print["The exact representations of the quantum dimensions do not \
+agree with the numerical ones :-("];
+     ];
+    
+    
+    qdtot2exact = {0, findexactabs[qdtot2^2, cosdenominator, cosnumerator]};
+    
+    qdtot2exactnum = 
+     toexactnumericalvalue[qdtot2exact, cosdenominator, cosnumerator, 200];
+    
+    qdtot2exactok = 
+     Chop[qdtot2exactnum - qdtot2, 10^(-Max[10, precision - 20])] == 0;
+    
+    If[qdtot2exactok, Null,
+     Print["The exact representation of the total quantum dimension does \
+not agree with the numerical one :-("];,
+     Print["The exact representation of the total quantum dimension does \
+not agree with the numerical one :-("];
+     ];
+    
+    
+    qdtotexact = {0, findexactabs[qdtot2, cosdenominator, cosnumerator]};
+    
+    qdtotexactnum = 
+     toexactnumericalvalue[qdtotexact, cosdenominator, cosnumerator, 200];
+    
+    qdtotexactok = 
+     Chop[qdtotexactnum - qdtot, 10^(-Max[10, precision - 20])] == 0;
+    
+    If[qdtotexactok, Null,
+     Print["The exact representation of the square root of the total \
+quantum dimension does not agree with the numerical one :-("];,
+     Print["The exact representation of the square root of the total \
+quantum dimension does not agree with the numerical one :-("];
+     ];
+    
+    
+    qdtot1overexact = 
+     findoneover[cosdenominator, qdtotexact];
+    
+    qdtot1overexactnum = 
+     toexactnumericalvalue[qdtot1overexact, cosdenominator, cosnumerator, 200];
+    
+    qdtot1overexactok = 
+     Chop[qdtot1overexactnum - 1/qdtot, 10^(-Max[10, precision - 20])] == 0;
+    
+    If[qdtot1overexactok, Null,
+     Print["The exact representation of one over the square root of the \
+total quantum dimension does not agree with the numerical one :-("];,
+     Print["The exact representation of one over the square root of the \
+total quantum dimension does not agree with the numerical one :-("];
+     ];
+    
+    
+    qdim1overfexactlist = Table[
+      {Arg[qdim1f]/Pi, findexactabs[qdim1f^2, cosdenominator, cosnumerator]}
+      , {qdim1f, qdim1overfvec}];
+    
+    qdim1overfexactlistnum = 
+     Table[toexactnumericalvalue[qd1fe, cosdenominator, cosnumerator, 200],
+       {qd1fe, qdim1overfexactlist}];
+    
+    qdim1overfexactlistok = 
+    (Chop[qdim1overfexactlistnum - qdim1overfvec, 10^(-Max[10, precision - 20])] // Union) == {0};
+    
+    If[qdim1overfexactlistok, Null,
+     Print["The exact representations of one over the F-symbols used to \
+calculate the quantum dimensions/pivotal structures do not agree with \
+the numerical ones :-("];,
+     Print["The exact representations of one over the F-symbols used to \
+calculate the quantum dimensions/pivotal structures do not agree with \
+the numerical ones :-("];
+     ];
+    
+    twistsarephases = 
+    (Chop[Abs /@ thetalist - Table[1, Length[irreps]], 10^(-Max[10, precision - 20])] // Union) == {0};
+    
+    If[
+     twistsarephases, Null,
+     Print["The twist factors are not all phases, something went wrong!"];,
+     Print["The twist factors are not all phases, something went wrong!"];
+     ];
+    
+    thetalistexact =
+     Table[
+      If[Abs[thetalist[[i]]] - 1 == 0,
+       phaserep[cosdenominator, Rationalize[Arg[thetalist[[i]]]/Pi]],
+       Null,
+       Null
+       ]
+      , {i, 1, Length[irreps]}];
+    Do[
+     thetaexact[irreps[[i]]] = thetalistexact[[i]]
+     , {i, 1, Length[irreps]}];
+    
+    thetalistexactnum = 
+     Table[
+     toexactnumericalvalue[thetalistexact[[i]], cosdenominator, cosnumerator, 200]
+     , {i, 1, Length[thetalistexact]}];
+    
+    thetalistexactok = 
+    (Chop[thetalistexactnum - thetalist, 10^(-Max[10, precision - 20])] // Union) == {0};
+    
+    If[thetalistexactok, Null,
+     Print["The exact representations of the twist factors do not agree \
+with the numerical ones :-("];,
+     Print["The exact representations of the twist factors do not agree \
+with the numerical ones :-("];
+     ];
+    
+    
+    smatexact =
+     Table[
+      arg = Rationalize[Arg[smat[[i, j]]]/Pi];
+      abs2 = Abs[smat[[i, j]]]^2;
+      coscoefs = 
+       findexactabs[abs2, cosdenominator, cosnumerator];
+      {arg, coscoefs}
+      , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+    
+    smatexactnum = 
+     Table[
+     toexactnumericalvalue[smatexact[[i, j]], cosdenominator, cosnumerator, 200]
+     , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+    
+    smatexactok = 
+    (Chop[smatexactnum - smat, 10^(-Max[10, precision - 20])] // Flatten // Union) == {0};
+    
+    If[smatexactok, Null,
+     Print["The exact representations of the elements of the S-matrix do \
+not agree with the numerical ones :-("];,
+     Print["The exact representations of the elements of the S-matrix do \
+not agree with the numerical ones :-("];
+     ];
+    
+    
+    tmatexact = 
+     Table[
+     If[i == j,
+     thetalistexact[[i]], 
+     zerorep[cosdenominator]
+     ]
+     , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+    
+    tmatexactnum = 
+     Table[
+     toexactnumericalvalue[tmatexact[[i, j]], cosdenominator, cosnumerator, 200]
+       , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+    
+    
+    ssdagmaxdev = 
+     Max[Abs /@ ((smatexactnum.ConjugateTranspose[smatexactnum] - 
+           IdentityMatrix[Length[irreps]]) // Flatten)];
+    sdagsmaxdev = 
+     Max[Abs /@ ((ConjugateTranspose[smatexactnum].smatexactnum - 
+           IdentityMatrix[Length[irreps]]) // Flatten)];
+    
+    modularexact = Chop[Max[ssdagmaxdev, sdagsmaxdev], 10^(-180)] == 0;
+    
+    If[modularexact,
+     
+     st3maxdev = 
+      Max[Abs /@ ((MatrixPower[smatexactnum.tmatexactnum, 3] - 
+            Exp[2 Pi I/8*centralcharge]*smatexactnum.smatexactnum) // 
+          Flatten)];
+     
+     s2maxdev = 
+      Max[Abs /@ ((smatexactnum.smatexactnum - cmat) // Flatten)];
+     
+     modularrelationsexactok = 
+      Chop[Max[s2maxdev, st3maxdev], 10^(-180)] == 0;
+     
+     ];
+     
+    Print["The exact form of the pivotal structure is: ", pivotlistexact];
+     
+    
+    If[pivotexactok,
+     Print["The pivotal equations were checked with the exact form of the \
+F-symbols, with precision 200, and they hold with accuracy ", 
+       Floor[Accuracy[pivotmaxdev]], " :-)"];,
+     Print["The pivotal equations were checked with the exact form of the \
+F-symbols, with precision 200, but they do not hold with accuracy 180. \
+The maximum deviation is ", pivotmaxdev, " :-(" ];,
+     Print["The pivotal equations were checked with the exact form of the \
+F-symbols, with precision 200, but they do not hold with accuracy 180. \
+The maximum deviation is ", pivotmaxdev, " :-(" ];
+     ];
+     
+    Print["The exact forms of the Frobenius-Schur indicators are: ", frobschurlistexact];
+
+        
+    Print["The exact forms of the Frobenius-Perron dimensions are: ", 
+     FPdimlistexact];
+    
+    Print["The exact forms of the quantum dimensions are: ", qdimlistexact];
+
+    Print["The exact forms of the twist factors are: ", thetalistexact];
+     
+    
+    If[modularexact && qdimspositiveexact,
+     Print["The exact form of the S-matrix is given by:"]; 
+     Print[MatrixForm[smatexact, TableDepth -> 2]];
+     ];
+    
+    If[modularexact && Not[qdimspositiveexact],
+     Print["The exact form of the S-matrix is given by (up to an overall \
+sign):"]; 
+     Print[MatrixForm[smatexact, TableDepth -> 2]];
+     ];
+    
+    If[Not[modularexact] && qdimspositiveexact,
+     Print["The exact form of the (non-modular!) S-matrix is given by:"]; 
+     Print[MatrixForm[smatexact, TableDepth -> 2]];
+     ];
+    
+    If[Not[modularexact] && Not[qdimspositiveexact],
+     Print["The exact form of the (non-modular!) S-matrix is given by (up \
+to an overall sign):"]; 
+     Print[MatrixForm[smatexact, TableDepth -> 2]];
+     ];
+    
+    
+    If[modularexact && modularrelationsexactok,
+     Print["The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 = \
+S^2 = C were checked with the exact form of the S-matrix, with precision \
+200, and they hold with accuracy ",
+       Floor[Accuracy[Max[s2maxdev, st3maxdev]]] , " :-)"];
+     ];
+    If[modularexact && Not[modularrelationsexactok],
+     Print["The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 = \
+S^2 = C were checked with the exact form of the S-matrix, with precision \
+200, but they do not hold with accuracy 180. The maxium deviation \
+       is ", Max[s2maxdev, st3maxdev], 
+       " :-( Better check what went wrong!"];
+     ];
+    
+    Print["Done :-)"];
+    
+    (* end of the actual calculation *)
+    
+    modulardataexactfound = True;
+    
+    ];
+   
+   
+   ];
+
+
+(* ::Subsection::Closed:: *)
+(*Routines to check the exact representation of the modular data algebraically*)
+
+
+reducesum[cosdenomorg_, cosnumorg_, sumlist_] := Module[
+   {cosdenom, cosnum, alldenoms, newcosdenom, newnumberfield,
+    numvalue, arg, sumlistabs, sqsum, cosexpnum, sign, cosexpression, 
+    cosexpressionok, costab, costabsum, cos2expnum, sintab, 
+    cos2expression, cos2expressionok, sinexpression, sqsintab, 
+    sqsintabsum, imok, res, numres, resok, done, sumlistreduced},
+    
+   
+   done = False;
+   newnumberfield = False;
+   numvalue = Sum[toexactnumericalvalue[term, cosdenomorg, cosnumorg, 100], {term, sumlist}];
+   sumlistreduced = Table[
+     If[sumlist[[i,2]] == zerorep[cosdenomorg][[2]],
+     zerorep[cosdenomorg],
+     sumlist[[i]]
+     ]
+     , {i, 1, Length[sumlist]}];
+   sumlistreduced = DeleteCases[sumlistreduced, zerorep[cosdenomorg]];
+   sumlistreduced = Table[
+    {Mod[sumlistreduced[[i,1]],2,-1]/.{-1->1},sumlistreduced[[i,2]]}
+    , {i, 1, Length[sumlistreduced]}];
+   
+   
+   sumlistreduced = combinesum[sumlistreduced];
+   sumlistreduced = removepairs[cosdenomorg, sumlistreduced];
+        
+   If[sumlistreduced == {},
+    done = True;
+    res = zerorep[cosdenomorg];
+   ];
+   
+   If[Not[done] && Length[sumlistreduced] == 1,
+   done = True;
+   res = sumlistreduced[[1]];
+   ];
+   
+   If[
+   Not[done],
+
+   
+   (* we will first check if we need to work in a different numberfield, this is sometimes necessary *)
+   
+   alldenoms = Table[Denominator[sumlistreduced[[i,1]]], {i, 1, Length[sumlistreduced]}];
+   newcosdenom = LCM[Sequence @@ alldenoms, cosdenomorg];
+   
+   (* in this case, we do not need a new numberfield *)
+   If[newcosdenom == cosdenomorg,
+     cosdenom = cosdenomorg;
+     cosnum = cosnumorg;   
+   ];
+   
+   (* in this case, we do need a new numberfield, so we will write sumlistreduced in terms of the new
+   representation, which has cosnum = 1 by default. *)
+   If[newcosdenom > cosdenomorg,
+     newnumberfield = True;
+     cosdenom = newcosdenom;
+     cosnum = 1;
+     sumlistreduced = Table[
+       {sumlistreduced[[i,1]], newabsrep[cosdenomorg, cosnumorg, cosdenom, sumlistreduced[[i,2]]]}
+       , {i, 1, Length[sumlistreduced]}];
+   ];
+   
+   (* In this case, something went wrong! *)
+   If[newcosdenom < cosdenomorg,
+   Print["The denominator for the new numberfield is smaller than \
+the original denominator. Something went wrong!"];
+   ];
+   
+   
+   imok = True;
+  
+   
+   (* remove the phase; we'll check that the imagingary part is zero; 
+   add phase back in the end *)
+   arg = Rationalize[Arg[numvalue]/Pi];
+   sumlistabs = Table[{term[[1]] - arg, term[[2]]}, {term, sumlistreduced}];
+   (* we start by calculating the square, term by term *)
+   
+   sqsum = Flatten[
+     Table[
+      If[i == j,
+       {2 sumlistabs[[i, 1]], sumlistabs[[i, 2]]},
+       {sumlistabs[[i, 1]] + sumlistabs[[j, 1]],
+        2 findsqrt[cosdenom, cosnum, 
+        exactproductnophase[cosdenom, sumlistabs[[i, 2]], sumlistabs[[j, 2]]]]
+        }
+       ]
+      , {i, 1, Length[sumlistabs]}, {j, i, Length[sumlistabs]}]
+     , 1];
+   
+    (* to take the phases into account, we write e^i\phi = cos\phi + 
+       I sin\phi, and find an expression
+       for the cos\phi part, in terms of the numberfield we are using, 
+       and multiply it with sqsum, which
+       does not contain square roots anymore  *)
+   
+   costab = DeleteCases[
+     Table[
+      cosexpnum = N[Cos[Pi sqsum[[i, 1]]], 200];
+      sign = Sign[cosexpnum // Chop];
+      cosexpression = findexactabs[sign*cosexpnum, cosdenom, cosnum];
+      cosexpressionok = FullSimplify[
+        toexactvalue[{0, cosexpression}, cosdenom, cosnum]^2 
+        - sign*Cos[Pi sqsum[[i, 1]]] == 0
+        ];
+      If[cosexpressionok, Null, 
+       Print["An expression for a cosine could not be checked exactly!"];,
+       Print["An expression for a cosine could not be checked exactly!"];
+       ];
+      If[sign == 1,
+       cosexpression = exactproduct[cosdenom, {0, cosexpression}, {0, sqsum[[i, 2]]}];
+       ];
+      If[sign == -1,
+       cosexpression = exactproduct[cosdenom, {1, cosexpression}, {0, sqsum[[i, 2]]}];
+       ];
+      If[sign == 0, cosexpression = Null;];
+      cosexpression
+      , {i, 1, Length[sqsum]}]
+     , Null];
+   costabsum = 
+    Sum[((-1)^costab[[i, 1]]) costab[[i, 2]]
+    , {i, 1, Length[costab]}];
+   If[costabsum == 0,
+    costabsum = zerorep[cosdenom][[2]];
+    ];
+   
+   
+   (* for the imaginary part, we first evaluate sin\phi = +/- sqrt(1-
+   cos\phi^2),
+       and multiply it with the sqrts of the equation. 
+       we then take the sqruare of the result, 
+       and find expressions for the sqrts appearing, 
+       which turns out to be possible.
+       finally, 
+   we add things upp to see if it all sums to zero as it should *)
+
+   sintab = DeleteCases[
+     Table[
+      sign = Sign[N[Sin[Pi sumlistabs[[i, 1]]], 200] // Chop];
+      cos2expnum = N[Cos[Pi sumlistabs[[i, 1]]]^2, 200];
+      cos2expression = findexactabs[cos2expnum, cosdenom, cosnum];
+      cos2expressionok = 
+       FullSimplify[toexactvalue[{0, cos2expression}, cosdenom, cosnum]^2 
+        - Cos[Pi sumlistabs[[i, 1]]]^2 == 0];
+      If[cos2expressionok, Null, 
+       Print["An expression for a cos^2 could not be checked exactly!"];, 
+       Print["An expression for a cos^2 could not be checked exactly!"];
+       ];
+      If[sign == 1, 
+       sinexpression = {0, Table[If[i == 1, 1, 0], {i, 1, Length[cos2expression]}] - 
+          cos2expression}];
+      If[sign == -1, 
+       sinexpression = {1, Table[If[i == 1, 1, 0], {i, 1, Length[cos2expression]}] - 
+          cos2expression}];
+      If[sign == 0,
+       Null, exactproduct[cosdenom, sinexpression, {0, sumlistabs[[i, 2]]}]
+       ]
+      , {i, 1, Length[sumlistabs]}]
+     , Null];
+   
+   sqsintab = Flatten[
+     Table[
+      If[i == j,
+       {2 sintab[[i, 1]], 
+        sintab[[i, 2]]}, {(sintab[[i, 1]] + sintab[[j, 1]]), 
+        2 findsqrt[cosdenom, cosnum, 
+          exactproductnophase[cosdenom, sintab[[i, 2]], 
+           sintab[[j, 2]]]]}]
+      , {i, 1, Length[sintab]}, {j, i, Length[sintab]}]
+     , 1];
+   
+   sqsintabsum = 
+    Sum[(-1)^(sqsintab[[i, 1]]) sqsintab[[i, 2]], {i, 1, Length[sqsintab]}];
+   
+   If[sqsintabsum == 0, 
+    sqsintabsum = zerorep[cosdenom][[2]];];
+   
+   If[sqsintabsum == zerorep[cosdenom][[2]],
+    Null,
+    Print[
+     "After removing the phase, the imaginary part is not zero, something went wrong!"];
+    imok = False;,
+    Print[
+     "After removing the phase, the imaginary part is not zero, something went wrong!"];
+    imok = False;
+    ];
+   
+   If[newnumberfield,
+   res = {arg, newabsrep[cosdenom, cosnum, cosdenomorg, cosnumorg, costabsum]},
+   res = {arg, costabsum};
+   ];
+   
+   ]; (* end if Not[done] *)
+   
+   numres = toexactnumericalvalue[res, cosdenomorg, cosnumorg, 100];
+   
+   If[Chop[numres - numvalue, 10^(-90)] == 0,
+    resok = True;,
+    resok = False;
+    Print[
+     "The result is numerically not equal to the input, something went wrong!"];,
+    resok = False;
+    Print[
+     "The result is numerically not equal to the input, something went wrong!"];
+    ];
+   
+   If[resok,
+    res,
+    sumlistreduced,
+    sumlistreduced
+    ]
+   
+   ];
+
+
+combinesum[list_] := Module[{newlist, coefs, mult},
+   
+   (* make sure that the range of the phases is (-1,1] *)
+   
+   newlist = Table[
+     {Mod[list[[i, 1]], 2, -1]/.{-1->1}, list[[i, 2]]}
+     , {i, 1, Length[list]}];
+   
+   coefs = newlist // Union;
+   
+   Table[
+    mult = Count[newlist, coefs[[i]]];
+    {coefs[[i, 1]], mult^2*coefs[[i, 2]]}
+    , {i, 1, Length[coefs]}]
+   
+   ];
+
+
+combinesumnophases[list_] := Module[{listint, coefs, res, mult},
+   listint = 
+    Table[{Mod[list[[i, 1]], 2], list[[i, 2]]}
+    , {i, 1, Length[list]}];
+   
+   coefs = listint[[All, 2]] // Union;
+   
+   res = Table[
+     mult = 
+      Count[listint, x_ /; x[[2]] == coefs[[i]] && x[[1]] == 0] - 
+       Count[listint, x_ /; x[[2]] == coefs[[i]] && x[[1]] == 1];
+     Which[
+      mult == 0, {},
+      mult > 0, {0, mult^2*coefs[[i]]},
+      mult < 0, {1, mult^2*coefs[[i]]}
+      ]
+     , {i, 1, Length[coefs]}];
+   
+   res = DeleteCases[res, {}];
+   
+   If[res == {}, res = {{0, Table[0, Length[list[[1, 2]]]]}}];
+   
+   res
+   
+   ];
+
+
+combinesumsymmetricphases[cosdenom_, cosnum_, sumlist_] := 
+  Module[{res, denomlist, denomlist2, denomlist2union, rest, tab, 
+    result, curr, currcoefs, currphases, phasesok, currcos, sign, 
+    currcos2exact, currcosnum, cosexpressionok},
+   
+   denomlist = 
+    Table[{Denominator[sumlist[[i, 1]]], sumlist[[i, 2]]}
+    , {i, 1, Length[sumlist]}];
+   
+   denomlist2 = Cases[denomlist, x_ /; x[[1]] > 1];
+   denomlist2union = denomlist2 // Union;
+   rest = Cases[sumlist, x_ /; Denominator[x[[1]]] == 1];
+   
+   tab = Table[
+     curr = 
+      Cases[sumlist, x_ /; Denominator[x[[1]]] == denomlist2union[[i, 1]] && 
+         x[[2]] == denomlist2union[[i, 2]]];
+     currcoefs = denomlist2union[[i, 2]];
+     currphases = curr[[All, 1]] // Sort;
+     phasesok = (Mod[Length[currphases], 2] == 0) &&
+     (And @@  Table[currphases[[i]] == -currphases[[Length[currphases] + 1 - i]]
+     , {i, 1, Floor[Length[currphases]/2]}]);
+     
+     If[phasesok,
+      currcos = 
+       Sum[2 Cos[Pi currphases[[i]]], {i, 1, Length[currphases]/2}];
+      currcosnum = 
+       Sum[N[2 Cos[Pi currphases[[i]]], 200]
+       , {i, 1, Length[currphases]/2}];
+      sign = Sign[currcosnum // Chop];
+      currcos2exact = findexactabs[currcosnum^2, cosdenom, cosnum];
+      result = {If[sign == -1, 1, 0], 
+        exactproductnophase[cosdenom, currcos2exact, currcoefs]};
+      
+      cosexpressionok = FullSimplify[
+        sign * toexactvalue[{0, currcos2exact}, cosdenom, cosnum] - currcos == 0
+        ];
+      If[cosexpressionok, Null, 
+       Print["An expression for a cosine could not be checked exactly!"];
+       , Print["An expression for a cosine could not be checked exactly!"];
+       ];
+      
+      ];
+     
+     result
+     
+     , {i, 1, Length[denomlist2union]}];
+   
+   res = Join[tab, rest];
+   res = Table[{Mod[res[[i, 1]], 2], res[[i, 2]]}
+   , {i, 1, Length[res]}];
+   res
+   ];
+
+
+findoneoverabs[cosdenom_,coslist_]:=
+Module[{eqn,sol,var},
+ eqn = exactproductnophase[cosdenom, coslist, Table[var[i], {i, 0, Length[coslist] - 1}]];
+ sol = Solve[eqn == onerep[cosdenom][[2]]];
+ sol[[1, All, 2]]
+];
+
+
+findoneover[cosdenom_, number_] :=
+ {-number[[1]], findoneoverabs[cosdenom, number[[2]]]};
+
+
+abs2[cosdenom_, list_] :=
+  Flatten[
+   Table[exactproduct[cosdenom, list[[i]], {-list[[j, 1]], list[[j, 2]]}]
+    , {i, 1, Length[list]}, {j, 1, Length[list]}]
+   , 1];
+
+
+nqexact[cosdenom_, cosnum_, n_] := 
+  Module[{numvalue, sign, exactabs2, exactrep, exactcos, exactok},
+   
+   numvalue = 
+    If[Mod[n, cosdenom] != 0, 
+     Chop[N[nq[n, 1] /. q -> Exp[2 Pi I cosnum/cosdenom], 200]],
+     N[0, 200]];
+   sign = Sign[numvalue];
+   exactabs2 = findexactabs[numvalue^2, cosdenom, cosnum];
+   exactrep = {If[sign == 0 || sign == 1, 0, 1], exactabs2};
+   exactcos = toexactvalue[exactrep, cosdenom, cosnum];
+   
+   (* The sign is ok `automatically', 
+   so we'll only algebraically check the square of the expression *)
+  
+   exactok = 
+    FullSimplify[
+    (Sin[n*Pi cosnum/cosdenom]^2 // TrigReduce) == (Sin[Pi cosnum/cosdenom]^2 exactcos^2 //  TrigReduce)];
+   
+   If[exactok,
+    exactrep,
+    Print[
+     "The expression for the q-number could not be verified exactly!"];
+    exactrep,
+    Print[
+     "The expression for the q-number could not be verified exactly!"];
+    exactrep
+    ]
+   
+   ];
+
+
+exactproduct[cosdenom_, factorlist_List] := Module[{res},
+   res = onerep[cosdenom];
+   Do[
+    res = exactproduct[cosdenominator, res, factorlist[[i]]]
+    , {i, 1, Length[factorlist]}];
+   res
+   ];
+
+
+removepairs[cosdenom_, list_] := 
+  Module[{newlist, coeflist, currterms, currphases, numofpairs},
+   
+   (* make sure that the phases are in the range [-1,1) *)
+   
+   newlist = 
+    Table[{Mod[list[[i, 1]], 2, -1], list[[i, 2]]}
+    , {i, 1, Length[list]}];
+   
+   coeflist = newlist[[All, 2]] // Union;
+   
+   Do[
+    currterms = Cases[newlist, x_ /; x[[2]] == coeflist[[i]], {1}];
+    currphases = currterms[[All, 1]] // Union;
+    currphases = Cases[currphases, x_ /; x >= 0, {1}];
+    Do[
+     numofpairs = 
+      Min[Count[newlist, {currphases[[j]], coeflist[[i]]}], 
+       Count[newlist, {currphases[[j]] - 1, coeflist[[i]]}]];
+     newlist = 
+      DeleteCases[newlist, {currphases[[j]], coeflist[[i]]}, {1}, numofpairs];
+     newlist = 
+      DeleteCases[newlist, {currphases[[j]] - 1, coeflist[[i]]}, {1}, numofpairs];
+     , {j, 1, Length[currphases]}];
+    , {i, 1, Length[coeflist]}];
+   
+   If[newlist == {},
+    newlist = {zerorep[cosdenom]};
+    ];
+   
+   newlist = Table[{newlist[[i,1]]/.{-1 -> 1}, newlist[[i,2]]}, {i, 1, Length[newlist]}];
+   
+   newlist
+   
+   ];
+
+
+checkmodulardataalgebraically[] := Module[
+   {allok,
+    qdimalgebraic, qdimalgebraicok, qdimsreal,
+    qdtotalgebraic, qdtot2algebraic, qdtotalgebraicok, 
+    qdtot2algebraicok,
+    qdim1overfalgebraic, qdim1overfalgebraicok,
+    pivotalgebraic, pivotalgebraicok,
+    thetalistalgebraic, thetalistalgebraicok,
+    thetasum, sumres, qd, res,
+    frobschurlistalgebraic, frobschurlistalgebraicok,
+    fptab, fpsum, frobschur, result,
+    smatalgebraic, smatalgebraicok,
+    smattab, finalres,
+    pminusalgebraic, pplusalgebraic, pplustab, pplustabcoefsunion, 
+    pminustab, pminustabcoefsunion,
+    modular2algebraic, modular2algebraicok, centralchargealgebraic, 
+    centralchargealgebraicok,
+    ssdagalgebraic, sdagsalgebraic,
+    modularalgebraic, modularalgebraicok,
+    s2algebraic, s2algebraicok,
+    altcosdenom, coefslist, coefsreplace, newrep, altsmatalgebraic, 
+    altstalgebraic, altstalgebraiccoefs,
+    altst3algebraic, altst3calgebraic, altst3cmincalgebraic,
+    altst3cmincreducealgebraic,
+    altstalgebraicsqrt, altstalgebraicsqrtreplace, 
+    altstalgebraicnosqrt,
+    elem, elemabs2, done, currphases, altst3calgebraicnosqrt, 
+    st3calgebraicok,
+    currterms
+    },
+
+   If[Not[typeranklevelrootinitok],
+    Print[
+      "The type of algebra, rank, level and/or rootfactor were not \
+(correctly) initialized, please do so first, followed by calculating the F- and R-symbols, \
+the modular data and obtaining the exact form of the F- and R-symbols \
+and the modular data, before trying to verify the \
+exact form of the modular data algebraicaly."];
+    ];
+
+   If[typeranklevelrootinitok &&
+      (Not[fsymbolscalculated] || Not[rsymbolscalculated] || Not[modulardatacalculated]),
+      Print["The F-symbols, R-symbols and/or the modular data were not calculated. \
+Please calculate these first, and obtain their exact form, before trying to verify the \
+exact form of the modular data algebraically."];
+    ]; 
+
+   If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && modulardatacalculated &&
+      (Not[fsymbolsexactfound] || Not[rsymbolsexactfound] || Not[modulardataexactfound]),
+      Print["The exact form of the F-symbols, R-symbols and/or the modular data were not obtained. \
+Please obtain these first, before trying to verify the \
+exact form of the modular data algebraically."];
+    ]; 
+
+If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && modulardatacalculated && 
+    fsymbolsexactfound && rsymbolsexactfound && modulardataexactfound,
+      
+   (* The actual calculation! *)   
+            
+   allok = True;
+   
+   Print["Checking the quantum dimensions algebraically..."];
+   
+   qdimalgebraic = 
+    Table[
+    exactproduct[cosdenominator, 
+     Table[
+      exactproduct[cosdenominator,
+        nqexact[cosdenominator, cosnumerator, tmax (ir + rho).qfm.posroots[[pr]]], 
+        findoneover[cosdenominator, 
+         nqexact[cosdenominator, cosnumerator, tmax (rho).qfm.posroots[[pr]]]]]
+      , {pr, 1, numposroots}]]
+     , {ir, irreps}];
+   
+   qdimalgebraicok = 
+    qdimlistexact[[All, 2]] ==  qdimalgebraic[[All, 2]] &&
+    (Mod[#, 2] & /@  qdimlistexact[[All, 1]]) == (Mod[#, 2] & /@ qdimalgebraic[[All, 1]]);
+   
+   If[qdimalgebraicok,
+    Print["The exact form of the quantum dimensions coincides with \
+the algebraically obtained one :-)"];,
+    Print["The exact form of the quantum dimensions does not coincide with \
+the algebraically obtained one :-("];
+    allok = False;,
+    Print["The exact form of the quantum dimensions does not coincide with \
+the algebraically obtained one :-("];
+    allok = False;
+    ];
+   
+   qdimsreal = Union[Mod[#, 1] & /@ qdimalgebraic[[All, 1]]] == {0};
+   
+   If[qdimsreal, Null,
+    Print["The algebraic form of the quantum dimensions are not all real :-("];
+    allok = False;,
+    Print["The algebraic form of the quantum dimensions are not all real :-("];
+    allok = False;
+    ];
+   
+   qdtotalgebraic = {0, Plus @@ qdimalgebraic[[All, 2]]};
+   qdtot2algebraic = {0, 
+     exactproductnophase[cosdenominator, 
+      Plus @@ qdimalgebraic[[All, 2]], 
+      Plus @@ qdimalgebraic[[All, 2]]]
+      };
+   
+   qdtotalgebraicok = qdtotalgebraic == qdtotexact;
+   qdtot2algebraicok = qdtot2algebraic == qdtot2exact;
+   
+   
+   qdim1overfalgebraic = Table[
+     findoneover[
+      cosdenominator,
+      fsymexact[irreps[[i]], irrepsdual[[i]], irreps[[i]], irreps[[i]], irreps[[1]], irreps[[1]]
+      , {1, 1, 1, 1}]
+      ]
+     , {i, 1, Length[irreps]}];
+   
+   qdim1overfalgebraicok = 
+    qdim1overfalgebraic[[All, 2]] ==  qdim1overfexactlist[[All, 2]] &&
+    (Mod[#, 2] & /@  qdim1overfalgebraic[[All, 1]]) == (Mod[#, 2] & /@ qdim1overfexactlist[[All, 1]]);
+
+   Print["Checking the pivotal structure algebraically..."];
+   
+   pivotalgebraic = Table[
+     exactproduct[cosdenominator,
+      qdimalgebraic[[i]],
+      fsymexact[irreps[[i]], irrepsdual[[i]], irreps[[i]], irreps[[i]], irreps[[1]], irreps[[1]]
+      , {1, 1, 1, 1}]
+      ]
+     , {i, 1, Length[irreps]}];
+   
+   pivotalgebraicok = 
+    pivotalgebraic[[All, 2]] == pivotlistexact[[All,  2]] &&
+    (Mod[#, 2] & /@ pivotalgebraic[[All, 1]]) == (Mod[#, 2] & /@ pivotlistexact[[All, 1]]);
+
+   If[pivotalgebraicok,
+    Print["It was checked algebraically that the pivotal equations are satisfied :-)"];,
+    Print["At least one of the pivotal equations does not hold algebraically :-("];
+    allok = False;,
+    Print["At least one of the pivotal equations does not hold algebraically :-("];
+    allok = False;
+    ];
+
+   Print["Checking the twist factors algebraically..."];   
+         
+   thetalistalgebraic = Table[
+     thetasum = 
+      Flatten[Table[
+        exactproduct[cosdenominator, qdimexact[ir1], 
+         rsymexact[ir, ir, ir1, {v, v}]]
+         , {ir1, fusion[ir, ir]}, {v, 1, nv[ir, ir, ir1]}], 1];
+     
+     sumres = reducesum[cosdenominator, cosnumerator, thetasum];
+     qd = qdimexact[ir];
+     If[sumres[[2]] == qd[[2]],
+      res = {sumres[[1]] - qd[[1]], Table[If[i == 1, 1, 0], {i, 1, Length[qd[[2]]]}]};,
+      Print["The twistfactor is not a phase, something went wrong!"];
+      res = Null;,
+      Print["The twistfactor is not a phase, something went wrong!"];
+      res = Null;
+      ];
+     res
+     , {ir, irreps}];
+   
+   thetalistalgebraicok = 
+    thetalistexact[[All, 2]] == thetalistalgebraic[[All, 2]] &&
+    (Mod[#, 2] & /@ thetalistexact[[All, 1]]) == (Mod[#, 2] & /@ thetalistalgebraic[[All, 1]]);
+
+
+   If[thetalistalgebraicok,
+    Print["The exact form of the twist factors coincides with \
+the algebraically obtained one :-)"];,
+    Print["The exact form of the twist factors does not coincide with \
+the algebraically obtained one :-("];
+    allok = False;,
+    Print["The exact form of the twist factors does not coincide with \
+the algebraically obtained one :-("];
+    allok = False;
+    ];
+
+                  
+   Print["Checking the Frobenius-Schur indicators algebraically..."];
+   
+   frobschurlistalgebraic = Table[
+     fptab = Flatten[
+       Table[
+        res = 
+         exactproduct[cosdenominator, qdimexact[ir1], qdimexact[ir2]];
+        res[[1]] = 
+         Mod[res[[1]] + 2 thetaexact[ir1][[1]] - 2 thetaexact[ir2][[1]], 2, -1];
+        res[[2]] = (nv[ir, ir1, ir2])^2 * res[[2]];
+        res
+        , {ir1, irreps}, {ir2, fusion[ir, ir1]}]
+       , 1];
+     
+     result =
+      combinesumnophases[combinesumsymmetricphases[cosdenominator, cosnumerator, fptab]];
+     
+     result = reducesum[cosdenominator, cosnumerator, result];
+     
+     result =
+      Which[
+       result[[2]] == Table[0, Length[result[[2]]]],
+       result,
+       result[[2]] == qdtot2exact[[2]],
+       {result[[1]], Table[If[i == 1, 1, 0], {i, 1, Length[result[[2]]]}]},
+       True, 
+       Print["The FS indicactor is neither zero, nor +/- 1. Better check!"];
+       result
+       ];
+     
+     result
+     
+     
+     , {ir, irreps}];
+   
+   frobschurlistalgebraicok = 
+    frobschurlistalgebraic[[All, 2]] == frobschurlistexact[[All, 2]] &&
+    (Mod[#, 2] & /@ frobschurlistalgebraic[[All, 1]]) == (Mod[#, 2] & /@ frobschurlistexact[[All, 1]]);
+
+   If[frobschurlistalgebraicok,
+    Print["The exact form of the Frobenius-Schur indicators coincides with \
+the algebraically obtained one :-)"];,
+    Print["The exact form of the Frobenius-Schur indicators does not coincide with \
+the algebraically obtained one :-("];
+    allok = False;,
+    Print["The exact form of the Frobenius-Schur indicators does not coincide with \
+the algebraically obtained one :-("];
+    allok = False;
+    ];
+
+
+   Print["Calculating the S-matrix algebraically..."];
+   
+   smatalgebraic = Table[
+     smattab = Table[
+       res = qdimexact[ir3];
+       res[[1]] = 
+        Mod[res[[1]] + thetaexact[ir3][[1]] - thetaexact[ir1][[1]] -  thetaexact[ir2][[1]], 2, -1];
+       res[[2]] = (nv[dual[ir1], ir2, ir3])^2 * res[[2]];
+       res
+       , {ir3, fusion[dual[ir1], ir2]}];
+     finalres = reducesum[cosdenominator, cosnumerator, smattab];
+     finalres = exactproduct[cosdenominator, qdtot1overexact, finalres]
+     
+     , {ir1, irreps}, {ir2, irreps}];
+   
+   smatalgebraicok = 
+    Flatten[smatalgebraic, 1][[All, 2]] == Flatten[smatexact, 1][[All, 2]] &&
+    (Mod[#, 2] & /@ Flatten[smatalgebraic, 1][[All, 1]]) ==
+    (Mod[#, 2] & /@ Flatten[smatexact, 1][[All, 1]]);
+
+   (*Print["Calculating p_+ and p_- algebraically..."];*)  
+   
+   pplustab = Table[
+     res = 
+      exactproduct[cosdenominator, qdimexact[ir], qdimexact[ir]];
+     res[[1]] = Mod[res[[1]] + thetaexact[ir][[1]], 2, -1];
+     res
+     , {ir, irreps}];
+   pplustabcoefsunion = pplustab[[All, 2]] // Union;
+   res = Table[
+     reducesum[cosdenominator, cosnumerator,
+       removepairs[cosdenominator,
+        combinesum[Cases[pplustab, x_ /; x[[2]] == ccoefs]]
+       ]
+     ]
+     , {ccoefs, pplustabcoefsunion}];
+   
+   pplusalgebraic = reducesum[cosdenominator, cosnumerator, 
+    removepairs[cosdenominator, combinesum[res]] 
+   ];
+   
+   pminustab = Table[
+     res = 
+      exactproduct[cosdenominator, qdimexact[ir], qdimexact[ir]];
+     res[[1]] = Mod[res[[1]] - thetaexact[ir][[1]], 2, -1];
+     res
+     , {ir, irreps}];
+   pminustabcoefsunion = pminustab[[All, 2]] // Union;
+   res = Table[
+     reducesum[cosdenominator, cosnumerator,
+      removepairs[cosdenominator,
+       combinesum[Cases[pminustab, x_ /; x[[2]] == ccoefs]]
+      ]
+     ]
+     , {ccoefs, pminustabcoefsunion}];
+   
+   pminusalgebraic = reducesum[cosdenominator, cosnumerator, 
+    removepairs[cosdenominator, combinesum[res]] 
+   ];
+   
+
+   
+   modular2algebraic = 
+    exactproduct[cosdenominator, pplusalgebraic, pminusalgebraic] == qdtot2algebraic;
+
+         
+   modular2algebraicok = modular2algebraic == modular2;
+   
+   If[modular2algebraic,
+    centralchargealgebraic = 4 * pplusalgebraic[[1]];
+    centralchargealgebraicok = centralchargealgebraic == centralcharge;
+    ];
+   
+ (*Print["Calculating S.S^dagger and S^daggar.S..."];*) 
+   
+   ssdagalgebraic = Table[
+     reducesum[cosdenominator, cosnumerator,
+      removepairs[cosdenominator,
+      Table[
+       exactproduct[cosdenominator, smatalgebraic[[i, k]],
+       {-smatalgebraic[[k, j, 1]], smatalgebraic[[k, j, 2]]}]
+       , {k, 1, Length[irreps]}]
+       ]
+      ]
+     , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+    ssdagalgebraic = Table[
+     If[ssdagalgebraic[[i, j, 2]] == zerorep[cosdenominator][[2]],
+       zerorep[cosdenominator],
+       ssdagalgebraic[[i, j]]
+     ]
+    , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+     
+   sdagsalgebraic = Table[
+     reducesum[cosdenominator, cosnumerator,
+     removepairs[cosdenominator,
+      Table[exactproduct[
+        cosdenominator, {-smatalgebraic[[i, k, 1]], smatalgebraic[[i, k, 2]]},
+        smatalgebraic[[k, j]]]
+       , {k, 1, Length[irreps]}]
+      ]
+      ]
+     , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+     sdagsalgebraic = Table[
+     If[sdagsalgebraic[[i, j, 2]] == zerorep[cosdenominator][[2]],
+       zerorep[cosdenominator],
+       sdagsalgebraic[[i, j]]
+     ]
+    , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+     
+    (*Print["Done calculating S.S^dagger and S^daggar.S..."];*)  
+   
+   modularalgebraic = 
+    ContainsOnly[
+      Flatten[ssdagalgebraic, 1], {onerep[cosdenominator], zerorep[cosdenominator]}] && 
+     ssdagalgebraic[[All, All, 2, 1]] == IdentityMatrix[Length[irreps]] && 
+     ContainsOnly[
+      Flatten[sdagsalgebraic, 1], {onerep[cosdenominator], zerorep[cosdenominator]}] && 
+     sdagsalgebraic[[All, All, 2, 1]] == IdentityMatrix[Length[irreps]];
+   
+   modularalgebraicok = modularalgebraic == modular;
+
+(* We now checked modularity, so we now print if the s-matrix calculation went ok or not. *)
+
+   If[smatalgebraicok,
+    Print["The exact form of the S-matrix coincides with \
+the algebraically obtained one :-)"];,
+    Print["The exact form of the S-matrix does not coincide with \
+the algebraically obtained one :-("];
+    allok = False;,
+    Print["The exact form of the S-matrix does not coincide with \
+the algebraically obtained one :-("];
+    allok = False;
+    ];
+
+   
+  If[modularalgebraic,
+  
+   Print["Checking the modular relations algebraically..."];       
+
+      
+  (*Print["Calculating S^2..."];*)      
+         
+   s2algebraic = Table[
+     reducesum[cosdenominator, cosnumerator,
+     removepairs[cosdenominator,
+      Table[
+       exactproduct[cosdenominator, smatalgebraic[[i, k]], smatalgebraic[[k, j]]]
+       , {k, 1, Length[irreps]}]
+      ]
+      ]
+     , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+     s2algebraic = Table[
+     If[s2algebraic[[i, j, 2]] == zerorep[cosdenominator][[2]],
+       zerorep[cosdenominator],
+       s2algebraic[[i, j]]
+     ]
+    , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+   
+   s2algebraicok = 
+    ContainsOnly[
+      Flatten[s2algebraic, 1], {onerep[cosdenominator], zerorep[cosdenominator]}] && 
+     s2algebraic[[All, All, 2, 1]] == cmat;
+   
+   (* we'll now check the modular relations, e^(-2 Pi I c/8 )(st)^3 = 
+   s^2 = c , using a different algebraic number field. *)
+
+   (*Print["Calculating (S.T)^3..."];*)
+   
+   altcosdenom = 
+    LCM[Sequence @@ (Join[
+          smatalgebraic[[All, All, 1]] // Flatten // Denominator // Union,
+          thetalistalgebraic[[All, 1]] // Denominator, {cosdenominator}] // Union)];
+   
+   coefslist = Flatten[smatalgebraic[[All, All, 2]], 1] // Union;
+   
+   coefsreplace = {};
+   Do[
+    newrep = 
+     findexactabs[
+      toexactnumericalvalue[{0, coefslist[[i]]}, cosdenominator, cosnumerator, 100]^2, altcosdenom, 1];
+    If[
+     toexactvalue[{0, newrep}, altcosdenom, 1]^2 -
+     toexactvalue[{0, coefslist[[i]]}, cosdenominator,  cosnumerator]^2 == 0 // FullSimplify,
+     AppendTo[coefsreplace, coefslist[[i]] -> newrep];,
+     Print["The new representation is not equal to the original one!"];,
+     Print["It could not be checked if the new representation is equal to the original one!"];
+     ];
+    , {i, 1, Length[coefslist]}];
+     
+   
+   altsmatalgebraic = Table[
+     {smatalgebraic[[i, j, 1]], 
+      smatalgebraic[[i, j, 2]] /. coefsreplace}
+     , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+   Clear[coefsreplace];
+   
+   altstalgebraic = Table[
+    If[
+     altsmatalgebraic[[i, j, 2]] == zerorep[altcosdenom][[2]],
+     altsmatalgebraic[[i, j]],
+      {Mod[altsmatalgebraic[[i, j, 1]] + thetalistalgebraic[[j, 1]], 2, -1],
+      altsmatalgebraic[[i, j, 2]]}
+    ]
+   , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+   
+   altst3algebraic = Table[
+     removepairs[altcosdenom,
+      DeleteCases[
+       Flatten[
+       Table[
+        exactproduct[altcosdenom, 
+        altstalgebraic[[i, k1]], altstalgebraic[[k1, k2]], altstalgebraic[[k2, j]]]
+       , {k1, 1, Length[irreps]}, {k2, 1, Length[irreps]}]
+      , 1]
+     , x_ /; x[[2]] == zerorep[altcosdenom][[2]]]
+    ]
+   , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+   
+   
+   altst3calgebraic = Table[
+    combinesum[
+     removepairs[altcosdenom,
+      Table[
+       If[
+        altst3algebraic[[i, j, k, 2]] == zerorep[altcosdenom][[2]],
+        altst3algebraic[[i, j, k]],
+         {Mod[altst3algebraic[[i, j, k, 1]] - centralchargealgebraic/4, 2, -1]
+         , altst3algebraic[[i, j, k, 2]]}
+       ]
+      , {k, 1, Length[altst3algebraic[[i, j]]]}]
+     ]
+    ]
+   , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+   
+   altst3cmincalgebraic = Table[
+    If[
+     cmat[[i, j]] == 0,
+      altst3calgebraic[[i, j]],
+      Append[altst3calgebraic[[i, j]], minusonerep[altcosdenom]]
+    ]
+   , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+   
+   
+   altst3cmincreducealgebraic = Table[
+    reducesum[altcosdenom, 1,
+     combinesum[
+      removepairs[altcosdenom,
+       combinesumsymmetricphases[altcosdenom, 1,
+        combinesum[
+         removepairs[altcosdenom,
+          abs2[altcosdenom, altst3cmincalgebraic[[i, j]]]
+         ]
+        ]
+       ]
+      ]
+     ]
+    ]
+   , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+   
+   st3calgebraicok = altst3cmincreducealgebraic == 
+    Table[zerorep[altcosdenom],{i,1,Length[irreps]},{j,1,Length[irreps]}];
+   
+   
+  If[st3calgebraicok && s2algebraicok,
+  
+  Print["It was checked algebraically that the modular relations are satisfied :-)"];,
+  Print["At least one of the modular relations does not hold algebraically :-("];,
+  Print["At least one of the modular relations does not hold algebraically :-("];  
+  
+  ];
+   
+   ];
+
+If[modularalgebraic &&  And @@ {qdimalgebraicok, qdtotalgebraicok, qdtot2algebraicok, 
+    qdim1overfalgebraicok, pivotalgebraicok, thetalistalgebraicok, 
+    frobschurlistalgebraicok, smatalgebraicok, modular2algebraicok, 
+    modularalgebraicok, s2algebraicok, st3calgebraicok},
+    Print["Done, all relations hold :-)"];
+];
+If[modularalgebraic &&  Not[And @@ {qdimalgebraicok, qdtotalgebraicok, qdtot2algebraicok, 
+    qdim1overfalgebraicok, pivotalgebraicok, thetalistalgebraicok, 
+    frobschurlistalgebraicok, smatalgebraicok, modular2algebraicok, 
+    modularalgebraicok, s2algebraicok, st3calgebraicok}],
+    Print["Done, not all relations hold :-("];
+];
+If[Not[modularalgebraic] &&  And @@ {qdimalgebraicok, qdtotalgebraicok, qdtot2algebraicok, 
+    qdim1overfalgebraicok, pivotalgebraicok, thetalistalgebraicok, 
+    frobschurlistalgebraicok, smatalgebraicok, modular2algebraicok, 
+    modularalgebraicok},
+    Print["Done, all relations hold :-)"];
+];
+If[Not[modularalgebraic] &&  Not[And @@ {qdimalgebraicok, qdtotalgebraicok, qdtot2algebraicok, 
+    qdim1overfalgebraicok, pivotalgebraicok, thetalistalgebraicok, 
+    frobschurlistalgebraicok, smatalgebraicok, modular2algebraicok, 
+    modularalgebraicok}],
+    Print["Done, not all relations hold :-("];
+];
+
+
+]; (* end of the actual calculation! *)
+         
+   ];
+
+
+(* ::Subsection::Closed:: *)
 (*Cleanup*)
 
 
@@ -4779,7 +6212,7 @@ clearvariables[] := Clear[
    rsyminv, rmat, rmatinv, sign, phase, fsymold, rsymold, fmatold,
    rmatold, umat, umatinv, numofirreps, numposroots, posroots, qdimvec,
    qd, qdtot2, qdtot, qdimspositive, fpdimvec, irrepsdual, dual,
-   selfdualvec, selfdual, qdim1overfvec, pivotlist,  pivot, thetalist,
+   selfdualvec, selfdual, qdim1overfvec, pivotlist,  pivot, pivoteqnok, thetalist,
    theta, hlist, hvalue, frobschurlist, frobschur, smat, cmat, tmat,
    modular, pplus, pminus, modular2, centralcharge, modularrelationsok,
    fsymbolsallrealorimaginary, fsymbolarguements, weightspaceorthogonal,
@@ -4787,13 +6220,22 @@ clearvariables[] := Clear[
    pentagondeviation, pentholds, pentagoncounter, hexrundecidable,
    hexagonRdeviation, hexrinvundecidable, hexagonRinversedeviation,
    hexagondeviation, hexholds, simplecurrentvec,
-   qd, pivot, theta, hvalue, frobschur, dual, selfdual,
+   qd, theta, hvalue, frobschur, dual, selfdual,
    uniform, canbenonuniform, rootfactorsuniform, rootfactorsnonuniform,
    lval, zval,
    fsymexact, rsymexact, rsyminvexact,
    pentholdsexact, hexholdsexact,
    cosdenominator, cosnumerator,
-   pentholdsalgebraically, hexholdsalgebraically
+   pentholdsalgebraically, hexholdsalgebraically,
+   pivotlistexact, pivotexact, pivotexactok,
+   FPdimlistexact, FPdimexactok,
+   qdimlistexact, qdimexact, qdimspositiveexact, qdimexactok,
+   qdtot2exact, qdtot2exactok,
+   qdtotexact, qdtotexactok, qdtot1overexactok, qdim1overfexactlistok,
+   thetalistexact, thetaexact, thetalistexactok,
+   smatexact, smatexactok,
+   tmatexact,
+   modularexact, modularrelationsexactok
    ];
    
 clearglobalvariables[] := Clear[
