@@ -5,7 +5,7 @@ Author: Eddy Ardonne
 
 Many thanks to: Achim Krause, François Brunault, Eric Rowell, Steve Simon, Joost Slingerland, Gert Vercleyen
 
-Last update: 2021-12-17
+Last update: 2022-02-05
 
 The method used is described the paper:
 
