@@ -74,6 +74,13 @@ diagonalizermatrices::usage =
 This will change both F- and R-symbols, so the pentagon and hexagon equations will be \
 re-checked for security."
 
+undiagonalizermatrices::usage = 
+	"undiagonalizermatrices[] reverts the process of diagonalizing the R-matrices. \
+This will revert both F- and R-symbols back to their original values. This is necessary \
+if one after diagonalizing the R-matrices, wants to obtain the exact representation of the
+F-symbols. Diagonalizing the R-matrices can lead to values for the F-symbols that can not \
+be described in terms of the general numberfield that is used to describe the F- and R-symbols."
+
 (*
 donotcheckpentagon::usage =
 	"Run donotcheckpentagon[] (after the type of algebra, rank and level have been initialized) \
@@ -244,7 +251,7 @@ Steve Simon, Joost Slingerland, Gert Vercleyen\n" ,
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2022-02-05\n\
+       "Last revision: 2022-02-07\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -373,6 +380,7 @@ initfromlz=False;
 fsymbolsexactfound=False;
 rsymbolsexactfound=False;
 modulardataexactfound=False;
+rmatricesdiagonalized=False;
 
 
 (* ::Subsection::Closed:: *)
@@ -613,6 +621,7 @@ initialize[atype_, rr_] :=
     modulardataexactfound = False;
     pentagontobechecked = True;
     recheck = False;
+    rmatricesdiagonalized = False;
     clearvariables[];
     clearglobalvariables[];
     
@@ -680,6 +689,7 @@ initializelevel[lev_] :=
      modulardatacalculated = False;
      modulardataexactfound = False;
      pentagontobechecked = True;
+     rmatricesdiagonalized = False;
      recheck = False;
      level = lev;
      rootofunity = 1/(g + level);
@@ -761,6 +771,7 @@ initializerootofunity[rootfac_] := Piecewise[{
        rsymbolsexactfound = False;
        modulardatacalculated = False;
        modulardataexactfound = False;
+       rmatricesdiagonalized = False;
        recheck = False;
               
        Print["You can proceed to calculate the F-symbols :-)"];
@@ -2824,18 +2835,25 @@ before calculating the R-symbols."];
   ];
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Routine to diagonalize the R - matrices*)
 
 
 diagonalizermatrices[] := Module[{tempmat,tempmatinv,rmatdiagonallist,rmatnondiagonallist,rmatnondiagonallistswap,rmatnondiagonallistreduced,rmatnondiagonallistsymmetric},
-   
-  If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated,
+
+ If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated,
    
    If[Not[rmatdiagonal],
    
+   Print["Diagonalizing the R-matrices might lead to values for the F-symbols that \
+can not be described in terms of the general number field that is used for the \
+exact representation for the F- and R-symbols. Thus, if one afterwards wants to obtain the \
+exact representation of the F- and/or R-symbols, the original, non-diagonalized form \
+should be used! One can `undiagonalize' the R-matrices by running undiagonalizermatrices[]."];
+   
    Print["Diagonalizing the R-matrices..."];
    
+   rmatricesdiagonalized = True;
    recheck = True;
    
    rmatdiagonallist = DeleteCases[Table[
@@ -2852,7 +2870,8 @@ diagonalizermatrices[] := Module[{tempmat,tempmatinv,rmatdiagonallist,rmatnondia
    If[
    Not[rmatnondiagonallist == rmatnondiagonallistswap],
    Print["There is a non-diagonal R-matrix R^{a,b}_c, such that R^{b,a}_c is diagonal. \
-This means that the R-matrices can not all be diagonalized at the same time. Something seems to have gone wrong."];
+This means that the R-matrices can not all be diagonalized at the same time. \
+Something seems to have gone wrong."];
    ];
    
    rmatnondiagonallistreduced = 
@@ -2985,7 +3004,8 @@ This means that the R-matrices can not all be diagonalized at the same time. Som
    
    If[
     (Not[pentagontobechecked] || (pentholds && Not[pentundecidable])) && hexholds && Not[hexrundecidable] && Not[hexrinvundecidable],
-    Clear[fsymold, rsymold, fmatold, rmatold, umat, umatinv];
+    (*Clear[fsymold, rsymold, fmatold, rmatold, umat, umatinv];*)
+    Clear[umat, umatinv];
     ];
    
    Print["Done :-)"];
@@ -2998,6 +3018,91 @@ This means that the R-matrices can not all be diagonalized at the same time. Som
    Print["The R-symbols have not been calculated, please do so first!"];
    
    ];
+   
+   ];
+
+
+undiagonalizermatrices[] :=
+  With[{},
+  
+    If[Not[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated],
+    Print["The R-symbols were not calculated, so the R-matrices were not \
+diagonalized either."];
+    ];
+  
+     If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated &&
+       Not[rmatricesdiagonalized],
+    Print["The R-matrices were not diagonalized, \
+so there is no need to undiagonalize them."];
+    ];
+   
+   
+   If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && 
+     rmatricesdiagonalized,
+    Print["The R-matrices will be brought back to their original form, \
+in which not all R-matrices are diagonal. This will revert the \
+F- and R-symbols to their original values."];
+    
+    Do[
+     rsym[Sequence @@ rs] = rsymold[Sequence @@ rs]
+     , {rs, rlist}];
+    
+     Do[
+      fsym[Sequence @@ fs] = fsymold[Sequence @@ fs]
+     , {fs, flist}];
+    
+     Do[
+     rmat[Sequence @@ rm] = rmatold[Sequence @@ rm]
+     , {rm, rmatlist}];
+    
+     Do[
+     fmat[Sequence @@ fm] = fmatold[Sequence @@ fm]
+     , {fm, fmatlist}];
+    
+    Do[
+     rmatinv[Sequence @@ rm] = rmat[Sequence @@ rm] // Inverse;
+     
+     Do[
+      rsyminv[Sequence @@ rm, {v1, v2}] = 
+        rmatinv[Sequence @@ rm][[v1, v2]];
+      , {v1, 1, nv[Sequence @@ rm]}, {v2, 1, nv[Sequence @@ rm]}];
+     
+     , {rm, rmatlist}];
+    
+    rmatricesdiagonalized = False;
+
+    rmatunitary = And @@ Table[
+       ( Chop[ rmat[Sequence @@ rm].Conjugate[Transpose[rmat[Sequence @@ rm]]] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
+       , {rm, rmatlist}] &&
+       And @@ Table[(Chop[ Conjugate[Transpose[rmat[Sequence @@ rm]]].rmat[Sequence @@ rm] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
+       , {rm, rmatlist}];
+   
+    rmatdiagonal = And @@ Table[
+      (Chop[ (rmat[Sequence @@ rm] - DiagonalMatrix[Diagonal[rmat[Sequence @@ rm]]]) , 10^(-20) ] // Flatten // Union) == {0}
+      , {rm, rmatlist}];
+   
+    rmatevallist = Table[
+       N[rmat[Sequence @@ rm] , precision ]// Eigenvalues
+       , {rm, rmatlist}] // Flatten;
+   
+    rmatevalabslist = Abs /@ rmatevallist;
+   
+    If[
+     (Chop[ (rmatevalabslist - 1) , 10^(-20) ] // Union) == {0},
+     rmatevalsarephases = True;,
+     rmatevalsarephases = False;
+    ];
+   
+    rmatevalarglist = Rationalize[1/Pi (Arg /@ rmatevallist)];
+    rmatevalarglistunion = rmatevalarglist // Union;
+   
+    rmatevalargmaxdenom = (Denominator /@ rmatevalarglist) // Max;
+    
+    Clear[rsymold, fsymold, rmatold, fmatold];
+    
+    Print["Done :-)"];
+    
+    ];
    
    ];
 
@@ -3873,8 +3978,15 @@ F-symbols."];
       Print["The F-symbols were not calculated. Please do so first, \
 before trying to find the exact form of the F-symbols."];
       ];
+      
+    If[typeranklevelrootinitok && fsymbolscalculated && rmatricesdiagonalized,
+      Print["The R-matrices were diagonalized. This can result in values of the \
+F-symbols, that can not be written in terms of the general numberfield used for \
+the exact representation of the F- and R-symbols. Therefore, one should revert back \
+to the original form of the F- and R-symbols by running undiagonalizermatrices[]."];
+    ];
    
-    If[typeranklevelrootinitok && fsymbolscalculated,
+    If[typeranklevelrootinitok && fsymbolscalculated && Not[rmatricesdiagonalized],
      Print["Trying to find the exact form of the F-symbols..."];
     
      If[uniform,
@@ -3924,8 +4036,16 @@ form of the R-symbols."];
       Print["The R-symbols were not calculated. Please do so first, before \
 trying to find the exact form of the R-symbols."];
       ];
+      
+    If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && rmatricesdiagonalized,
+      Print["The R-matrices were diagonalized. This can result in values of the \
+F-symbols, that can not be written in terms of the general numberfield used for \
+the exact representation of the F- and R-symbols. Therefore, one should revert back \
+to the original form of the F- and R-symbols by running undiagonalizermatrices[]."];
+    ];
+      
    
-    If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated,
+    If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && Not[rmatricesdiagonalized],
        
     Print["Trying to find the exact form of the R-symbols..."];
     
@@ -4836,7 +4956,7 @@ the exact form of the modular data."];
     ];
    
    If[typeranklevelrootinitok && fsymbolscalculated && 
-     fsymbolsexactfound && rsymbolscalculated && 
+     rsymbolscalculated && 
      Not[modulardatacalculated] && Not[fsymbolsexactfound] && 
      Not[rsymbolsexactfound],
     Print["The modular data was not calculated. Please do so first, \
@@ -4846,7 +4966,7 @@ before calculating the exact form of the modular data."];
    
    If[typeranklevelrootinitok && fsymbolscalculated && 
      fsymbolsexactfound && rsymbolscalculated && 
-     Not[modulardatacalculated] && fsymbolsexactfound && 
+     Not[modulardatacalculated] && 
      Not[rsymbolsexactfound],
     Print["The modular data was not calculated. Please do so first, \
 followed by obtaining the exact form of the R-symbols, before \
@@ -4854,7 +4974,7 @@ calculating the exact form of the modular data."];
     ];
    
    If[typeranklevelrootinitok && fsymbolscalculated && 
-     fsymbolsexactfound && rsymbolscalculated && 
+     rsymbolscalculated && 
      Not[modulardatacalculated] && Not[fsymbolsexactfound] && 
      rsymbolsexactfound,
     Print["The modular data was not calculated. Please do so first, \
@@ -4864,14 +4984,14 @@ calculating the exact form of the modular data."];
    
    If[typeranklevelrootinitok && fsymbolscalculated && 
      fsymbolsexactfound && rsymbolscalculated && 
-     Not[modulardatacalculated] && fsymbolsexactfound && 
+     Not[modulardatacalculated] && 
      rsymbolsexactfound,
     Print["The modular data was not calculated. Please do so first, \
 before calculating the exact form of the modular data."];
     ];
    
    If[typeranklevelrootinitok && fsymbolscalculated && 
-     fsymbolsexactfound && rsymbolscalculated && 
+     rsymbolscalculated && 
      modulardatacalculated && Not[fsymbolsexactfound] && 
      Not[rsymbolsexactfound],
     Print["The exact form of the F- and R-symbols was not obtained. \
@@ -4880,7 +5000,7 @@ modular data."];
     ];
    
    If[typeranklevelrootinitok && fsymbolscalculated && 
-     fsymbolsexactfound && rsymbolscalculated && 
+     rsymbolscalculated && 
      modulardatacalculated && Not[fsymbolsexactfound] && 
      rsymbolsexactfound,
     Print["The exact form of the F-symbols was not obtained. Please do so \
@@ -4889,17 +5009,26 @@ first, before calculating the exact form of the modular data."];
    
    If[typeranklevelrootinitok && fsymbolscalculated && 
      fsymbolsexactfound && rsymbolscalculated && 
-     modulardatacalculated && fsymbolsexactfound && 
+     modulardatacalculated && 
      Not[rsymbolsexactfound],
     Print["The exact form of the R-symbols was not obtained. Please do so \
 first, before calculating the exact form of the modular data."];
     ];
-   
+
+     If[typeranklevelrootinitok && fsymbolscalculated && fsymbolsexactfound && 
+   rsymbolscalculated && modulardatacalculated && 
+   rsymbolsexactfound && rmatricesdiagonalized,
+      Print["The R-matrices were diagonalized. This can result in values of the \
+F-symbols, that can not be written in terms of the general numberfield used for \
+the exact representation of the F- and R-symbols. Therefore, one should revert back \
+to the original form of the F- and R-symbols by running undiagonalizermatrices[]."];
+    ];
+     
    
    
    If[typeranklevelrootinitok && fsymbolscalculated && fsymbolsexactfound && 
-   rsymbolscalculated && modulardatacalculated && fsymbolsexactfound &&
-   rsymbolsexactfound,
+   rsymbolscalculated && modulardatacalculated &&
+   rsymbolsexactfound && Not[rmatricesdiagonalized],
     
     
     (* Here comes the actual calculation !! *)
