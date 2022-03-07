@@ -194,20 +194,26 @@ The exact R-symbols are given in terms of \[Alpha] and a[i] as {\[Alpha], {a[0],
 findexactmodulardata::usage =
 	"findexactmodulardata[] converts the numerical modular data into an exact representation."
 
+(*
 checkpentagonalgebraically::usage = 
 	"checkpentagonexactformalgebraically[] checks the pentagon equations algebraically, using \
 the exact form of the F-symbols. Note that this is much slower than checking the pentagon \
 equations for the exact form of the F-symbols numercially with high precision (say 200 digits)!"
+*)
 
+(*
 checkhexagonalgebraically::usage = 
 	"checkhexagonexactformalgebraically[] checks the hexagon equations algebraically, using \
 the exact form of the F- and R-symbols. Note that this is much slower than checking the hexagon \
 equations for the exact form of the F- and R-symbols numercially with high precision (say 200 digits)!"
+*)
 
+(*
 checkmodulardataalgebraically::usage = 
 	"checkmodulardataalgebraically[] checks the exact form of the modular data algebraically using \
 the exact form of the F- and R-symbols. Note that this is much slower than the standard check of \
 the exact form of the modular data, which is done numerically with high (i.e., 200 digit) precision."
+*)
 
 checkpentagonexactformnumerically::usage =
 	"checkpentagonexactformnumerically[] numerically checks the pentagon equations, using the exact \
@@ -216,6 +222,23 @@ form of the F-symbols. The precision used is 200 digits."
 checkhexagonexactformnumerically::usage =
 	"checkhexagonexactformnumerically[] numerically checks the hexagon equations, using the exact \
 form of the F- and R-symbols. The precision used is 200 digits."
+
+savecurrentdata::usage = 
+	"savecurrentdata[] saves the (exact form of the) F-symbols, R-symbols, the modular data \
+and some additional information, such that it can be loaded at later stage."
+
+loaddata::usage = 
+	"loaddata[type, rank, level, rootfactor] loads the F-symbols, R-symbols and the modular data \
+and initializes the system, such that it is in the same state as if one just had calculated this \
+data (and its exact form). The exception is that most of the Lie algebra data and qCG coefficients \
+are not loaded (this data is not stored)."
+
+loaddatalz::usage = 
+	"loaddata[type, rank, l, z] loads the F-symbols, R-symbols and the modular data \
+and initializes the system using the l-z notation (parametrizing the root of unity as \
+q = e^(2 Pi I z / l) ), such that it is in the same state as if one just had calculated this \
+data (and its exact form). The exception is that most of the Lie algebra data and qCG coefficients \
+are not loaded (this data is not stored)."
 
 
 (* ::Section:: *)
@@ -251,7 +274,7 @@ Steve Simon, Joost Slingerland, Gert Vercleyen\n" ,
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2022-02-07\n\
+       "Last revision: 2022-03-07\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -480,7 +503,6 @@ calculating the possible spherical pivotal structures."];
 
  ]
 ];
-
 
 
 (* ::Subsection::Closed:: *)
@@ -747,7 +769,9 @@ initializerootofunity[rootfac_] := Piecewise[{
        cosnumerator = rootfactor/tmax;
        ];
        
-       If[uniform, irreps = irrepsuniform[type, rank, level];, irreps = irrepsnonuniform[type, rank, level];];       
+       If[uniform, irreps = irrepsuniform[type, rank, level];, irreps = irrepsnonuniform[type, rank, level];];
+       numofirreps = Length[irreps];
+    
        
        If[rootfacinfo,
        Print["The rootfactor has been set to ",rootfactor];
@@ -938,11 +962,11 @@ Module[{typerangeok, currentlvalueok, currentzvalueok, currentlzvaluesok, lzleve
  If[typerangeok,
   If[Not[lvalueok[type, rank, lvalue]],
   currentlvalueok = False;
-  Print["The values of l is not compatible with the type of algebra and its rank."];
+  Print["The value of l is not compatible with the type of algebra and its rank."];
   lvaluespossible[type, rank];,
   currentlvalueok = True;,
   currentlvalueok = False;
-  Print["The values of l is not compatible with the type of algebra and its rank."];
+  Print["The value of l is not compatible with the type of algebra and its rank."];
   lvaluespossible[type, rank];
  ];
  ];
@@ -1008,8 +1032,6 @@ donotcheckpentagon[] := With[{},
    pentagontobechecked = False;
    Print["You opted to hop over the step of checking the pentagon \
 equations, so you proceed at your own risk. \n\
-The (potentially very long) list of pentagon equations will not \
-be generated, and the pentagon equations will not be checked. \n\
 It is recommended that the R-symbols are also generated, so that \
 the hexagon equations are checked. \
 If they hold, it is likely the pentagon equations are also \
@@ -1781,7 +1803,7 @@ checkfusionrules[] := Module[{dualpos, tempok, irreppos},
   dualirreps = irreps[[dualpos]];
   Do[
   dualirrep[irreps[[i]]] = irreps[[dualpos[[i]]]]
-  , {i, 1, Length[irreps]}];
+  , {i, 1, numofirreps}];
   
   tempok = True;
   Do[
@@ -1795,7 +1817,7 @@ checkfusionrules[] := Module[{dualpos, tempok, irreppos},
   
   
   tempok = True;
-  Do[irreppos[irreps[[i]]] = i, {i, 1, Length[irreps]}];
+  Do[irreppos[irreps[[i]]] = i, {i, 1, numofirreps}];
   
   Do[
    If[
@@ -1818,19 +1840,19 @@ checkfusionrules[] := Module[{dualpos, tempok, irreppos},
    Print["The calculated fusion rules are not consistent :-( something went wrong..."];
    ];
   
-  numofirreps = Length[irreps];
-  
   irrepsdual = 
    Table[
    irreps[[Position[nmat[irreps[[i]]], x_ /; x[[1]] == 1][[1, 1]]]]
-      , {i, 1, Length[irreps]}] // Quiet;
+      , {i, 1, numofirreps}] // Quiet;
        
   Do[
    dual[irreps[[i]]] = irrepsdual[[i]]
-   , {i, 1, Length[irreps]}];
+   , {i, 1, numofirreps}];
   
   selfdualvec = 
    Table[irreps[[i]] == irrepsdual[[i]], {i, 1, numofirreps}];
+  
+  numofselfduals = Count[selfdualvec, True];
    
   Do[
    selfdual[irreps[[i]]] = selfdualvec[[i]]
@@ -1840,7 +1862,7 @@ checkfusionrules[] := Module[{dualpos, tempok, irreppos},
   Table[
    Table[Sum[nv[ir1, ir2, ir3], {ir3, fusion[ir1, ir2]}], {ir2, irreps}] == Table[1, {i, 1, numofirreps}]
    , {ir1, irreps}];
-   
+
   numofsimplecurrents = Count[simplecurrentvec, True];  
   
   ];
@@ -1893,6 +1915,8 @@ generatefusionrules[] :=
    Global`maxmultiplicity = maxmultiplicity;
    Global`multiplicity = multiplicity;
    Global`numberoffusionmultiplicities = numoffusmultiplicities;
+   Global`numberofsimplecurrents = numofsimplecurrents;
+   Global`numberofselfdualparticles = numofselfduals;
          
    ]; 
 
@@ -2124,7 +2148,7 @@ generateqcgcoefficients[] := With[{},
 
 constructfsymbols[] := With[{},
       
-   Do[fsym[Sequence @@ flist[[i]]] = Chop[Sum[
+   Do[fsym[Sequence @@ flist[[i]]] = N[Chop[Sum[
         qcg[flist[[i, 1]], {m1, d1}, flist[[i, 2]], {m2, d2}, flist[[i, 5]], {m12, d12}, flist[[i, 7, 1]]] *
           qcg[flist[[i, 5]], {m12, d12}, flist[[i, 3]], {m3, d3}, flist[[i, 4]], {flist[[i, 4]], 1}, flist[[i, 7, 2]]] *
           qcg[flist[[i, 2]], {m2, d2}, flist[[i, 3]], {m3, d3}, flist[[i, 6]], {m23, d23}, flist[[i, 7, 3]]] *
@@ -2134,7 +2158,7 @@ constructfsymbols[] := With[{},
         {m12, Cases[weights[flist[[i, 5]]], x_ /; (m1 + m2) == x]}, {d12, 1, wdim[flist[[i, 5]], m12]},
         {m3, Cases[weights[flist[[i, 3]]], x_ /; (m12 + x) == flist[[i, 4]]]}, {d3, 1, wdim[flist[[i, 3]], m3]}, 
         {m23, Cases[weights[flist[[i, 6]]], x_ /; (m2 + m3) == x]}, {d23, 1, wdim[flist[[i, 6]], m23]}
-        ] , 10^(-(Max[10, precision - 20]))];
+        ] , 10^(-20)], precision];
     , {i, 1, Length[flist]}];
    
    Do[
@@ -2152,18 +2176,17 @@ constructfsymbols[] := With[{},
       , {{1, 3, 4}, {2, 5, 6}}];
     
     fmatdim[Sequence @@ fm] = Length[fmat[Sequence @@ fm]];
+    
     , {fm, fmatlist}];
    
    fmatdimtab = Table[fmatdim[Sequence @@ fm], {fm, fmatlist}];
    
-   If[pentagontobechecked,
-    numofpentagonequations = Sum[
-    nv[a, b, f]*nv[f, c, g]*nv[g, d, e]* nv[c, d, gp]*nv[b, gp, fp]*nv[a, fp, e]
-    , {a, irreps}, {b, irreps}, {c, irreps}, {d, irreps}
-    , {f, fusion[a, b]}, {g, fusion[f, c]}, {e, fusion[g, d]}
-    , {gp, Cases[fusion[c, d], x_ /; MemberQ[fusion[f, x], e]]}
-    , {fp, Cases[fusion[b, gp], x_ /; MemberQ[fusion[a, x], e]]}];
-   ];
+   numofpentagonequations = Sum[
+   nv[a, b, f]*nv[f, c, g]*nv[g, d, e]* nv[c, d, gp]*nv[b, gp, fp]*nv[a, fp, e]
+   , {a, irreps}, {b, irreps}, {c, irreps}, {d, irreps}
+   , {f, fusion[a, b]}, {g, fusion[f, c]}, {e, fusion[g, d]}
+   , {gp, Cases[fusion[c, d], x_ /; MemberQ[fusion[f, x], e]]}
+   , {fp, Cases[fusion[b, gp], x_ /; MemberQ[fusion[a, x], e]]}];
    
  ];
    
@@ -2178,7 +2201,7 @@ checkpentagon[] := Module[{maxdev, tempdev},
    If[pentagontobechecked,
    If[Not[recheck],Print["Checking the ", numofpentagonequations, " pentagon equations..."];];
    If[recheck,Print["Re-checking the ", numofpentagonequations, " pentagon equations..."];];
-   
+   counter = 0;
 
        Do[
        
@@ -2208,7 +2231,8 @@ checkpentagon[] := Module[{maxdev, tempdev},
       If[Not[pentundecidable], 
         Print["At least one of the pentagon equations is not decidable! Something went wrong :-("];
         pentundecidable = True;];
-      ];         
+      ];
+      counter++;
 
       , 
       {a, irreps}, {b, irreps}, {c, irreps}, {d, irreps},
@@ -2227,18 +2251,21 @@ checkpentagon[] := Module[{maxdev, tempdev},
      pentholds = False; 
     ];
 
-   pentagondeviation = maxdev;          
+   pentagondeviation = maxdev;
+   Clear[counter];     
       
     
     ,
      If[Not[recheck],
-     Print["The pentagon equations were not checked, because you opted not \
+     Print["The ", numofpentagonequations, " pentagon equations were not checked, because you opted not \
 to do so. Proceed with care!"];
      ];
      If[recheck,
-     Print["The pentagon equations were not (re)-checked, because you opted not \
+     Print["The ", numofpentagonequations, " pentagon equations were not (re)-checked, because you opted not \
 to do so. Proceed with care!"];
     ];
+    
+    
 
   ];
    
@@ -2294,7 +2321,7 @@ to do so. Proceed with care!"];
     fsymsFTFone = False;
     ];
    
-   fsymbolarguements = Arg[Chop[Fsym[Sequence @@ #]& /@ flist , 10^(-20)]]/Pi//Union;
+   fsymbolarguements = Rationalize[Arg[Chop[fsym[Sequence @@ #]& /@ flist , 10^(-20)]]/Pi]//Union;
    
    fsymbolsallrealorimaginary = SubsetQ[{-1/2,0,1/2,1}, fsymbolarguements];
    
@@ -2621,14 +2648,19 @@ this issue should be investigated further!"]];
     
     
     ];
-   
+
+   Do[
+    rsym[Sequence @@ rs] = N[Chop[rsym[Sequence @@ rs], 10^(-20)], precision];
+   , {rs, rlist}];
+
+         
    (* Calculating the inverses of the R-symbols, 
    NOT assuming that the R-matrices are unitairy *)
    Do[
     rmat[Sequence @@ rm] = 
      Table[rsym[Sequence @@ rm[[1 ;; 3]], {v1, v2}]
      , {v1, nv[Sequence @@ rm[[1 ;; 3]]]}, {v2, nv[Sequence @@ rm[[1 ;; 3]]]}];
-    rmatinv[Sequence @@ rm] = rmat[Sequence @@ rm] // Inverse;
+    rmatinv[Sequence @@ rm] = N[Chop[rmat[Sequence @@ rm] // Inverse, 10^(-20)], precision];
     Do[
      rsyminv[Sequence @@ rm, {v1, v2}] = rmatinv[Sequence @@ rm][[v1, v2]];
      , {v1, 1, nv[Sequence @@ rm]}, {v2, 1, nv[Sequence @@ rm]}];
@@ -2756,10 +2788,6 @@ checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
    
    If[hexholds && Not[hexrundecidable] && Not[hexrinvundecidable],
     Print["The hexagon equations are satisfied :-)"];
-    (*
-    Print["The maximum devitation for R is: ", hexagonRdeviation];
-    Print["The maximum devitation for R-inverse is: ", hexagonRinversedeviation];
-    *)
     Print["The maximum devitation is: ", hexagondeviation];
     rsymbolscalculated = True;,
     Print["The hexagon equations are not satisfied :-(, the maximum deviation is: ", maxdev, " something went wrong..."];
@@ -2795,7 +2823,7 @@ checkhexagon[] := Module[{maxdev, tempdev, maxdevhex, maxdevhexinv},
       Print["The R-matrices can be diagonalized by running diagonalizermatrices[].\n This will change both F- and R-symbols, so by running diagonalizermatrices[], the hexagon equations will be checked again, but not the pentagon equations, because you opted not to do so."];
      ];
      ,
-     Print["NOT all the eigenvalues of the R-matrices are phases. One should check if one can chose a different gauge where they are!"]
+     Print["NOT all the eigenvalues of the R-matrices are phases. One perhaps should check if one can choose a different gauge where they are!"]
      ];
     ];
     
@@ -2835,7 +2863,7 @@ before calculating the R-symbols."];
   ];
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Routine to diagonalize the R - matrices*)
 
 
@@ -3004,7 +3032,6 @@ Something seems to have gone wrong."];
    
    If[
     (Not[pentagontobechecked] || (pentholds && Not[pentundecidable])) && hexholds && Not[hexrundecidable] && Not[hexrinvundecidable],
-    (*Clear[fsymold, rsymold, fmatold, rmatold, umat, umatinv];*)
     Clear[umat, umatinv];
     ];
    
@@ -3111,7 +3138,7 @@ F- and R-symbols to their original values."];
 (*Command to calculate the modular data*)
 
 
-calculatemodulardata[] := Module[{},
+calculatemodulardata[] := Module[{qd,pivot,theta},
   
   If[Not[typeranklevelrootinitok],
   Print["The type of algebra, rank, level and/or rootfactor were not \
@@ -3136,18 +3163,18 @@ before calculating the modular data."];
   
   numposroots = Position[roots, Table[0, {i, 1, rank}], 1][[1, 1]] - 1;
   posroots = roots[[1 ;; numposroots]];
-  
-  qdimvec = Table[
-    Chop[ N[ Product[
+      
+    qdimvec = Table[
+     N[Chop[Product[
        nq[tmax (ir + rho).qfm.posroots[[pr]], 1] / nq[ tmax (rho).qfm.posroots[[pr]], 1]
-       , {pr, 1, numposroots}] , precision ] , 10^(-(Max[10, precision - 20])) ]
+       , {pr, 1, numposroots}], 10^(-20)], precision]
     , {ir, irreps}];
     
   Do[
    qd[irreps[[i]]] = qdimvec[[i]]
-   , {i, 1, Length[irreps]}];
+   , {i, 1, numofirreps}];
    
-  qdtot2 = Sum[qdimvec[[i]]^2, {i, 1, Length[irreps]}];
+  qdtot2 = Sum[qdimvec[[i]]^2, {i, 1, numofirreps}];
   qdtot = Sqrt[qdtot2];
   qdimspositive = And @@ (# > 0 & /@ qdimvec);
   
@@ -3159,12 +3186,12 @@ before calculating the modular data."];
   qdim1overfvec = 
    Table[
     N[ 1/fsym[irreps[[i]], irrepsdual[[i]], irreps[[i]], irreps[[i]], irreps[[1]], irreps[[1]], {1, 1, 1, 1}] , precision ]
-   , {i, 1, Length[irreps]}];
+   , {i, 1, numofirreps}];
   
   pivotlist = 
-   Table[qdimvec[[i]]/qdim1overfvec[[i]], {i, 1, Length[irreps]}];
+   Table[qdimvec[[i]]/qdim1overfvec[[i]], {i, 1, numofirreps}];
 
-  Do[pivot[irreps[[i]]] = pivotlist[[i]], {i, 1, Length[irreps]}];
+  Do[pivot[irreps[[i]]] = pivotlist[[i]], {i, 1, numofirreps}];
 
   
   pivoteqnok = (Table[
@@ -3186,23 +3213,15 @@ before calculating the modular data."];
     
   Do[
    theta[irreps[[i]]] = thetalist[[i]]
-   , {i, 1, Length[irreps]}];
+   , {i, 1, numofirreps}];
 
   hlist = 
    Table[Mod[Rationalize[Chop[1/(2 Pi I) Log[thetalist[[i]]], 10^(-20) ]], 1]
-   , {i, 1, Length[irreps]}];
-  
-  Do[
-   hvalue[irreps[[i]]] = hlist[[i]]
    , {i, 1, numofirreps}];
   
   frobschurlist = Chop[ Table[
      1/qdtot2 Sum[nv[ir, ir1, ir2] qd[ir1] qd[ir2] theta[ir1]^2/theta[ir2]^2, {ir1, irreps}, {ir2, fusion[ir, ir1]}]
      , {ir, irreps}] , 10^(-20) ];
-  
-  Do[
-   frobschur[irreps[[i]]] = frobschurlist[[i]]
-   , {i, 1, numofirreps}];
    
   If[Not[MemberQ[frobschurlist, x_ /; Not[Chop[x - 1, 10^(-20)] == 0 || Chop[x + 1, 10^(-20)] == 0 || Chop[x, 10^(-20)] == 0]]],
    frobschurlist = Round[frobschurlist];
@@ -3226,19 +3245,25 @@ before calculating the modular data."];
   If[modular != modular2, Print["The two ways of determining modularity do NOT agree!"]];
   If[modular,
    centralcharge = Chop[ 8/(2 Pi I) Log[pplus/qdtot] , 10^(-20) ] // Rationalize;
-   centralcharge = Mod[centralcharge, 8];
+   centralcharge = Mod[centralcharge, 8];,
+   centralcharge = Missing["The theory is not modular, the central charge is not defined"];,
+   centralcharge = Missing["The theory is not modular, the central charge is not defined"];
    ];
   
   If[modular,
   modularrelationsok =
    (( Chop[ MatrixPower[smat.tmat, 3] - Exp[2 Pi I/8*centralcharge] smat.smat // Flatten , 10^(-20) ] // Union) == {0}) &&
-   (( Chop[ smat.smat - cmat , 10^(-20) ] // Flatten // Union) == {0});
+   (( Chop[ smat.smat - cmat , 10^(-20) ] // Flatten // Union) == {0});,
+   modularrelationsok = Missing["The theory is not modular, so there are no modular relations to be checked."];,
+   modularrelationsok = Missing["The theory is not modular, so there are no modular relations to be checked."];
   ];
   
   
   Print["The labels of the irreps are: ", irreps];
   Print["Are the particles selfdual: ", selfdualvec];
+  Print["There are ", numofselfduals, " selfdual particles."];
   Print["Are the particles simple currents: ", simplecurrentvec];
+  Print["There are ", numofsimplecurrents, " simple currents."];
   Print["The pivotal structure is: ", pivotlist];
   If[pivoteqnok,
    Print["The pivotal equations are satisfied :-)"];,
@@ -3303,7 +3328,7 @@ Presumably, there exists a different pivotal structure, such that all the quantu
     Print["The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 = S^2 = C are not satisfied :-("]
   ];
 
-  modulardatacalculated=True;
+  modulardatacalculated = True;
   
   Global`FPdimlist = fpdimvec;
   Global`qdimlist = qdimvec;
@@ -3328,7 +3353,8 @@ Presumably, there exists a different pivotal structure, such that all the quantu
  
 
 
-calculatemodulardata[pivotlist_List] := Module[{pivotlistok,pivotlistquantumgroup},
+calculatemodulardata[pivotlist_List] := Module[
+  {pivotlistok,pivotlistquantumgroup,pivot,qd,theta},
   
   If[Not[typeranklevelrootinitok],
   Print["The type of algebra, rank, level and/or rootfactor were not \
@@ -3350,7 +3376,7 @@ before calculating the modular data."];
   
   pivotlistok = True;
   
-  If[Length[pivotlist] != Length[irreps],
+  If[Length[pivotlist] != numofirreps,
   pivotlistok = False;  
   Print["The list of pivotal coefficients does not have the correct length (i.e., the \
 number of irreps)."];
@@ -3374,7 +3400,7 @@ we only allow spherical cases here."];
   ];
   
   If[pivotlistok,
-    Do[pivot[irreps[[i]]] = pivotlist[[i]], {i, 1, Length[irreps]}];
+    Do[pivot[irreps[[i]]] = pivotlist[[i]], {i, 1, numofirreps}];
 
     pivoteqnok = (Table[
         Chop[ N[ pivot[ir1] pivot[ir2]/pivot[ir3] -
@@ -3408,19 +3434,21 @@ These can be obtained by running `possiblesphericalpivotalstructures[]'"];
   qdim1overfvec = 
    Table[
     N[ 1/fsym[irreps[[i]], irrepsdual[[i]], irreps[[i]], irreps[[i]], irreps[[1]], irreps[[1]], {1, 1, 1, 1}] , precision ]
-   , {i, 1, Length[irreps]}];
+   , {i, 1, numofirreps}];
 
 
-  qdimvec = Table[pivotlist[[i]] * qdim1overfvec[[i]], {i,1, Length[irreps]}];
+  qdimvec = Table[pivotlist[[i]] * qdim1overfvec[[i]], {i,1, numofirreps}];
   
-  qdimvecquantumgroup = Table[
-    Chop[ N[ Product[
+    
+    qdimvecquantumgroup = Table[
+     N[Chop[Product[
        nq[tmax (ir + rho).qfm.posroots[[pr]], 1] / nq[ tmax (rho).qfm.posroots[[pr]], 1]
-       , {pr, 1, numposroots}] , precision ] , 10^(-(Max[10, precision - 20])) ]
+       , {pr, 1, numposroots}], 10^(-20)], precision]
     , {ir, irreps}];
+ 
     
   pivotlistquantumgroup = 
-   Table[qdimvecquantumgroup[[i]]/qdim1overfvec[[i]], {i, 1, Length[irreps]}];
+   Table[qdimvecquantumgroup[[i]]/qdim1overfvec[[i]], {i, 1, numofirreps}];
 
   If[Not[MemberQ[pivotlistquantumgroup, x_ /; Not[Chop[x - 1, 10^(-20)] == 0 || Chop[x + 1, 10^(-20)] == 0 ]]],
    pivotlistquantumgroup = Round[pivotlistquantumgroup];,
@@ -3441,9 +3469,9 @@ of the modular data for the quantum group, you should run calculatemodulardata[]
     
   Do[
    qd[irreps[[i]]] = qdimvec[[i]]
-   , {i, 1, Length[irreps]}];
+   , {i, 1, numofirreps}];
    
-  qdtot2 = Sum[qdimvec[[i]]^2, {i, 1, Length[irreps]}];
+  qdtot2 = Sum[qdimvec[[i]]^2, {i, 1, numofirreps}];
   qdtot = Sqrt[qdtot2];
   qdimspositive = And @@ (# > 0 & /@ qdimvec);
   
@@ -3459,23 +3487,15 @@ of the modular data for the quantum group, you should run calculatemodulardata[]
     
   Do[
    theta[irreps[[i]]] = thetalist[[i]]
-   , {i, 1, Length[irreps]}];
+   , {i, 1, numofirreps}];
 
   hlist = 
    Table[Mod[Rationalize[Chop[1/(2 Pi I) Log[thetalist[[i]]], 10^(-20) ]], 1]
-   , {i, 1, Length[irreps]}];
-  
-  Do[
-   hvalue[irreps[[i]]] = hlist[[i]]
    , {i, 1, numofirreps}];
   
   frobschurlist = Chop[ Table[
      1/qdtot2 Sum[nv[ir, ir1, ir2] qd[ir1] qd[ir2] theta[ir1]^2/theta[ir2]^2, {ir1, irreps}, {ir2, fusion[ir, ir1]}]
      , {ir, irreps}] , 10^(-20) ];
-  
-  Do[
-   frobschur[irreps[[i]]] = frobschurlist[[i]]
-   , {i, 1, numofirreps}];
    
   If[Not[MemberQ[frobschurlist, x_ /; Not[Chop[x - 1, 10^(-20)] == 0 || Chop[x + 1, 10^(-20)] == 0 || Chop[x, 10^(-20)] == 0]]],
    frobschurlist = Round[frobschurlist];
@@ -3511,7 +3531,9 @@ of the modular data for the quantum group, you should run calculatemodulardata[]
   
   Print["The labels of the irreps are: ", irreps];
   Print["Are the particles selfdual: ", selfdualvec];
+  Print["There are ", numofselfduals, " selfdual particles."];
   Print["Are the particles simple currents: ", simplecurrentvec];
+  Print["There are ", numofsimplecurrents, " simple currents."];
   Print["The Frobenius-Schur indicators are: ", frobschurlist];
   Print["The Frobenius-Perron dimensions are: ", fpdimvec // N];
   Print["The quantum dimensions are: ", qdimvec // N];
@@ -3788,7 +3810,7 @@ checkpentagonexactform[cosdenom_, cosnum_, prec_] := Module[
     Print[
       "The selected precision for checking the pentagon equations \
 with the exact F-symbols is smaller than 100. The value should be at \
-least 100; the default used is 200."];
+least 100; the default used is 2*precision, with a default precision of 100."];
     ];
    
    If[prec >= 100,
@@ -3801,6 +3823,7 @@ least 100; the default used is 200."];
        Exp[fsymexact[Sequence @@ fs][[1]]*Pi*I]*
         Sqrt[(fsymexact[Sequence @@ fs][[2]]).cosvec];
      , {fs, flist}];
+    counter = 0;
 
   Do[
        tempdev = 
@@ -3823,6 +3846,7 @@ least 100; the default used is 200."];
      Max deals better with high precision numbers than > (Greater).
      This caused maxdev to remain 0, even if it should have been f.i. 0``73.93384483647623 . *)
      maxdev = Max[maxdev, tempdev];
+     counter++;
 
       , {a, irreps}, {b, irreps}, {c, irreps}, {d, irreps}
       , {f, fusion[a, b]}
@@ -3851,7 +3875,7 @@ Better check what went wrong!"];
 F-symbols, with precision ", prec, " and they hold with accuracy ", 
       Floor[Accuracy[maxdev]], " :-)"];
      ];
-    
+    Clear[counter];
     ];
    
    ];
@@ -3863,7 +3887,7 @@ checkhexagonexactform[cosdenom_, cosnum_, prec_] := Module[
    If[prec < 100,
     Print["The selected precision for checking the hexagon equations with \
 the exact F- and R-symbols is smaller than 100. The value should be at least 100; \
-the default used is 200."];
+the default used is 2*precision, with a default precision of 100."];
    ];
    
    If[prec >= 100,
@@ -3989,24 +4013,19 @@ to the original form of the F- and R-symbols by running undiagonalizermatrices[]
     If[typeranklevelrootinitok && fsymbolscalculated && Not[rmatricesdiagonalized],
      Print["Trying to find the exact form of the F-symbols..."];
     
-     If[uniform,
-     makefsymbolsexact[1/rootofunity*tmax, rootfactor];,
-     makefsymbolsexact[1/rootofunity, rootfactor/tmax];
-     ];
-     
+
+    makefsymbolsexact[cosdenominator, cosnumerator]; 
+          
     Print["Found the exact form of the F-symbols :-)"];
     
      If[pentagontobechecked,
      Print["Checking the ", numofpentagonequations, 
       " pentagon equations, using the exact form of the F-symbols..."];
+          
+      checkpentagonexactform[cosdenominator, cosnumerator, 2*precision];
      
-     If[uniform,
-      checkpentagonexactform[1/rootofunity*tmax, rootfactor, 200];,
-      checkpentagonexactform[1/rootofunity, rootfactor/tmax, 200]
-      ];
-     
-     ,
-      Print["The pentagon equations were not checked using the exact form \
+           ,
+      Print["The ", numofpentagonequations, " pentagon equations were not checked using the exact form \
 of the F-symbols, because you opted to not check the pentagon equations. Proceed \
 with care!"];
      ];
@@ -4048,21 +4067,20 @@ to the original form of the F- and R-symbols by running undiagonalizermatrices[]
     If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && Not[rmatricesdiagonalized],
        
     Print["Trying to find the exact form of the R-symbols..."];
-    
-    If[uniform,
-     makersymbolsexact[1/rootofunity*tmax, rootfactor];,
-     makersymbolsexact[1/rootofunity, rootfactor/tmax];
-     ];
+         
+   makersymbolsexact[cosdenominator, cosnumerator];
+     
+     
     
     Print["Found the exact form of the R-symbols :-)"];
     
     If[fsymbolsexactfound,
      Print["Checking the ", 2*Length[flist], " hexagon equations, \
 using the exact form of the F- and R-symbols..."];
-     If[uniform,
-      checkhexagonexactform[1/rootofunity*tmax, rootfactor, 200];,
-      checkhexagonexactform[1/rootofunity, rootfactor/tmax, 200];
-      ];
+    
+    checkhexagonexactform[cosdenominator, cosnumerator, 2*precision];
+      
+      
      
      ,
      Print["The hexagon equations were not checked with the exact form of \
@@ -4109,7 +4127,9 @@ If[typeranklevelrootinitok && fsymbolscalculated && fsymbolsexactfound,
   Print["Checking the ", numofpentagonequations, 
       " pentagon equations numerically, using the exact form of the F-symbols..."];
 
-  checkpentagonexactform[cosdenominator, cosnumerator, 200];
+  checkpentagonexactform[cosdenominator, cosnumerator, 2*precision];
+  
+  Print["Done :-)"];
 ];
 
 ];
@@ -4167,7 +4187,10 @@ exact form of the F- and R-symbols."];
 If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && fsymbolsexactfound && rsymbolsexactfound,
   Print["Checking the ", 2*Length[flist], " hexagon equations numerically, \
 using the exact form of the F- and R-symbols..."];
-  checkhexagonexactform[cosdenominator, cosnumerator, 200];
+  
+    checkhexagonexactform[cosdenominator, cosnumerator, 2*precision];
+    Print["Done :-)"];
+
 ];
 
 ];
@@ -4518,8 +4541,8 @@ reducereal[cosdenom_, cosnum_, list_] := Module[
      Sum[toexactnumericalvalue[sumlist[[i]], cosdenom, cosnum, 200], {i, 1, Length[sumlist]}];
     
     If[
-     Chop[numvalue, 10^(-190)] == 0, sign = 0;,
-     sign = Sign[Chop[numvalue, 10^(-190)]];
+     Chop[numvalue, 10^(-180)] == 0, sign = 0;,
+     sign = Sign[Chop[numvalue, 10^(-180)]];
      ];
     
     If[sign != 0,
@@ -4556,7 +4579,7 @@ zero, something went wrong!"];
     
     numvaluecheck = toexactnumericalvalue[res, cosdenom, cosnum, 200];
     
-    If[Chop[numvalue - numvaluecheck, 10^(-190)] == 0, Null,
+    If[Chop[numvalue - numvaluecheck, 10^(-180)] == 0, Null,
      Print["The calculated value is not equal to the original one. \
 Something went wrong!"];,
      Print["The calculated value is not equal to the original one. \
@@ -4680,6 +4703,7 @@ the pentagon equations. The check will be aborted :-("];
     Print[
      "It was checked algebraically that the exact form of the \
 F-symbols satisfy the pentagon equations :-)"];
+
     ];
    
    ];
@@ -4699,7 +4723,7 @@ checkhexagonexactformalgebraically[cosdenom_, cosnum_] := Module[
      Print["Something went wrong while checking if a new denominator for the \
 cosines is necesarry, better check!"];
    ];
-   
+   counter=0;
    Do[
     eqn = {
       Flatten[
@@ -4731,8 +4755,8 @@ cosines is necesarry, better check!"];
       };
       
     If[eqn[[1]] == {}, eqn[[1]] = {zerorep[cosdenom]}];  
-    If[eqn[[2]] == {}, eqn[[2]] = {zerorep[cosdenom]}];  
-      
+    If[eqn[[2]] == {}, eqn[[2]] = {zerorep[cosdenom]}]; 
+    
     
     If[Not[needaltdenom],
     eqnok = checkeqn[cosdenom, cosnum, eqn];
@@ -4752,7 +4776,7 @@ cosines is necesarry, better check!"];
 one of the hexagon equations. The check will be aborted :-("];
     Break[];
      ];
-    
+    counter++;
     , {i, flist}];
    
    
@@ -4806,7 +4830,7 @@ one of the hexagon equations. The check will be aborted :-("];
 least one of the hexagon equations. The check will be aborted :-("];
        Break[];
        ];
-      
+      counter++
       , {i, flist}];
     
     ];
@@ -4817,7 +4841,7 @@ least one of the hexagon equations. The check will be aborted :-("];
     Print["It was checked algebraically that the exact form of the F- and \
 R-symbols satisfy the hexagon equations :-)"];
     ];
-   
+   Clear[counter];
    ];
 
 
@@ -4845,6 +4869,7 @@ If[typeranklevelrootinitok && fsymbolscalculated && fsymbolsexactfound,
   Print["Checking the ", numofpentagonequations, 
       " pentagon equations algebraically..."];
   checkpentagonexactformalgebraically[cosdenominator,cosnumerator];
+  Print["Done :-)"];
 ];
 
 ];
@@ -4896,6 +4921,7 @@ before trying to check the hexagon equations algebraically."];
 If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && fsymbolsexactfound && rsymbolsexactfound,
   Print["Checking the ", 2*Length[flist], " hexagon equations algebraically..."];
   checkhexagonexactformalgebraically[cosdenominator,cosnumerator];
+  Print["Done :-)"];
 ];
 
 ];
@@ -4915,10 +4941,15 @@ findexactmodulardata[] :=
   Module[{FPdimlistexactnum, qdimlistexactnum, qdtot2exactnum, 
     qdtotexactnum, qdtot1overexactnum, 
     qdim1overfexactlistnum,
-    thetasum, sumres, qd, res, thetalistexactnum,
-    arg, abs2, coscoefs, smatexactnum, tmatexactnum,
-    ssdagmaxdev, sdagsmaxdev, pivotmaxdev,
-    twistsarephases, st3maxdev, s2maxdev},
+    thetasum, sumres, qd, res, thetalistexactnum, thetalistexactnum1,
+    arg, abs2, coscoefs, smatexactnum, smatexactnum1, tmatexactnum,
+    pplusexactnum, pplusexactnum1, pminusexactnum, pminusexactnum1,
+    ssdagmaxdev, sdagsmaxdev, pivotexact, pivotmaxdev,
+    twistsarephases, st3maxdev, s2maxdev,
+    pivotexactok, frobschurexactok, FPdimexactok, qdimexactok, qdtot2exactok, qdtotexactok,
+    qdtot1overexactok, thetalistexactok, smatexactok, pplusexactok, pminusexactok, modularrelationsexactok,
+    realphasepos, denom, currreal, currreal100, gamma, beta, coefs, alphacheck, alphacheckok
+    },
    
    If[Not[typeranklevelrootinitok],
     Print["The type of algebra, rank, level and/or rootfactor were not \
@@ -5038,7 +5069,7 @@ to the original form of the F- and R-symbols by running undiagonalizermatrices[]
     
     Do[
      pivotexact[irreps[[i]]] = pivotlistexact[[i]];
-     , {i, 1, Length[irreps]}];
+     , {i, 1, numofirreps}];
     
     pivotmaxdev =
      Max[(Abs /@ (Table[
@@ -5046,13 +5077,13 @@ to the original form of the F- and R-symbols by running undiagonalizermatrices[]
             Sum[
             toexactnumericalvalue[
             fsymexact[ir1, ir2, dual[ir3], irreps[[1]], ir3, dual[ir1], {v1, 1, v2, 1}]
-            , cosdenominator, cosnumerator, 200]*
+            , cosdenominator, cosnumerator, 2*precision]*
             toexactnumericalvalue[
             fsymexact[ir2, dual[ir3], ir1, irreps[[1]], dual[ir1], dual[ir2], {v2, 1, v3, 1}]
-            , cosdenominator, cosnumerator, 200]*
+            , cosdenominator, cosnumerator, 2*precision]*
             toexactnumericalvalue[
             fsymexact[dual[ir3], ir1, ir2, irreps[[1]], dual[ir2], ir3, {v3, 1, v1, 1}]
-            , cosdenominator, cosnumerator, 200]
+            , cosdenominator, cosnumerator, 2*precision]
             , {v2, 1, nv[ir2, dual[ir3], dual[ir1]]}
             , {v3, 1, nv[dual[ir3], ir1, dual[ir2]]}
             ]
@@ -5061,35 +5092,38 @@ to the original form of the F- and R-symbols by running undiagonalizermatrices[]
             , {ir3, fusion[ir1, ir2]}
             , {v1, 1, nv[ir1, ir2, ir3]}] // Flatten))];
             
-    pivotexactok = Chop[pivotmaxdev, 10^(-180)] == 0;
+    pivotexactok = Chop[pivotmaxdev, 10^(-(2*precision-20))] == 0;
     
     pivotlistexact = Table[ 
      Which[
       pivotlistexact[[i]] == 1, onerep[cosdenominator],
       pivotlistexact[[i]] == -1, phaserep[cosdenominator,1]
      ]
-     , {i,1,Length[irreps]}];
+     , {i,1,numofirreps}];
      
      Do[
      pivotexact[irreps[[i]]] = pivotlistexact[[i]];
-     , {i, 1, Length[irreps]}];
+     , {i, 1, numofirreps}];
     
+    frobschurexactok = True;
     frobschurlistexact = Table[
     Which[
     frobschurlist[[i]] == 1, onerep[cosdenominator],
     frobschurlist[[i]] == -1, phaserep[cosdenominator,1],
     frobschurlist[[i]] == 0, zerorep[cosdenominator],
-    True, Print["The Frobenius-Schur indicator is not +1, -1 or 0, something went wrong!"]; frobschurlist[[i]]
+    True, 
+    frobschurexactok = False;
+    Print["The Frobenius-Schur indicator is not +1, -1 or 0, something went wrong!"]; frobschurlist[[i]]
    ]
-    , {i, 1, Length[irreps]}];
+    , {i, 1, numofirreps}];
     
     FPdimlistexact = Table[
-      {Arg[fp]/Pi, findexactabs[fp^2, cosdenominator, cosnumerator]}
+      {Rationalize[Arg[fp]/Pi], findexactabs[fp^2, cosdenominator, cosnumerator]}
       , {fp, fpdimvec}];
     
     FPdimlistexactnum = 
      Table[
-     toexactnumericalvalue[fpe, cosdenominator, cosnumerator, 200]
+     toexactnumericalvalue[fpe, cosdenominator, cosnumerator, 2*precision]
      , {fpe, FPdimlistexact}];
     
     FPdimexactok = 
@@ -5103,17 +5137,17 @@ do not agree with the numerical ones :-("];
      ];
     
     qdimlistexact = Table[
-      {Arg[qdim]/Pi, findexactabs[qdim^2, cosdenominator, cosnumerator]}
+      {Rationalize[Arg[qdim]/Pi], findexactabs[qdim^2, cosdenominator, cosnumerator]}
       , {qdim, qdimvec}];
     Do[
      qdimexact[irreps[[i]]] = qdimlistexact[[i]]
-     , {i, 1, Length[irreps]}];
+     , {i, 1, numofirreps}];
     
     qdimspositiveexact = (qdimlistexact[[All, 1]] // Union) == {0};
     
     qdimlistexactnum = 
      Table[
-     toexactnumericalvalue[qde, cosdenominator, cosnumerator, 200]
+     toexactnumericalvalue[qde, cosdenominator, cosnumerator, 2*precision]
      , {qde, qdimlistexact}];
     
     qdimexactok = 
@@ -5130,7 +5164,7 @@ agree with the numerical ones :-("];
     qdtot2exact = {0, findexactabs[qdtot2^2, cosdenominator, cosnumerator]};
     
     qdtot2exactnum = 
-     toexactnumericalvalue[qdtot2exact, cosdenominator, cosnumerator, 200];
+     toexactnumericalvalue[qdtot2exact, cosdenominator, cosnumerator, 2*precision];
     
     qdtot2exactok = 
      Chop[qdtot2exactnum - qdtot2, 10^(-Max[10, precision - 20])] == 0;
@@ -5146,7 +5180,7 @@ not agree with the numerical one :-("];
     qdtotexact = {0, findexactabs[qdtot2, cosdenominator, cosnumerator]};
     
     qdtotexactnum = 
-     toexactnumericalvalue[qdtotexact, cosdenominator, cosnumerator, 200];
+     toexactnumericalvalue[qdtotexact, cosdenominator, cosnumerator, 2*precision];
     
     qdtotexactok = 
      Chop[qdtotexactnum - qdtot, 10^(-Max[10, precision - 20])] == 0;
@@ -5163,7 +5197,7 @@ quantum dimension does not agree with the numerical one :-("];
      findoneover[cosdenominator, qdtotexact];
     
     qdtot1overexactnum = 
-     toexactnumericalvalue[qdtot1overexact, cosdenominator, cosnumerator, 200];
+     toexactnumericalvalue[qdtot1overexact, cosdenominator, cosnumerator, 2*precision];
     
     qdtot1overexactok = 
      Chop[qdtot1overexactnum - 1/qdtot, 10^(-Max[10, precision - 20])] == 0;
@@ -5174,57 +5208,43 @@ total quantum dimension does not agree with the numerical one :-("];,
      Print["The exact representation of one over the square root of the \
 total quantum dimension does not agree with the numerical one :-("];
      ];
-    
-    
-    qdim1overfexactlist = Table[
-      {Arg[qdim1f]/Pi, findexactabs[qdim1f^2, cosdenominator, cosnumerator]}
-      , {qdim1f, qdim1overfvec}];
-    
-    qdim1overfexactlistnum = 
-     Table[toexactnumericalvalue[qd1fe, cosdenominator, cosnumerator, 200],
-       {qd1fe, qdim1overfexactlist}];
-    
-    qdim1overfexactlistok = 
-    (Chop[qdim1overfexactlistnum - qdim1overfvec, 10^(-Max[10, precision - 20])] // Union) == {0};
-    
-    If[qdim1overfexactlistok, Null,
-     Print["The exact representations of one over the F-symbols used to \
-calculate the quantum dimensions/pivotal structures do not agree with \
-the numerical ones :-("];,
-     Print["The exact representations of one over the F-symbols used to \
-calculate the quantum dimensions/pivotal structures do not agree with \
-the numerical ones :-("];
-     ];
-    
-    twistsarephases = 
-    (Chop[Abs /@ thetalist - Table[1, Length[irreps]], 10^(-Max[10, precision - 20])] // Union) == {0};
-    
-    If[
-     twistsarephases, Null,
-     Print["The twist factors are not all phases, something went wrong!"];,
-     Print["The twist factors are not all phases, something went wrong!"];
-     ];
-    
-    thetalistexact =
+     
+     
+     qdim1overfexactlist  = Table[
+      findoneover[cosdenominator,
+        fsymexact[irreps[[i]], irrepsdual[[i]], irreps[[i]], irreps[[i]], irreps[[1]], irreps[[1]], {1, 1, 1, 1}]
+      ]
+      , {i, 1, numofirreps}];
+
+
+      thetalistexactnum1 = Table[
+   1/toexactnumericalvalue[qdimexact[ir], cosdenominator, cosnumerator,  2*precision]*
+    Sum[
+     toexactnumericalvalue[qdimexact[ir1], cosdenominator, cosnumerator, 2*precision]*
+      toexactnumericalvalue[rsymexact[ir, ir, ir1, {v, v}], cosdenominator, cosnumerator, 2*precision]
+     , {ir1, fusion[ir, ir]}, {v, 1, nv[ir, ir, ir1]}]
+   , {ir, irreps}];
+   
+   thetalistexact = 
      Table[
-      If[Abs[thetalist[[i]]] - 1 == 0,
-       phaserep[cosdenominator, Rationalize[Arg[thetalist[[i]]]/Pi]],
-       Null,
-       Null
-       ]
-      , {i, 1, Length[irreps]}];
-    Do[
+     {Rationalize[Arg[thetalistexactnum1[[i]]]/Pi],
+     findexactabs[Abs[thetalistexactnum1[[i]]]^2, cosdenominator, cosnumerator]}
+   , {i, 1, numofirreps}];     
+   
+   Do[
      thetaexact[irreps[[i]]] = thetalistexact[[i]]
-     , {i, 1, Length[irreps]}];
+     , {i, 1, numofirreps}];
+   
+   thetalistexactnum = Table[
+    toexactnumericalvalue[thetalistexact[[i]], cosdenominator, cosnumerator, 2*precision]
+    , {i, 1, numofirreps}];
+   
+   thetalistexactok = 
+    (Chop[thetalistexactnum1 - thetalistexactnum, 10^(-(2 * precision - 20))] // Union) == {0};  
     
-    thetalistexactnum = 
-     Table[
-     toexactnumericalvalue[thetalistexact[[i]], cosdenominator, cosnumerator, 200]
-     , {i, 1, Length[thetalistexact]}];
-    
-    thetalistexactok = 
-    (Chop[thetalistexactnum - thetalist, 10^(-Max[10, precision - 20])] // Union) == {0};
-    
+   twistsarephases = (thetalistexact[[All,2]] // Union) == {onerep[cosdenominator][[2]]};
+     
+       
     If[thetalistexactok, Null,
      Print["The exact representations of the twist factors do not agree \
 with the numerical ones :-("];,
@@ -5232,24 +5252,53 @@ with the numerical ones :-("];,
 with the numerical ones :-("];
      ];
     
+    smatexactnum1 = 
+    1/(toexactnumericalvalue[qdtotexact, cosdenominator, cosnumerator, 2*precision])*
+    Table[
+     Sum[
+     toexactnumericalvalue[qdimexact[ir3], cosdenominator, cosnumerator, 2*precision]*
+     toexactnumericalvalue[thetaexact[ir3], cosdenominator, cosnumerator, 2*precision]*
+     nv[dual[ir1], ir2, ir3] / 
+     (
+      toexactnumericalvalue[thetaexact[ir1], cosdenominator, cosnumerator, 2*precision]*
+      toexactnumericalvalue[thetaexact[ir2], cosdenominator, cosnumerator, 2*precision]
+     )
+     , {ir3, fusion[dual[ir1], ir2]}]
+    , {ir1, irreps}, {ir2, irreps}];
     
-    smatexact =
+    smatexact = 
      Table[
-      arg = Rationalize[Arg[smat[[i, j]]]/Pi];
-      abs2 = Abs[smat[[i, j]]]^2;
-      coscoefs = 
-       findexactabs[abs2, cosdenominator, cosnumerator];
-      {arg, coscoefs}
-      , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
-    
+     {Rationalize[Arg[smatexactnum1[[i, j]]]/Pi],
+      findexactabs[Abs[smatexactnum1[[i, j]]]^2, cosdenominator, cosnumerator]}
+     , {i, 1, numofirreps}, {j, 1, numofirreps}];
+   
+   
     smatexactnum = 
-     Table[
-     toexactnumericalvalue[smatexact[[i, j]], cosdenominator, cosnumerator, 200]
-     , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+    Table[
+     toexactnumericalvalue[smatexact[[i, j]], cosdenominator, cosnumerator, 2*precision]
+    , {i, 1, numofirreps}, {j, 1, numofirreps}];
     
     smatexactok = 
-    (Chop[smatexactnum - smat, 10^(-Max[10, precision - 20])] // Flatten // Union) == {0};
+    (Chop[smatexactnum1 - smatexactnum, 10^(-(2*precision - 20))] // Flatten // Union) == {0};
     
+    realphasepos = Position[smatexact, x_ /; Head[x[[1]]] == Real, {2}, Heads -> False];
+    denom = LCM[Sequence @@ (Denominator /@ (smatexact[[All, All, 2]] // Flatten) // Union)];
+    Do[
+      currreal = smatexact[[Sequence @@ realphasepos[[i]]]][[1]];
+      currreal100 = N[currreal, 100];
+      gamma = If[currreal100 > 0, 0, 1];
+      beta = If[Abs[currreal100] < 0.5, 0, 1];
+      coefs = findexactabs[Cos[Pi*currreal100]^2, denom, 1];
+      alphacheck = (-1)^gamma ArcCos[toexactnumericalvalue[{beta,coefs}, denom, 1, 2*precision]]/Pi;
+      alphacheckok = Chop[alphacheck-currreal, 10^(-(2 * precision - 20))] == 0;
+      If[alphacheckok,
+       smatexact[[Sequence @@ realphasepos[[i]], 1]] = {gamma, {beta, coefs}, denom};,
+       smatexact[[Sequence @@ realphasepos[[i]], 1]] = currreal100;,
+       smatexact[[Sequence @@ realphasepos[[i]], 1]] = currreal100;
+      ];
+    , {i, 1, Length[realphasepos]}];
+    
+            
     If[smatexactok, Null,
      Print["The exact representations of the elements of the S-matrix do \
 not agree with the numerical ones :-("];,
@@ -5264,22 +5313,58 @@ not agree with the numerical ones :-("];
      thetalistexact[[i]], 
      zerorep[cosdenominator]
      ]
-     , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+     , {i, 1, numofirreps}, {j, 1, numofirreps}];
     
-    tmatexactnum = 
+   tmatexactnum = 
      Table[
-     toexactnumericalvalue[tmatexact[[i, j]], cosdenominator, cosnumerator, 200]
-       , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+     toexactnumericalvalue[tmatexact[[i, j]], cosdenominator, cosnumerator, 2 * precision]
+       , {i, 1, numofirreps}, {j, 1, numofirreps}];
+       
+    cmatexact = Table[
+    If[cmat[[i, j]] == 1, onerep[cosdenominator], zerorep[cosdenominator]]
+    , {i, 1, numofirreps}, {j, 1, numofirreps}];
+        
+    pplusexactnum1 =
+     Sum[
+      (toexactnumericalvalue[qdimexact[ir], cosdenominator, cosnumerator, 2*precision]^2)*
+       toexactnumericalvalue[thetaexact[ir], cosdenominator, cosnumerator, 2*precision]
+     , {ir, irreps}];
     
+    pplusexact = {Rationalize[Arg[pplusexactnum1] / Pi], 
+      findexactabs[Abs[pplusexactnum1]^2, cosdenominator, cosnumerator]}; 
+    
+    pplusexactnum = toexactnumericalvalue[pplusexact, cosdenominator, cosnumerator, 2*precision];
+    pplusexactok = Chop[pplusexactnum1 - pplusexactnum, 10^(-(2 * precision - 20))] == 0;
+   
+                 
+    pminusexactnum1 =
+     Sum[
+      (toexactnumericalvalue[qdimexact[ir], cosdenominator, cosnumerator, 2*precision]^2) / 
+       toexactnumericalvalue[thetaexact[ir], cosdenominator, cosnumerator, 2*precision]
+     , {ir, irreps}];
+    
+    pminusexact = {Rationalize[Arg[pminusexactnum1] / Pi], 
+      findexactabs[Abs[pminusexactnum1]^2, cosdenominator, cosnumerator]}; 
+
+        
+    pminusexactnum = toexactnumericalvalue[pminusexact, cosdenominator, cosnumerator, 2*precision];
+    pminusexactok = Chop[pminusexactnum1 - pminusexactnum, 10^(-(2 * precision - 20))] == 0;    
+    
+     If[pplusexactok && pminusexactok, Null,
+     Print["The exact representations of pplus and/or pminus do \
+not agree with the numerical ones :-("];,
+     Print["The exact representations of pplus and/or pminus do \
+not agree with the numerical ones :-("];
+     ];   
     
     ssdagmaxdev = 
      Max[Abs /@ ((smatexactnum.ConjugateTranspose[smatexactnum] - 
-           IdentityMatrix[Length[irreps]]) // Flatten)];
+           IdentityMatrix[numofirreps]) // Flatten)];
     sdagsmaxdev = 
      Max[Abs /@ ((ConjugateTranspose[smatexactnum].smatexactnum - 
-           IdentityMatrix[Length[irreps]]) // Flatten)];
+           IdentityMatrix[numofirreps]) // Flatten)];
     
-    modularexact = Chop[Max[ssdagmaxdev, sdagsmaxdev], 10^(-180)] == 0;
+    modularexact = Chop[Max[ssdagmaxdev, sdagsmaxdev], 10^(-(2*precision - 20))] == 0;
     
     If[modularexact,
      
@@ -5292,27 +5377,33 @@ not agree with the numerical ones :-("];
       Max[Abs /@ ((smatexactnum.smatexactnum - cmat) // Flatten)];
      
      modularrelationsexactok = 
-      Chop[Max[s2maxdev, st3maxdev], 10^(-180)] == 0;
+      Chop[Max[s2maxdev, st3maxdev], 10^(-(2*precision - 20))] == 0;,
+      
+     modularrelationsexactok = Missing["The theory is not modular, so there are no modular relations to be checked."];,
+     modularrelationsexactok = Missing["The theory is not modular, so there are no modular relations to be checked."];
+   ];
      
-     ];
+    modulardataexactok = And @@ {pivotexactok, frobschurexactok, FPdimexactok, 
+       qdimexactok, qdtot2exactok, qdtotexactok, qdtot1overexactok,
+       twistsarephases, thetalistexactok, smatexactok, pplusexactok, pminusexactok,
+       If[modularexact, modularrelationsexactok, True]}; 
      
     Print["The exact form of the pivotal structure is: ", pivotlistexact];
      
     
     If[pivotexactok,
      Print["The pivotal equations were checked with the exact form of the \
-F-symbols, with precision 200, and they hold with accuracy ", 
+F-symbols, with precision ", 2*precision, " and they hold with accuracy ", 
        Floor[Accuracy[pivotmaxdev]], " :-)"];,
      Print["The pivotal equations were checked with the exact form of the \
-F-symbols, with precision 200, but they do not hold with accuracy 180. \
+F-symbols, with precision ", 2*precision, ", but they do not hold with accuracy ", 2 * precision - 20, ". \
 The maximum deviation is ", pivotmaxdev, " :-(" ];,
      Print["The pivotal equations were checked with the exact form of the \
-F-symbols, with precision 200, but they do not hold with accuracy 180. \
+F-symbols, with precision ", 2*precision, ", but they do not hold with accuracy ", 2 * precision - 20, ". \
 The maximum deviation is ", pivotmaxdev, " :-(" ];
      ];
      
     Print["The exact forms of the Frobenius-Schur indicators are: ", frobschurlistexact];
-
         
     Print["The exact forms of the Frobenius-Perron dimensions are: ", 
      FPdimlistexact];
@@ -5347,19 +5438,31 @@ to an overall sign):"];
     
     If[modularexact && modularrelationsexactok,
      Print["The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 = \
-S^2 = C were checked with the exact form of the S-matrix, with precision \
-200, and they hold with accuracy ",
-       Floor[Accuracy[Max[s2maxdev, st3maxdev]]] , " :-)"];
+S^2 = C were checked with the exact form of the S-matrix, with precision ", 2*precision,
+" and they hold with accuracy ", Floor[Accuracy[Max[s2maxdev, st3maxdev]]] , " :-)"];
      ];
     If[modularexact && Not[modularrelationsexactok],
      Print["The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 = \
-S^2 = C were checked with the exact form of the S-matrix, with precision \
-200, but they do not hold with accuracy 180. The maxium deviation \
-       is ", Max[s2maxdev, st3maxdev], 
-       " :-( Better check what went wrong!"];
+S^2 = C were checked with the exact form of the S-matrix, with precision ", 2*precision,
+", but they do not hold with accuracy ", 2 * precision -20, ". The maxium deviation \
+is ", Max[s2maxdev, st3maxdev], " :-( Better check what went wrong!"];
      ];
     
-    Print["Done :-)"];
+    If[modulardataexactok,
+       Print["Done, all relations hold :-)"];,
+       Print["Done, not all relations hold :-("];,
+       Print["Done, not all relations hold :-("];
+       ];
+    
+  
+    Global`FPdimlistexact = FPdimlistexact;
+    Global`qdimlistexact = qdimlistexact;
+    Global`pivotlistexact = pivotlistexact;
+    Global`thetalistexact = thetalistexact;
+    Global`FSlistexact = frobschurlistexact;
+    Global`smatexact = smatexact;
+    Global`tmatexact = tmatexact;
+    Global`cmatexact = cmatexact;
     
     (* end of the actual calculation *)
     
@@ -5448,7 +5551,7 @@ the original denominator. Something went wrong!"];
   
    
    (* remove the phase; we'll check that the imagingary part is zero; 
-   add phase back in the end *)
+   add the phase back in the end *)
    arg = Rationalize[Arg[numvalue]/Pi];
    sumlistabs = Table[{term[[1]] - arg, term[[2]]}, {term, sumlistreduced}];
    (* we start by calculating the square, term by term *)
@@ -5902,7 +6005,7 @@ the algebraically obtained one :-("];
       fsymexact[irreps[[i]], irrepsdual[[i]], irreps[[i]], irreps[[i]], irreps[[1]], irreps[[1]]
       , {1, 1, 1, 1}]
       ]
-     , {i, 1, Length[irreps]}];
+     , {i, 1, numofirreps}];
    
    qdim1overfalgebraicok = 
     qdim1overfalgebraic[[All, 2]] ==  qdim1overfexactlist[[All, 2]] &&
@@ -5916,7 +6019,7 @@ the algebraically obtained one :-("];
       fsymexact[irreps[[i]], irrepsdual[[i]], irreps[[i]], irreps[[i]], irreps[[1]], irreps[[1]]
       , {1, 1, 1, 1}]
       ]
-     , {i, 1, Length[irreps]}];
+     , {i, 1, numofirreps}];
    
    pivotalgebraicok = 
     pivotalgebraic[[All, 2]] == pivotlistexact[[All,  2]] &&
@@ -6039,7 +6142,6 @@ the algebraically obtained one :-("];
     (Mod[#, 2] & /@ Flatten[smatalgebraic, 1][[All, 1]]) ==
     (Mod[#, 2] & /@ Flatten[smatexact, 1][[All, 1]]);
 
-   (*Print["Calculating p_+ and p_- algebraically..."];*)  
    
    pplustab = Table[
      res = 
@@ -6092,7 +6194,6 @@ the algebraically obtained one :-("];
     centralchargealgebraicok = centralchargealgebraic == centralcharge;
     ];
    
- (*Print["Calculating S.S^dagger and S^daggar.S..."];*) 
    
    ssdagalgebraic = Table[
      reducesum[cosdenominator, cosnumerator,
@@ -6100,16 +6201,16 @@ the algebraically obtained one :-("];
       Table[
        exactproduct[cosdenominator, smatalgebraic[[i, k]],
        {-smatalgebraic[[k, j, 1]], smatalgebraic[[k, j, 2]]}]
-       , {k, 1, Length[irreps]}]
+       , {k, 1, numofirreps}]
        ]
       ]
-     , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+     , {i, 1, numofirreps}, {j, 1, numofirreps}];
     ssdagalgebraic = Table[
      If[ssdagalgebraic[[i, j, 2]] == zerorep[cosdenominator][[2]],
        zerorep[cosdenominator],
        ssdagalgebraic[[i, j]]
      ]
-    , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+    , {i, 1, numofirreps}, {j, 1, numofirreps}];
      
    sdagsalgebraic = Table[
      reducesum[cosdenominator, cosnumerator,
@@ -6117,30 +6218,29 @@ the algebraically obtained one :-("];
       Table[exactproduct[
         cosdenominator, {-smatalgebraic[[i, k, 1]], smatalgebraic[[i, k, 2]]},
         smatalgebraic[[k, j]]]
-       , {k, 1, Length[irreps]}]
+       , {k, 1, numofirreps}]
       ]
       ]
-     , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+     , {i, 1, numofirreps}, {j, 1, numofirreps}];
      sdagsalgebraic = Table[
      If[sdagsalgebraic[[i, j, 2]] == zerorep[cosdenominator][[2]],
        zerorep[cosdenominator],
        sdagsalgebraic[[i, j]]
      ]
-    , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+    , {i, 1, numofirreps}, {j, 1, numofirreps}];
      
-    (*Print["Done calculating S.S^dagger and S^daggar.S..."];*)  
    
    modularalgebraic = 
     ContainsOnly[
       Flatten[ssdagalgebraic, 1], {onerep[cosdenominator], zerorep[cosdenominator]}] && 
-     ssdagalgebraic[[All, All, 2, 1]] == IdentityMatrix[Length[irreps]] && 
+     ssdagalgebraic[[All, All, 2, 1]] == IdentityMatrix[numofirreps] && 
      ContainsOnly[
       Flatten[sdagsalgebraic, 1], {onerep[cosdenominator], zerorep[cosdenominator]}] && 
-     sdagsalgebraic[[All, All, 2, 1]] == IdentityMatrix[Length[irreps]];
+     sdagsalgebraic[[All, All, 2, 1]] == IdentityMatrix[numofirreps];
    
    modularalgebraicok = modularalgebraic == modular;
 
-(* We now checked modularity, so we now print if the s-matrix calculation went ok or not. *)
+(* We checked modularity, so we now print if the s-matrix calculation went ok or not. *)
 
    If[smatalgebraicok,
     Print["The exact form of the S-matrix coincides with \
@@ -6158,34 +6258,28 @@ the algebraically obtained one :-("];
   
    Print["Checking the modular relations algebraically..."];       
 
-      
-  (*Print["Calculating S^2..."];*)      
          
    s2algebraic = Table[
      reducesum[cosdenominator, cosnumerator,
      removepairs[cosdenominator,
       Table[
        exactproduct[cosdenominator, smatalgebraic[[i, k]], smatalgebraic[[k, j]]]
-       , {k, 1, Length[irreps]}]
+       , {k, 1, numofirreps}]
       ]
       ]
-     , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+     , {i, 1, numofirreps}, {j, 1, numofirreps}];
      s2algebraic = Table[
      If[s2algebraic[[i, j, 2]] == zerorep[cosdenominator][[2]],
        zerorep[cosdenominator],
        s2algebraic[[i, j]]
      ]
-    , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+    , {i, 1, numofirreps}, {j, 1, numofirreps}];
    
    s2algebraicok = 
     ContainsOnly[
       Flatten[s2algebraic, 1], {onerep[cosdenominator], zerorep[cosdenominator]}] && 
      s2algebraic[[All, All, 2, 1]] == cmat;
    
-   (* we'll now check the modular relations, e^(-2 Pi I c/8 )(st)^3 = 
-   s^2 = c , using a different algebraic number field. *)
-
-   (*Print["Calculating (S.T)^3..."];*)
    
    altcosdenom = 
     LCM[Sequence @@ (Join[
@@ -6212,7 +6306,7 @@ the algebraically obtained one :-("];
    altsmatalgebraic = Table[
      {smatalgebraic[[i, j, 1]], 
       smatalgebraic[[i, j, 2]] /. coefsreplace}
-     , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+     , {i, 1, numofirreps}, {j, 1, numofirreps}];
    Clear[coefsreplace];
    
    altstalgebraic = Table[
@@ -6222,7 +6316,7 @@ the algebraically obtained one :-("];
       {Mod[altsmatalgebraic[[i, j, 1]] + thetalistalgebraic[[j, 1]], 2, -1],
       altsmatalgebraic[[i, j, 2]]}
     ]
-   , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+   , {i, 1, numofirreps}, {j, 1, numofirreps}];
    
    altst3algebraic = Table[
      removepairs[altcosdenom,
@@ -6231,11 +6325,11 @@ the algebraically obtained one :-("];
        Table[
         exactproduct[altcosdenom, 
         altstalgebraic[[i, k1]], altstalgebraic[[k1, k2]], altstalgebraic[[k2, j]]]
-       , {k1, 1, Length[irreps]}, {k2, 1, Length[irreps]}]
+       , {k1, 1, numofirreps}, {k2, 1, numofirreps}]
       , 1]
      , x_ /; x[[2]] == zerorep[altcosdenom][[2]]]
     ]
-   , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+   , {i, 1, numofirreps}, {j, 1, numofirreps}];
    
    
    altst3calgebraic = Table[
@@ -6251,7 +6345,7 @@ the algebraically obtained one :-("];
       , {k, 1, Length[altst3algebraic[[i, j]]]}]
      ]
     ]
-   , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+   , {i, 1, numofirreps}, {j, 1, numofirreps}];
    
    altst3cmincalgebraic = Table[
     If[
@@ -6259,7 +6353,7 @@ the algebraically obtained one :-("];
       altst3calgebraic[[i, j]],
       Append[altst3calgebraic[[i, j]], minusonerep[altcosdenom]]
     ]
-   , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+   , {i, 1, numofirreps}, {j, 1, numofirreps}];
    
    
    altst3cmincreducealgebraic = Table[
@@ -6276,10 +6370,10 @@ the algebraically obtained one :-("];
       ]
      ]
     ]
-   , {i, 1, Length[irreps]}, {j, 1, Length[irreps]}];
+   , {i, 1, numofirreps}, {j, 1, numofirreps}];
    
    st3calgebraicok = altst3cmincreducealgebraic == 
-    Table[zerorep[altcosdenom],{i,1,Length[irreps]},{j,1,Length[irreps]}];
+    Table[zerorep[altcosdenom],{i,1,numofirreps},{j,1,numofirreps}];
    
    
   If[st3calgebraicok && s2algebraicok,
@@ -6324,6 +6418,659 @@ If[Not[modularalgebraic] &&  Not[And @@ {qdimalgebraicok, qdtotalgebraicok, qdto
 
 
 (* ::Subsection::Closed:: *)
+(*Routines for saving and loading the data, in its exact form*)
+
+
+filename[type_, rank_, cosdenom_, cosnum_] :=
+  "alatc_type=" <> ToString[type] <> "_rank=" <> 
+   StringPadLeft[ToString[rank], 3, "0"] <> "_denom=" <> 
+   StringPadLeft[ToString[cosdenom], 3, "0"] <> "_num=" <> 
+   StringPadLeft[ToString[cosnum], 3, "0"] <> ".wdx";
+(* no check is done to see if the arguments are consistent! *)
+
+fullfilename[type_, rank_, cosdenom_, cosnum_] :=
+  FileNameJoin[{$UserBaseDirectory, "ApplicationData", "alatc", filename[type, rank, cosdenom, cosnum]}];
+(* no check is done to see if the arguments are consistent! *)
+
+
+savecurrentdata[] := Module[{dir, dirok, name, file, fileexists, data, files, filesizes, totalfilesize},
+   
+   If[Not[fsymbolsexactfound && rsymbolsexactfound && modulardataexactfound],
+     Print["The exact form F-symbols, R-symbols and/or modular data was not obtained. Please do so first, \
+before saving the data!"];   
+   ];
+   
+   If[fsymbolsexactfound && rsymbolsexactfound && modulardataexactfound &&
+      Not[pentholdsexact && hexholdsexact && modulardataexactok],
+     Print["The exact form F-symbols, R-symbols and/or modular data was obtained, but at least one relation \
+does not hold. This should be sorted out, before one can save the data!"];   
+   ];
+   
+   If[fsymbolsexactfound && rsymbolsexactfound && modulardataexactfound &&
+      pentholdsexact && hexholdsexact && modulardataexactok,
+   
+   (* all is ok, we can save the date, if it's not there yet! *)
+   
+   dir = FileNameJoin[{$UserBaseDirectory, "ApplicationData", "alatc"}];
+   
+   dirok = 
+    FileExistsQ[dir];
+   
+   name = filename[type, rank, cosdenominator, cosnumerator];
+   file = FileNameJoin[{dir, name}];
+   
+   If[Not[dirok],
+    CreateDirectory[dir];
+    Print["The directory ", dir, " was created."];
+    ];
+   
+   fileexists = FileExistsQ[file];
+   
+   If[fileexists,
+    Print["The file with the data for the current algebra, rank and root \
+of unity already exists!"];
+    Print["No data was saved."];
+    Print["Done :-)"];
+    ];
+   
+   If[Not[fileexists],
+    Print["Saving the current data..."];
+    
+    data = {
+      (* 1 the irreps *)
+      irreps,
+      (* 2 selfduallist *)
+      selfdualvec,
+      (* 3 simplecurrentlist *)
+      simplecurrentvec,
+      (* 4 the fusion matrices *)
+      Table[nmat[ir], {ir, irreps}],
+      (* 5 the list of F-symbols *)
+      Table[fsymexact[Sequence @@ fs], {fs, flist}],
+      (* 6 a list of booleans, containing info about the F-symbols matrices *)
+      {fsymsreal, fmatunitary, fsymsFTFone, fsymbolsallrealorimaginary},
+      (* 7 the list of R-symbols *)
+      Table[rsymexact[Sequence @@ rs], {rs, rlist}],
+      (* 8 the list of inverse R-symbols *)
+      Table[rsyminvexact[Sequence @@ rs], {rs, rlist}],
+      (* 9 a list of booleans, containing info about the R-symbols matrices *)
+      {rmatunitary, rmatdiagonal, rmatevalsarephases},
+      (* 10 pivotlist *)
+      pivotlistexact,
+      (* 11 FSlist *)
+      frobschurlistexact,
+      (* 12 FPdimlist *)
+      FPdimlistexact,
+      (* 13 qdimlist *)
+      qdimlistexact,
+      (* 14 qdtot2 *)
+      qdtot2exact,
+      (* 15 qdtot *)
+      qdtotexact,
+      (* 16 qdim1overf *)
+      qdim1overfexactlist,
+      (* 17 thetalist *)
+      thetalistexact,
+      (* 18 hlist *)
+      hlist,
+      (* 19 smat *)
+      smatexact,
+      (* 20 tmat *)
+      tmatexact,
+      (* 21 cmat *)
+      cmatexact,
+      (* 22 pplus *)
+      pplusexact,
+      (* 23 pminus *)
+      pminusexact,
+      (* 24 central charge *)
+      centralcharge,
+      (* 25 a list of boolians *)
+      {qdimspositive, modular, modular2, modularrelationsok},
+      (* 26 roots, the root system of the algebra, convenient to have when checking the modular 
+         data algebraically. The other lie algebra data can easliy be set from the type and rank *)
+      roots
+      };
+    
+    Export[file, data];
+    
+    files = FileNames[All, dir];
+    files = Cases[files, x_ /; StringPart[x,-4;;-1] == {".", "w", "d", "x"} ];
+    filesizes = FileSize /@ files;
+    totalfilesize = Plus @@ filesizes;
+    
+    
+    Print[
+     "The data for the current algebra, rank and root of unity was saved in the file:"];
+    Print[file];    
+    Print["The size of the data directory is ", totalfilesize];
+    Print["Done :-)"];
+    
+    ];
+  
+  ]; 
+ 
+ ];
+
+
+initfusionfromnmatrices[nmatrices_, irreps_] := Module[{irreptopos},
+   
+   Clear[fusion, nv];
+   
+   Do[
+    irreptopos[irreps[[i]]] = i;
+    , {i, 1, numofirreps}];
+   
+   Do[
+    fusion[ir1, ir2] = {}
+    , {ir1, irreps}, {ir2, irreps}];
+   
+   Do[
+    If[nmatrices[[irreptopos[ir1], irreptopos[ir2], irreptopos[ir3]]] > 0,
+       nv[ir1, ir2, ir3] = 
+        nmatrices[[irreptopos[ir1], irreptopos[ir2], irreptopos[ir3]]];
+      ];
+    , {ir1, irreps}, {ir2, irreps}, {ir3, irreps}];
+   
+   Do[
+    If[Head[nv[ir1, ir2, ir3]] == Integer,
+      AppendTo[fusion[ir1, ir2], ir3];
+      ];
+    , {ir1, irreps}, {ir2, irreps}, {ir3, irreps}];
+   
+   irrepsdual = Table[
+      irreps[[Position[nmat[irreps[[i]]], x_ /; x[[1]] == 1][[1, 1]]]]
+      , {i, 1, numofirreps}] // Quiet;
+   
+   Do[dual[irreps[[i]]] = irrepsdual[[i]], {i, 1, numofirreps}];
+   
+   flist = Flatten[
+     Table[{a, b, c, d, e, f, {v1, v2, v3, v4}}
+      , {a, irreps}
+      , {b, irreps}
+      , {c, irreps}
+      , {e, fusion[a, b]}
+      , {d, fusion[e, c]}
+      , {f, Cases[fusion[b, c], x_ /; MemberQ[fusion[a, x], d]]}
+      , {v1, nv[a, b, e]}
+      , {v2, nv[e, c, d]}
+      , {v3, nv[b, c, f]}
+      , {v4, nv[a, f, d]}]
+     , 9];
+   
+   fmatlist = flist[[All, 1 ;; 4]] // Union;
+   
+   numofpentagonequations = Sum[
+       nv[a, b, f]*nv[f, c, g]*nv[g, d, e]* nv[c, d, gp]*nv[b, gp, fp]*nv[a, fp, e]
+       , {a, irreps}
+       , {b, irreps}
+       , {c, irreps}
+       , {d, irreps}
+       , {f, fusion[a, b]}
+       , {g, fusion[f, c]}
+       , {e, fusion[g, d]}
+       , {gp, Cases[fusion[c, d], x_ /; MemberQ[fusion[f, x], e]]}
+       , {fp, Cases[fusion[b, gp], x_ /; MemberQ[fusion[a, x], e]]}
+       ];
+   
+   rlist = Flatten[
+     Table[{a, b, c, {v1, v2}}
+      , {a, irreps}
+      , {b, irreps}
+      , {c, fusion[a, b]}
+      , {v1, nv[a, b, c]}
+      , {v2, nv[a, b, c]}]
+     , 4];
+   
+   rmatlist = rlist[[All, 1 ;; 3]] // Union;
+   
+   nvlist = Table[nv[Sequence @@ rmatlist[[i]]], {i, 1, Length[rmatlist]}];
+   maxmultiplicity = Max[nvlist];
+   multiplicity = Not[(nvlist // Union) == {1}];
+   numoffusmultiplicities = Count[nvlist, x_ /; x > 1];
+   
+   Global`flist = flist;
+   Global`fmatlist = fmatlist;
+   Global`rlist = rlist;
+   Global`rmatlist = rmatlist;
+   Global`maxmultiplicity = maxmultiplicity;
+   Global`multiplicity = multiplicity;
+   Global`numberoffusionmultiplicities = numoffusmultiplicities;
+   
+   ];
+
+
+importdata[file_] := Module[{data},
+  
+  data = Import[file];
+  
+    (* Take care of the fusion rules *)
+    
+    irreps = data[[1]];
+    numofirreps = Length[irreps];
+    Global`irreps = irreps;
+    
+    selfdualvec = data[[2]];
+    Do[selfdual[irreps[[i]]] = selfdualvec[[i]], {i, 1, numofirreps}];
+    numofselfduals = Count[selfdualvec, True];
+    
+    simplecurrentvec = data[[3]];
+    numofsimplecurrents = Count[simplecurrentvec, True];
+    
+    Do[
+       nmat[irreps[[i]]] = data[[4, i]];
+       , {i, 1, numofirreps}];
+    
+    initfusionfromnmatrices[data[[4]], irreps];
+    
+    (* Take care of the F-symbols *)
+    
+    Do[
+       fsymexact[Sequence @@ flist[[i]]] =  data[[5, i]];
+       fsym[Sequence @@ flist[[i]]] = 
+         toexactnumericalvalue[fsymexact[Sequence @@ flist[[i]]], cosdenominator, cosnumerator, 200];
+       , {i, 1, Length[flist]}];
+    
+    Do[fmat[Sequence @@ fm] =
+      Flatten[
+        Table[fsym[fm[[1]], fm[[2]], fm[[3]], fm[[4]], e, f, {v1, v2, v3, v4}]
+        , {e, Cases[fusion[fm[[1]], fm[[2]]], x_ /; MemberQ[fusion[x, fm[[3]]], fm[[4]]]]}
+        , {f, Cases[fusion[fm[[2]], fm[[3]]], x_ /; MemberQ[fusion[fm[[1]], x], fm[[4]]]]}
+        , {v1, nv[fm[[1]], fm[[2]], e]}
+        , {v2, nv[e, fm[[3]], fm[[4]]]}
+        , {v3, nv[fm[[2]], fm[[3]], f]}
+        , {v4, nv[fm[[1]], f, fm[[4]]]}]
+           , {{1, 3, 4}, {2, 5, 6}}];
+       
+       fmatdim[Sequence @@ fm] = Length[fmat[Sequence @@ fm]];
+       
+       , {fm, fmatlist}];
+    
+    fmatdimtab = Table[fmatdim[Sequence @@ fm], {fm, fmatlist}];
+    
+    fsymbolarguements = data[[5, All, 1]] // Union;
+    
+    {fsymsreal, fmatunitary, fsymsFTFone, fsymbolsallrealorimaginary} = data[[6]];
+    
+    (* Take care of the R-symbols *)
+    
+    Do[
+       rsymexact[Sequence @@ rlist[[i]]] =  data[[7, i]];
+       rsyminvexact[Sequence @@ rlist[[i]]] =  data[[8, i]];
+       rsym[Sequence @@ rlist[[i]]] = 
+         toexactnumericalvalue[rsymexact[Sequence @@ rlist[[i]]], cosdenominator, cosnumerator, 200];
+       rsyminv[Sequence @@ rlist[[i]]] = 
+         toexactnumericalvalue[rsyminvexact[Sequence @@ rlist[[i]]], cosdenominator, cosnumerator, 200];
+       
+    , {i, 1, Length[rlist]}];
+    
+    
+    Do[
+      rmat[Sequence @@ rm] =
+         Table[
+           rsym[Sequence @@ rm[[1 ;; 3]], {v1, v2}]
+           , {v1, nv[Sequence @@ rm[[1 ;; 3]]]}
+           , {v2, nv[Sequence @@ rm[[1 ;; 3]]]}];
+       rmatinv[Sequence @@ rm] =
+         Table[
+           rsyminv[Sequence @@ rm[[1 ;; 3]], {v1, v2}]
+           , {v1, nv[Sequence @@ rm[[1 ;; 3]]]}
+           , {v2, nv[Sequence @@ rm[[1 ;; 3]]]}];
+       , {rm, rmatlist}];
+    
+    rmatevallist = Table[N[rmat[Sequence @@ rm], 200] // Eigenvalues, {rm, rmatlist}] //  Flatten;
+    rmatevalabslist = Abs /@ rmatevallist;
+    rmatevalarglist = Rationalize[1/Pi (Arg /@ rmatevallist)];
+    rmatevalarglistunion = rmatevalarglist // Union;
+    rmatevalargmaxdenom = (Denominator /@ rmatevalarglist) // Max;
+    
+    {rmatunitary, rmatdiagonal, rmatevalsarephases} = data[[9]];
+    
+    (* The modular data *)
+    
+    (* The pivotal structure *)
+    pivotlistexact = data[[10]];
+    
+    pivotlist = Table[
+         If[pivotlistexact[[i, 1]] == 0, 1, -1]
+         , {i, 1, numofirreps}];
+    
+    (* FSlist *)
+    
+    frobschurlistexact = data[[11]];
+    frobschurlist = Table[
+         Which[
+           frobschurlistexact[[i]] == onerep[cosdenominator], 1,
+           frobschurlistexact[[i]] == phaserep[cosdenominator, 1], -1,
+           frobschurlistexact[[i]] == zerorep[cosdenominator], 0
+           ]
+         , {i, 1, numofirreps}];
+    
+    (* 12 FPdimlist *)
+    FPdimlistexact = data[[12]];
+    fpdimvec = Table[
+         toexactnumericalvalue[FPdimlistexact[[i]], cosdenominator, cosnumerator, 200]
+         , {i, 1, numofirreps}];
+    
+    (* 13 qdimlist *)
+    qdimlistexact = data[[13]];
+    Do[qdimexact[irreps[[i]]] = qdimlistexact[[i]]
+        , {i, 1, numofirreps}];
+    qdimvec = Table[
+         toexactnumericalvalue[qdimlistexact[[i]], cosdenominator, cosnumerator, 200]
+         , {i, 1, numofirreps}];
+    
+    (* 14 qdtot2 *)
+    qdtot2exact = data[[14]];
+    qdtot2 = toexactnumericalvalue[qdtot2exact, cosdenominator, cosnumerator, 200];
+    
+    (* 15 qdtot *)
+    qdtotexact = data[[15]];
+    qdtot = toexactnumericalvalue[qdtotexact, cosdenominator,  cosnumerator, 200];
+    qdtot1overexact = findoneover[cosdenominator, qdtotexact];
+    
+    (* 16 qdim1overf *)
+    qdim1overfexactlist = data[[16]];
+    qdim1overfvec = Table[
+         toexactnumericalvalue[qdim1overfexactlist[[i]], cosdenominator, cosnumerator, 200]
+         , {i, 1, numofirreps}];
+    
+    (* 17 thetalist *)
+    thetalistexact = data[[17]];
+    thetalist = Table[
+         toexactnumericalvalue[thetalistexact[[i]], cosdenominator, cosnumerator, 200]
+         , {i, 1, numofirreps}];
+    Do[
+       thetaexact[irreps[[i]]] = thetalistexact[[i]];
+       , {i, 1, numofirreps}];
+    
+    (* 18 hlist *)
+    hlist = data[[18]];
+    
+    (* 19 smat *)
+    smatexact = data[[19]];
+    smat =
+     Table[
+      Which[
+       Head[smatexact[[i, j, 1]]] === List,
+       Exp[smatexact[[i, j, 1, 1]] * ArcCos[
+             toexactnumericalvalue[smatexact[[i, j, 1, 2]], smatexact[[i, j, 1, 3]], 1, 200]] * I] *
+             toexactnumericalvalue[{0, smatexact[[i, j, 2]]}, cosdenominator, cosnumerator, 200],
+       True,
+       toexactnumericalvalue[smatexact[[i, j]], cosdenominator, cosnumerator, 200]]
+     , {i, 1, numofirreps}, {j, 1, numofirreps}];
+    
+    (* 20 tmat *)
+    tmatexact = data[[20]];
+    tmat = DiagonalMatrix[
+      Table[
+       toexactnumericalvalue[tmatexact[[i, i]], cosdenominator, cosnumerator, 200]
+      , {i, 1, numofirreps}]
+         ];
+    
+    (* 21 cmat *)
+    cmatexact = data[[21]];
+    cmat = cmatexact[[All, All, 2, 1]];
+    
+    (* 22 pplus *)
+    pplusexact = data[[22]];
+    pplus = toexactnumericalvalue[pplusexact, cosdenominator, cosnumerator, 200];
+    
+    (* 23 pminus *)
+    pminusexact = data[[23]];
+    pminus = toexactnumericalvalue[pminusexact, cosdenominator, cosnumerator, 200];
+    
+    (* 24 central charge *)
+    centralcharge = data[[24]];
+    
+    (* 25 a list of boolians *)
+    {qdimspositive, modular, modular2, modularrelationsok} = data[[25]];
+    
+    (* 26 roots, take care of the necessary lie-algebra data *)
+    
+    roots = data[[26]];
+    numposroots = Position[roots, Table[0, {i, 1, rank}], 1][[1, 1]] - 1;
+    posroots = roots[[1 ;; numposroots]];
+    qfm = qfmatrix[type, rank];
+    rho = Table[1, {j, 1, rank}];
+    
+    Global`FPdimlist = fpdimvec;
+    Global`qdimlist = qdimvec;
+    Global`selfduallist = selfdualvec;
+    Global`simplecurrentlist = simplecurrentvec;
+    Global`pivotlist = pivotlist;
+    Global`thetalist = thetalist;
+    Global`hlist = hlist;
+    Global`FSlist = frobschurlist;
+    Global`smat = smat;
+    Global`tmat = tmat;
+    Global`cmat = cmat;
+    Global`centralcharge = centralcharge;
+    Global`modular = modular;
+    Global`unitary = qdimspositive;
+    
+    Global`FPdimlistexact = FPdimlistexact;
+    Global`qdimlistexact = qdimlistexact;
+    Global`pivotlistexact = pivotlistexact;
+    Global`thetalistexact = thetalistexact;
+    Global`FSlistexact = frobschurlistexact;
+    Global`smatexact = smatexact;
+    Global`tmatexact = tmatexact;
+    Global`cmatexact = cmatexact;
+
+];
+
+
+loaddata[atype_, rr_, lev_, rootfac_] := Module[
+   {data, typerankok, levelok, rootfacok, canbenonuniformtemp,
+    posrootfacsuniform, posrootfacsnonuniform, posrootfacsall,
+    gtemp, tmaxtemp, rootofunitytemp, uniformtemp, cosdenominatortemp,
+     cosnumeratortemp,
+    dir, name, file, fileexists},
+   
+   typerankok = rangeok[atype, rr];
+   levelok = IntegerQ[lev] && lev >= 0;
+   rootfacok = False;
+   
+   If[typerankok && levelok,
+    canbenonuniformtemp = nonuniformpossible[atype, rr, lev];
+    posrootfacsuniform = possiblerootfactorsuniform[atype, rr, lev];
+    If[canbenonuniformtemp,
+     posrootfacsnonuniform = 
+       possiblerootfactorsnonuniform[atype, rr, lev];,
+     posrootfacsnonuniform = {};
+     ];
+    posrootfacsall = Union[posrootfacsuniform, posrootfacsnonuniform];
+    
+    If[MemberQ[posrootfacsall, rootfac],
+     rootfacok = True;
+     ];
+    
+    ];
+   
+   If[Not[typerankok && levelok && rootfacok],
+    Print["The type of algebra, rank, level and/or rootfactor are not compatible, \
+no data was loaded, no initialization was done!"];,
+    Null,
+    Print["The type of algebra, rank, level and/or rootfactor are not compatible, \
+no data was loaded, no initialization was done!"];
+    ];
+   
+   If[typerankok && levelok && rootfacok,
+    (* we check if the correct file exists, so we need cosdenom and cosnum first *)
+    
+    gtemp = dualcoxeter[atype, rr];
+    tmaxtemp = tmaxvalue[atype];
+    rootofunitytemp = 1/(gtemp + lev);
+    uniformtemp = MemberQ[posrootfacsuniform, rootfac];
+    If[uniformtemp,
+     cosdenominatortemp = 1/rootofunitytemp*tmaxtemp;
+     cosnumeratortemp = rootfac;,
+     cosdenominatortemp = 1/rootofunitytemp;
+     cosnumeratortemp = rootfac/tmaxtemp;
+     ];
+    dir = FileNameJoin[{$UserBaseDirectory, "ApplicationData", "alatc"}];
+    name = filename[atype, rr, cosdenominatortemp, cosnumeratortemp];
+    file = FileNameJoin[{dir, name}];
+    fileexists = FileExistsQ[file];
+    If[Not[fileexists],
+     Print["The data file for the specified type, rank, level and rootfactor \
+does not exist, no data was loaded, no initialization was done!" ];
+     ];
+    ];
+   
+   If[typerankok && levelok && rootfacok && fileexists,
+    
+    (* all good, the file exits, 
+    we can do the initialization and load the data *)
+    
+    Print["The data file for the specified type, rank, level and rootfactor \
+exists, the data will be loaded and the system will be initialized..."];
+    
+    clearvariables[];
+    clearglobalvariables[];
+    typerankinitok = True;
+    typeranklevelinitok = True;
+    typeranklevelrootinitok = True;
+    fsymbolscalculated = True;
+    rsymbolscalculated = True;
+    fsymbolsexactfound = True;
+    rsymbolsexactfound = True;
+    pentholds = True;
+    pentundecidable = False;
+    pentholdsexact = True;
+    hexholds = True;
+    hexrundecidable = False;
+    hexrinvundecidable = False;
+    hexholdsexact = True;
+    modulardatacalculated = True;
+    modulardataexactfound = True;
+    pentagontobechecked = True;
+    recheck = False;
+    rmatricesdiagonalized = False;
+    
+    type = atype;
+    rank = rr;
+    level = lev;
+    rootfactor = rootfac;
+    g = gtemp;
+    tmax = tmaxtemp;
+    rootofunity = rootofunitytemp;
+    canbenonuniform = canbenonuniformtemp;
+    rootfactorsuniform = posrootfacsuniform;
+    If[canbenonuniform,
+     rootfactorsnonuniform = possiblerootfactorsnonuniform[type, rank, level];,
+     rootfactorsnonuniform = {};
+     ];
+    rootfactors = Union[rootfactorsuniform, rootfactorsnonuniform];
+    q = N[Exp[2 Pi I rootfactor rootofunity/tmax], 200];
+    uniform = uniformtemp;
+    cosdenominator = cosdenominatortemp;
+    cosnumerator = cosnumeratortemp;
+    
+    importdata[file];
+    
+    Print["Done :-)"];
+    
+    ];
+   
+   ];
+
+
+loaddatalz[atype_, rr_, lvalue_, zvalue_] := Module[
+   {typerankok, currentlvalueok, currentzvalueok,
+    dir, name, file, fileexists},
+   
+   typerankok = rangeok[atype, rr];
+   If[typerankok,
+    currentlvalueok = lvalueok[atype, rr, lvalue];
+    ];
+   If[typerankok && currentlvalueok,
+    currentzvalueok = zvalueok[lvalue, zvalue];
+    ];
+   If[Not[typerankok && currentlvalueok && currentzvalueok],
+    Print["The type of algebra, rank, the value of l and/or the value of \
+z are not compatible, no data was loaded, no initialization was done!"];,
+    Null,
+    Print["The type of algebra, rank, the value of l and/or the value of \
+z are not compatible, no data was loaded, no initialization was done!"];
+    ];
+   
+   
+   If[
+    typerankok && currentlvalueok && currentzvalueok,
+    (* let's check if the file exists *)
+    
+    dir = FileNameJoin[{$UserBaseDirectory, "ApplicationData", "alatc"}];
+    name = filename[atype, rr, lvalue, zvalue];
+    file = FileNameJoin[{dir, name}];
+    fileexists = FileExistsQ[file];
+    If[Not[fileexists],
+     Print["The data file for the specified type, rank, the value of l \
+and the value of z does not exist, no data was loaded, no \
+initialization was done!" ];
+     ];
+    ];
+   
+   If[typerankok && currentlvalueok && currentzvalueok && fileexists,
+    
+    (* all good, the file exits, we can do the initialization and load the data *)
+    
+    Print["The data file for the specified type, rank, the value of l and \
+the value of z exists, the data will be loaded and the system will \
+be initialized..."];
+
+    clearvariables[];
+    clearglobalvariables[];
+    typerankinitok = True;
+    typeranklevelinitok = True;
+    typeranklevelrootinitok = True;
+    fsymbolscalculated = True;
+    rsymbolscalculated = True;
+    fsymbolsexactfound = True;
+    rsymbolsexactfound = True;
+    pentholdsexact = True;
+    pentholds = True;
+    pentundecidable = False;
+    hexholds = True;
+    hexrundecidable = False;
+    hexrinvundecidable = False;        
+    hexholdsexact = True;
+    modulardatacalculated = True;
+    modulardataexactfound = True;
+    pentagontobechecked = True;
+    recheck = False;
+    rmatricesdiagonalized = False;
+    
+    type = atype;
+    rank = rr;
+    g = dualcoxeter[type, rank];
+    tmax = tmaxvalue[type];
+    uniform = lzvaluesuniform[type, rank, lvalue, zvalue];
+    level = If[uniform, lvalue/tmax - g, lvalue - g];
+    rootfactor = If[uniform, zvalue, tmax*zvalue];
+    rootofunity = 1/(g + level);
+    canbenonuniform = nonuniformpossible[type, rank, level];
+    rootfactorsuniform = possiblerootfactorsuniform[type, rank, level];
+    If[canbenonuniform,
+     rootfactorsnonuniform = possiblerootfactorsnonuniform[type, rank, level];,
+     rootfactorsnonuniform = {};
+     ];
+    rootfactors = Union[rootfactorsuniform, rootfactorsnonuniform];
+    q = N[Exp[2 Pi I rootfactor rootofunity/tmax], 200];
+    cosdenominator = lvalue;
+    cosnumerator = zvalue;
+    
+    importdata[file];
+    
+    Print["Done :-)"];
+    
+    ];
+   
+   ];
+
+
+(* ::Subsection::Closed:: *)
 (*Cleanup*)
 
 
@@ -6340,31 +7087,36 @@ clearvariables[] := Clear[
    numoffusmultiplicities, qcg, fsym, fmat, fmatdim, fmatdimtab, rsym,
    rsyminv, rmat, rmatinv, sign, phase, fsymold, rsymold, fmatold,
    rmatold, umat, umatinv, numofirreps, numposroots, posroots, qdimvec,
-   qd, qdtot2, qdtot, qdimspositive, fpdimvec, irrepsdual, dual,
-   selfdualvec, selfdual, qdim1overfvec, pivotlist,  pivot, pivoteqnok, thetalist,
-   theta, hlist, hvalue, frobschurlist, frobschur, smat, cmat, tmat,
+   qdtot2, qdtot, qdimspositive, fpdimvec, irrepsdual, dual,
+   selfdualvec, selfdual, qdim1overfvec, pivotlist, pivoteqnok, thetalist,
+   hlist, frobschurlist, smat, cmat, tmat,
    modular, pplus, pminus, modular2, centralcharge, modularrelationsok,
    fsymbolsallrealorimaginary, fsymbolarguements, weightspaceorthogonal,
    weightspacedeviation, orthonormalityok, qCGdeviation,
    pentagondeviation, pentholds, pentagoncounter, hexrundecidable,
    hexagonRdeviation, hexrinvundecidable, hexagonRinversedeviation,
    hexagondeviation, hexholds, simplecurrentvec,
-   qd, theta, hvalue, frobschur, dual, selfdual,
+   dual, selfdual,
    uniform, canbenonuniform, rootfactorsuniform, rootfactorsnonuniform,
    lval, zval,
    fsymexact, rsymexact, rsyminvexact,
    pentholdsexact, hexholdsexact,
    cosdenominator, cosnumerator,
    pentholdsalgebraically, hexholdsalgebraically,
-   pivotlistexact, pivotexact, pivotexactok,
+   pivotlistexact, pivotexactok,
    FPdimlistexact, FPdimexactok,
+   frobschurlistexact, frobschurexactok, 
    qdimlistexact, qdimexact, qdimspositiveexact, qdimexactok,
    qdtot2exact, qdtot2exactok,
    qdtotexact, qdtotexactok, qdtot1overexactok, qdim1overfexactlistok,
    thetalistexact, thetaexact, thetalistexactok,
    smatexact, smatexactok,
-   tmatexact,
-   modularexact, modularrelationsexactok
+   tmatexact, tmatexactok,
+   cmatexact,
+   pplusexact, pminusexact, pplusexactok, pminusexactok,
+   modularexact, modularrelationsexactok,
+   modulardataexactok,
+   numofsimplecurrents, numofselfduals, numofpentagonequations
    ];
    
 clearglobalvariables[] := Clear[
