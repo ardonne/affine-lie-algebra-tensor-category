@@ -274,7 +274,7 @@ Steve Simon, Joost Slingerland, Gert Vercleyen\n" ,
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2022-03-07\n\
+       "Last revision: 2022-03-10\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -5286,15 +5286,15 @@ with the numerical ones :-("];
     Do[
       currreal = smatexact[[Sequence @@ realphasepos[[i]]]][[1]];
       currreal100 = N[currreal, 100];
-      gamma = If[currreal100 > 0, 0, 1];
+      gamma = If[currreal100 > 0, 1, -1];
       beta = If[Abs[currreal100] < 0.5, 0, 1];
       coefs = findexactabs[Cos[Pi*currreal100]^2, denom, 1];
-      alphacheck = (-1)^gamma ArcCos[toexactnumericalvalue[{beta,coefs}, denom, 1, 2*precision]]/Pi;
+      alphacheck = gamma ArcCos[toexactnumericalvalue[{beta,coefs}, denom, 1, 2*precision]]/Pi;
       alphacheckok = Chop[alphacheck-currreal, 10^(-(2 * precision - 20))] == 0;
       If[alphacheckok,
        smatexact[[Sequence @@ realphasepos[[i]], 1]] = {gamma, {beta, coefs}, denom};,
-       smatexact[[Sequence @@ realphasepos[[i]], 1]] = currreal100;,
-       smatexact[[Sequence @@ realphasepos[[i]], 1]] = currreal100;
+       smatexact[[Sequence @@ realphasepos[[i]], 1]] = N[currreal, 200];,
+       smatexact[[Sequence @@ realphasepos[[i]], 1]] = N[currreal, 200];
       ];
     , {i, 1, Length[realphasepos]}];
     
