@@ -274,7 +274,7 @@ Steve Simon, Joost Slingerland, Gert Vercleyen\n" ,
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2022-03-10\n\
+       "Last revision: 2022-04-04\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -290,7 +290,8 @@ groups,\n" , FontSize -> 15, FontFamily -> "Source Sans Pro", Italic],
        "\n Quantum groups based on non-twisted affine Lie algebras \
 give rise to tensor categories. With this package, one can, \
 numerically, calculate the associated F- and R-symbols, as well as \
-the modular data.\n"],
+the modular data. One can subsequently convert the numerical results to an \
+exact representation.\n"],
       textStyle[
        "The types of non-twisted affine Lie algebras possible are:\n"],
       TextGrid[{
@@ -330,7 +331,7 @@ the non-uniform cases. The value of q is set by running "],
       codeStyle["initializerootofunity[rootfactor]"],
       textStyle[" .\n"],
       textStyle[
-       "After the type of algebra, rank, level and rootfacter are \
+       "After the type of algebra, rank, level and rootfactor are \
 set, one can proceed by calculating the F- and R-symbols, as well as \
 the modular data, by running the commands (in this order)\n"],
       codeStyle["calculatefsymbols[]\n"],
@@ -361,7 +362,7 @@ so pretty high already) by running "],
       codeStyle["initializerootofunity[rootfactor]"],
       textStyle[". Warnings are generated if the deviation is bigger than 10^(-20). \
 Otherwise, the maximum deviation is given, to give a sense of the accuracy. Typically, \
-the precision is much better than 10^(-20).\n"],
+the accuracy is much better than 10^(-20).\n"],
       textStyle["\nWhen loading the package, the recusion limit is set to 10000.\n"],
       textStyle["\nThe gauge choices made during the calculation follow, to a \
 large extend, the ones described in the paper above."]
@@ -718,6 +719,7 @@ initializelevel[lev_] :=
      canbenonuniform = nonuniformpossible[type, rank, level];
      rootfactorsuniform = possiblerootfactorsuniform[type, rank, level];
      If[canbenonuniform,
+       fraclevel = (level + g)/tmax - g;
        rootfactorsnonuniform = possiblerootfactorsnonuniform[type, rank, level];,
        rootfactorsnonuniform = {};
      ];
@@ -730,7 +732,8 @@ initializelevel[lev_] :=
      Print["The possible roots of unity are ", 
       Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
       ",\n with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases, or \n\
-with rootfactor an element of the set: ", rootfactorsnonuniform, " for the non-uniform cases."];,
+with rootfactor an element of the set: ", rootfactorsnonuniform, " for the non-uniform cases. The non-uniform cases have \
+an associated fractional level: ", fraclevel, "."];,
      Print["The possible roots of unity are ", 
       Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
       ",\n with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases.\n There are no non-uniform cases."];
@@ -774,19 +777,21 @@ initializerootofunity[rootfac_] := Piecewise[{
     
        
        If[rootfacinfo,
-       Print["The rootfactor has been set to ",rootfactor];
+       Print["The rootfactor has been set to ", rootfactor];
        ];
        If[uniform && Not[initfromlz],
        Print["The type of algebra, rank, level and rootfactor are initialized, and set to ", {type, rank, level, rootfactor}, ". This is a uniform case."];
        ];
        If[uniform && initfromlz,
-       Print["The type of algebra, rank, l and z are initialized, and set to ", {type, rank, lval, zval}, ". This is a uniform case."];
+       Print["The type of algebra, rank, l and z are initialized, and set to ", {type, rank, lval, zval}, ". This is a uniform case, with level: ", level, "."];
        ];
        If[Not[uniform] && Not[initfromlz],
-       Print["The type of algebra, rank, level and rootfactor are initialized, and set to ", {type, rank, level, rootfactor}, ". This is a non-uniform case."];
+       Print["The type of algebra, rank, level and rootfactor are initialized, and set to ", {type, rank, level, rootfactor}, ". This is a non-uniform case, \
+with an associated fractional level: ", fraclevel, "."];
        ];
        If[Not[uniform] && initfromlz,
-       Print["The type of algebra, rank, l and z are initialized, and set to ", {type, rank, lval, zval}, ". This is a non-uniform case."];
+       Print["The type of algebra, rank, l and z are initialized, and set to ", {type, rank, lval, zval}, ". This is a non-uniform case, \
+with an associated fractional level: ", fraclevel, "."];
        ];       
        typeranklevelrootinitok = True;
        fsymbolscalculated = False;
@@ -806,7 +811,8 @@ initializerootofunity[rootfac_] := Piecewise[{
         Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm,
         ",\n\
 with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases, or \n\
-with rootfactor an element of the set: ", rootfactorsnonuniform, " for the non-uniform cases."];,
+with rootfactor an element of the set: ", rootfactorsnonuniform, " for the non-uniform cases. \
+The non-uniform cases have an associated fractional level: ", fraclevel, "."];,
         Print["The possible roots of unity are ", 
         Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
         ",\n\
@@ -821,7 +827,8 @@ There are no non-uniform cases."];
         Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm,
         ",\n\
 with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases, or \n\
-with rootfactor an element of the set: ", rootfactorsnonuniform, " for the non-uniform cases."];,
+with rootfactor an element of the set: ", rootfactorsnonuniform, " for the non-uniform cases. \
+The non-uniform cases have an associated fractional level: ", fraclevel, "."];,
         Print["The possible roots of unity are ", 
         Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
         ",\n\
@@ -868,7 +875,8 @@ initialize[type_, rank_, level_] :=
       Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm,
       ",\n\
 with rootfactor an element of the set: ", rootfactorsuniform, " for the uniform cases, or \n\
-with rootfactor an element of the set: ", rootfactorsnonuniform, " for the non-uniform cases."];,
+with rootfactor an element of the set: ", rootfactorsnonuniform, " for the non-uniform cases. The non-uniform cases have \
+an associated fractional level: ", fraclevel, "."];,
      Print["The possible roots of unity are ", 
       Exp[2 Pi I "rootfactor" rootofunity/(tmax)] // TraditionalForm, 
       ",\n\
@@ -915,15 +923,17 @@ initialize[type_, rank_, level_, rootfac_] :=
     If[MemberQ[posrootfacsall, rootfac],
      rootfacok = True;,
      If[canbenonuniform,
-      Print["The rootfactor should be a member of the set ", posrootfacsuniform," for the uniform case, or of the set ",
-      posrootfacsnonuniform," for the non-uniform case."];,
-      Print["The rootfactor should be a member of the set ", posrootfacsuniform," for the uniform case. There are no non-uniform cases."];
+      Print["The rootfactor should be a member of the set ", posrootfacsuniform," for the uniform cases, or of the set ",
+      posrootfacsnonuniform," for the non-uniform cases. \
+The non-uniform cases have an associated fractional level: ", fraclevel, "."];,
+      Print["The rootfactor should be a member of the set ", posrootfacsuniform," for the uniform cases. There are no non-uniform cases."];
       ];
      rootfacok = False;,
      If[canbenonuniform,
-      Print["The rootfactor should be a member of the set ", posrootfacsuniform," for the uniform case, or of the set ",
-      posrootfacsnonuniform," for the non-uniform case."];,
-      Print["The rootfactor should be a member of the set ", posrootfacsuniform," for the uniform case. There are no non-uniform cases."];
+      Print["The rootfactor should be a member of the set ", posrootfacsuniform," for the uniform cases, or of the set ",
+      posrootfacsnonuniform," for the non-uniform cases. \
+The non-uniform cases have an associated fractional level: ", fraclevel, "."];,
+      Print["The rootfactor should be a member of the set ", posrootfacsuniform," for the uniform cases. There are no non-uniform cases."];
       ];
      rootfacok = False;
      ];
@@ -3261,9 +3271,15 @@ before calculating the modular data."];
   
   Print["The labels of the irreps are: ", irreps];
   Print["Are the particles selfdual: ", selfdualvec];
-  Print["There are ", numofselfduals, " selfdual particles."];
+  If[numofselfduals == 1,
+   Print["There is ", numofselfduals, " selfdual particle."];,
+   Print["There are ", numofselfduals, " selfdual particles."];
+   ];
   Print["Are the particles simple currents: ", simplecurrentvec];
-  Print["There are ", numofsimplecurrents, " simple currents."];
+  If[numofsimplecurrents == 1,
+   Print["There is ", numofsimplecurrents, " simple current."];,
+   Print["There are ", numofsimplecurrents, " simple currents."];
+  ];
   Print["The pivotal structure is: ", pivotlist];
   If[pivoteqnok,
    Print["The pivotal equations are satisfied :-)"];,
@@ -3531,9 +3547,15 @@ of the modular data for the quantum group, you should run calculatemodulardata[]
   
   Print["The labels of the irreps are: ", irreps];
   Print["Are the particles selfdual: ", selfdualvec];
-  Print["There are ", numofselfduals, " selfdual particles."];
+  If[numofselfduals == 1,
+   Print["There is ", numofselfduals, " selfdual particle."];,
+   Print["There are ", numofselfduals, " selfdual particles."];
+   ];
   Print["Are the particles simple currents: ", simplecurrentvec];
-  Print["There are ", numofsimplecurrents, " simple currents."];
+  If[numofsimplecurrents == 1,
+   Print["There is ", numofsimplecurrents, " simple current."];,
+   Print["There are ", numofsimplecurrents, " simple currents."];
+  ];
   Print["The Frobenius-Schur indicators are: ", frobschurlist];
   Print["The Frobenius-Perron dimensions are: ", fpdimvec // N];
   Print["The quantum dimensions are: ", qdimvec // N];
@@ -7116,7 +7138,8 @@ clearvariables[] := Clear[
    pplusexact, pminusexact, pplusexactok, pminusexactok,
    modularexact, modularrelationsexactok,
    modulardataexactok,
-   numofsimplecurrents, numofselfduals, numofpentagonequations
+   numofsimplecurrents, numofselfduals, numofpentagonequations,
+   fraclevel
    ];
    
 clearglobalvariables[] := Clear[
