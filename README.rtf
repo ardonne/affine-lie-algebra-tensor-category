@@ -1,0 +1,466 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fswiss\fcharset0 Helvetica-Bold;\f2\fswiss\fcharset0 Helvetica-Oblique;
+}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww18980\viewh8020\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs28 \cf0 Information, both basic and more detailed, about the\
+\
+affine-lie-algebra-tensor-category (alatc) package:\
+alatc.wl\
+\
+This information can also be found in the accompanying file:\
+alatc-info-examples.nb\
+\
+The package can be downloaded from:\
+https://github.com/ardonne/affine-lie-algebra-tensor-category\
+\
+
+\fs24 \
+
+\f1\b\fs36 Content of this document:\
+\
+
+\f0\b0\fs28 Basic information\
+Installing the package\
+Loading the package\
+More detailed information:\
+	General information\
+	The F- and R-symbols\
+	The modular data\
+	The exact representation\
+	Saving and loading the data\
+Examples using the package
+\f1\b\fs36 \
+\
+\
+Basic information
+\f0\b0 \
+
+\fs28 \
+
+\f2\i displayinfo[]
+\f0\i0 \
+\
+provides the following basic information:\
+\
+affine-lie-algebra-tensor-category (alatc) package\
+Authors: Eddy Ardonne\
+Many thanks to: Fran\'e7ois Brunault, Achim Krause, Eric Rowell, Steve Simon, Joost Slingerland, Gert Vercleyen\
+License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\
+Last revision: 2022-03-10\
+\
+This package is based on the paper:\
+Clebsch-Gordan and 6j-coefficients for rank two quantum groups,\
+Eddy Ardonne, Joost Slingerland\
+J. Phys. A 43, 395205 (2010)\
+https://doi.org/10.1088/1751-8113/43/39/395205\
+https://arxiv.org/abs/1004.5456\
+\
+Quantum groups based on non-twisted affine Lie algebras give rise to tensor categories. With this package, one can, numerically, calculate the associated F- and R-symbols, as well as the modular data.\
+The types of non-twisted affine Lie algebras possible are:\
+\
+type		rank		tmax	g			note\
+"a"		r >= 1	1		r+1			su(r+1)\
+"b"		r >= 3	2		2r-1			so(2r+1), so(5) is implemented as sp(4)\
+"c"		r >= 2	2		r+1			sp(2r)\
+"d"		r >= 4	1		2r-2			so(2r)\
+"e"		\{6,7,8\}	1		\{12,18,30\}	\
+"f"		r == 4	2		9	\
+"g"		r == 2	3		4	\
+\
+\
+One starts by selecting the type of affine Lie algebra and its rank by running 
+\f2\i initialize["x",rank]
+\f0\i0  where x is an element of \{a,b,c,d,e,f,g\} and the rank satisfies the appropriate constraint form above. Subsequently, one selects the level, which has to be a positive integer, by running 
+\f2\i initializelevel[k]
+\f0\i0 .\
+Once the type of algebra, rank and level are set, the possible values of the deformation parameter q are fixed. q can take the values\
+
+\f2\i q = e^(2 Pi i rootfactor/(tmax (k + g)))
+\f0\i0  ,\
+where 
+\f2\i k
+\f0\i0  is the level, 
+\f2\i g
+\f0\i0  the dual coxeter number of the algebra, and 
+\f2\i tmax
+\f0\i0  is the ratio of the length of the long and short roots, if any (see the table above for the values of 
+\f2\i g
+\f0\i0  and tmax). For the standard, uniform cases, 
+\f2\i rootfactor
+\f0\i0  should be relative prime with 
+\f2\i tmax(k+g)
+\f0\i0 . See the section `More detailed information' of the accompanying notebook alatc-info-examples.nb for more information on the non-uniform cases. The value of 
+\f2\i q
+\f0\i0  is set by running 
+\f2\i initializerootofunity[rootfactor]
+\f0\i0 .\
+After the type of algebra, rank, level and rootfactor are set, one can proceed by calculating the F- and R-symbols, as well as the modular data, by running the commands (in this order)\
+
+\f2\i calculatefsymbols[]\
+calculatersymbols[]\
+calculatemodulardata[]\
+
+\f0\i0 If the R-matrices are not diagonal, they can be diagonalized using 
+\f2\i diagonalizermatrices[]
+\f0\i0 .\
+Information on how to access the F- and R-symbols, can be found in the accompanying notebook, which contains some examples as well.\
+This information can be displayed by running 
+\f2\i displayinfo[]
+\f0\i0 .\
+\
+Some technical notes.\
+\
+If Mathematica complains about ill-conditioned matrices, or if the fusion rules are inconsistent etc., one can try to increase the precision (which is standard set to 100, so pretty high already) by running setprecision[precision] where precision should be an integer > 100. setprecision[precision] should be run before running 
+\f2\i initializerootofunity[rootfactor]
+\f0\i0 . Warnings are generated if the deviation is bigger than 10^(-20). Otherwise, the maximum deviation is given, to give a sense of the accuracy. Typically, the precision is much better than 10^(-20).\
+\
+When loading the package, the recursion limit is set to 10000.\
+\
+The gauge choices made during the calculation follow, to a large extend, the ones described in the paper above.\
+\
+\
+
+\f1\b\fs36 Installing the package\
+
+\f0\b0\fs28 \
+Download the package alatc.wl from github,\
+https://github.com/ardonne/affine-lie-algebra-tensor-category\
+and copy it to a directory that mathematica can find.\
+\
+If one wants the package to be available for the user only, one can copy the file to\
+$UserBaseDirectory/Applications\
+(the location depends on the operating system, so evaluate the cells to see what applies to you):\
+
+\f1\b\fs36 \
+
+\f2\i\b0\fs28 FileNameJoin[\{$UserBaseDirectory, "Applications"\}]
+\f0\i0 \
+\
+If one wants the package to be available for all users, one can copy the file to:\
+$BaseDirectory/Applications\
+\
+
+\f2\i FileNameJoin[\{$BaseDirectory, "Applications"\}]
+\f0\i0\fs36 \
+\
+\
+
+\f1\b Loading the package\
+
+\f0\b0\fs28 \
+After installing the package, it can be loaded as follows:\
+\
+
+\f2\i << alatc`
+\f0\i0 \
+\
+To get basic info on the package, run: 
+\f2\i displayinfo[]\
+
+\f0\i0 \
+To see all commands available, one can run (clicking on a command afterwards gives more detailed info):\
+\
+
+\f2\i ?alatc`*\
+\
+\
+
+\f1\i0\b\fs36 More detailed information\
+\
+
+\fs32 General information\
+\
+
+\f0\b0\fs28 Most of the notation used follows the notation used in the paper on which this package is based:\
+\
+[1] 
+\f2\i Clebsch-Gordan and 6j-coefficients for rank two quantum groups
+\f0\i0 \
+Eddy Ardonne, Joost Slingerland\
+J. Phys. A 43, 395205 (2010)\
+https://doi.org/10.1088/1751-8113/43/39/395205\
+https://arxiv.org/abs/1004.5456\
+\
+Information about the non-uniform cases (which are not (directly) related to WZW theories) can be found in:\
+\
+[2] 
+\f2\i From Quantum Groups to Unitary Modular Tensor Categories
+\f0\i0 \
+Eric C. Rowell\
+Contemporary Mathematics, 413, 215 (2006)\
+http://dx.doi.org/10.1090/conm/413/07848\
+https://arxiv.org/abs/math/0503226\
+\
+Note that we use a different definition for q, namely q_ours = q^2_Rowell; this has no effect on the F-symbols, etc..\
+\
+When a certain algebra, rank and level allows for non-uniform cases, the program will print this when the level is initialized. In these cases, 
+\f2\i rootfactor
+\f0\i0  can be a multiple of 
+\f2\i tmax
+\f0\i0  (denoted by m in [2]), as long as 
+\f2\i GCD[rootfactor, (k+g)] == 1
+\f0\i0 . The fusion rules for the non-uniform cases differ from those of the uniform cases, even at the same 'level'). Non-uniform cases are possible when:\
+
+\f2\i type == "b" && Mod[k,2] == 0 && k >= 1\
+type == "c" && Mod[k+rank,2] == 0 && k >= rank - 1\
+type == "f" && Mod[k,2] == 0 && k >= 3\
+type == "g" && (Mod[k,3] == 0 || Mod[k,3] == 1 ) && k >= 2
+\f0\i0 \
+One can obtain the possible rootfactors by running 
+\f2\i possiblerootfactors[type, rank, level]
+\f0\i0 , which returns a list containing the lists with the possible rootfactors for the uniform and non-uniform cases. The latter might be empty.
+\fs26 \
+
+\fs28 \
+In the math literature, such as [2], it is common to represent q as q = e^(2 Pi i z/l), where 
+\f2\i 0 < z < l && GCD[z,l] == 1
+\f0\i0  (using our definition of q). The case is uniform if 
+\f2\i tmax
+\f0\i0  divides 
+\f2\i l
+\f0\i0 , and non-uniform otherwise. There is a minimum value for 
+\f2\i l
+\f0\i0 , in order to obtain a fusion category, namely for the uniform cases (l has to be at least 
+\f2\i tmax
+\f0\i0  times the dual coxeter number):\
+
+\f2\i type == "a" && l >= rank + 1 \
+type == "b" && Mod[l,2] == 0 && l >= 4 rank - 2 \
+type == "c" && Mod[l,2] == 0 && l >= 2 rank + 2 \
+type == "d" && l >= 2 rank - 2 \
+type == "e" && rank == 6 && l >= 30\
+type == "e" && rank == 6 && l >= 18\
+type == "e" && rank == 6 && l >= 30\
+type == "f" && Mod[l,2] == 0 && l >= 18\
+type == "g" && Mod[l,3] == 0 && l  >= 12\
+
+\f0\i0 For the non-uniform cases, the constraint on l is:\
+
+\f2\i type == "b" && Mod[l,2] == 1 && l >= 2 rank + 1\
+type == "c" && Mod[l,2] == 1 && l >= 2 rank + 1\
+type == "f" && Mod[l,2] == 1 && l >= 13\
+type == "g" && (Mod[l,3] == 1 || Mod[l,3] == 2) && l >= 7\
+
+\f0\i0 One can initialize the algebra, rank and root of unity using the values of 
+\f2\i l
+\f0\i0  and 
+\f2\i z
+\f0\i0  as follows:\
+
+\f2\i initializelz ["x", rank, l, z]
+\f0\i0 \
+\
+
+\f1\b\fs32 The F- and R-symbols
+\f0\b0\fs28 \
+\
+The package calculates the F-\'a0and R-symbols of the (M)TCs associated with affine Lie algebras. As such, the labels of the 'particles' in the (M)TC stem from the affine Lie algebras, that is, we use the Dynkin labels of the highest weights of the admissible representations, which are lists of length 'rank', the rank of the associated Lie algebra. \
+\
+The F-symbols are calculated by first calculating the qCG coefficients, as explained in [1]. The qCG coefficients are labelled by three highest weights (j1, j2, j3), three weights (m1,m2,m3) within the respected highest weight representation. To distinguish the weights in case of a weight multiplicity, we use an additional integer for each weight. Similarly, j3 can appear several times in the tensor product of j1 and j2, so we also need an integer distinguishing  the different j3's appearing in the tensor product. This leads to the following notation for the qCG coefficients:\
+
+\f2\i qCG[j1,\{m1,n1\},j2,\{m2,n2\},j3,\{m3,n3\},v]
+\f0\i0 \
+where the j's and m's are lists of length 'rank', while the n's and v are integers.\
+\
+The F-symbols are labelled by six 'particles', or highest weight representations. Traditionally, one uses a,b,c,d,e,f, which is why we switch to this notation from now on and abandon the j's. Apart from the six 'particles', there are four vertices to be labelled (due to fusion multiplicities), which leads to the following notation for the F-symbols:\
+
+\f2\i Fsym[a,b,c,d,e,f,\{v1,v2,v3,v4\}]
+\f0\i0 \
+\
+The fusion matrices are obtained by running:\
+
+\f2\i Nmat[a]\
+
+\f0\i0 \
+The number of vertices of type (a,b,c):\
+
+\f2\i Nvertex[a,b,c]
+\f0\i0 \
+\
+
+\f2\i Nmat[a]
+\f0\i0  returns a matrix, whose elements are given by 
+\f2\i Nvertex[a,b,c]
+\f0\i0 .\
+\
+
+\f2\i Fusion[a,b]
+\f0\i0  gives the possible fusion outcomes of a x b, that is, without taking multiplicities into account.\
+\
+The R-symbols are partially calculated using the method of [1], section 6. This does not give all R-symbols, so the remaining ones are calculated by explicitly solving the hexagon equations. The notation for the R-symbols follows the one for the F-symbols:\
+
+\f2\i Rsym[a,b,c,\{v1,v2\}]\
+
+\f0\i0 \
+Apart from the F- and R-symbols, the F- and R-matrices are also provided:\
+
+\f2\i Fmat[a,b,c,d]\
+Rmat[a,b,c]
+\f0\i0 \
+\
+If the R-matrices are not diagonal, they can be diagonalized by running 
+\f2\i diagonalizermatrices[]
+\f0\i0 . This will change both F- and R-symbols, which is why the pentagon and hexagon equations are checked again. One can revert back to the original F- and R-symbols by running 
+\f2\i undiagonalizermatrices[]
+\f0\i0 .\
+\
+We should note that the F-matrices satisfy (in the chosen gauge, and provided that one does not (have to) diagonalize the R-matrices) the relation F . F^T = F^T . F = 1 (here, one only transposes, even if the F-symbols are imaginary). So, one can easily obtain the `inverse' F-symbols. In addition, we note that under the same assumptions, the F-symbols are either real, or purely imaginary.\
+\
+Variables that are set by running 
+\f2\i calculatefsymbols[]
+\f0\i0  :\
+\
+variable:						content:\
+irreps						the labels of the `particles', or irreducible representations\
+flist							list of all the labels of the F-symbols\
+fmatlist						list of all the labels of the F-matrices\
+rlist							list of all the labels of the R-symbols\
+rmatlist						list of all the labels of the R-matrices = list of all the possible vertices\
+multiplicity					boolean, true if a fusion multiplicity is present, false otherwise\
+maxmultiplicity				largest fusion multiplicity\
+numberoffusionmultiplicities	the number of fusion multiplicities\
+numberofselfdualparticles		the number of selfdual particles\
+numberofsimplecurrents		the number of simple currents\
+\
+
+\f1\b\fs32 The modular data\
+
+\f0\b0\fs28 \
+Variables set by running 
+\f2\i calculatemodulardata[]
+\f0\i0 :
+\f1\b\fs32 \
+
+\f0\b0\fs28 \
+FPdimlist		list of Frobenius-Perron dimensions\
+qdimlist			list of quantum dimensions\
+selfduallist		list of booleans,true for selfdual particles\
+simplecurrentlist	list of booleans, true for simple currents\
+pivotlist			list of pivotal structures\
+thetalist			list of theta-symbols (or twist factors)\
+hlist				list of scaling dimensions modulo 1\
+FSlist			list of Frobenius-Schur indicators\
+cmat			conjugation matrix\
+smat			modular S-matrix (up to a sign if the theory is not unitary)\
+tmat				modular T-matrix (*)\
+centralcharge		central charge modulo 8 (modulo 4 if the theory is not unitary) \
+unitary			boolean, True if the theory is unitary, False otherwise\
+modular			boolean, True if the theory is modular, False otherwise\
+\
+(*) The T-matrix is defined without the factor Exp[-2 Pi I/24 centralcharge], because at best, we obtain the central charge modulo 8, not 24. This is not a problem when checking the relation Exp[-3*2Pi I/24 centralcharge] (S.T)^3 = S^2 = C.\
+\
+The unitarity is checked by checking if the quantum dimensions are all positive. It is conjectured that if this is the case, the theory is unitary. A warning is generated if the quantum dimensions are all positive, but the F-matrices are not all unitary (one should check if the F-matrices can be made unitary). Conversely, if the F-matrices are all unitary, but the quantum dimensions are not all positive, it is likely that there exists another pivotal structure, such that the quantum dimensions are all positive, even though the theory itself is not unitary. One can calculate all possible (spherical) pivotal structures by running 
+\f2\i possiblepivotalstructures[]
+\f0\i0  (
+\f2\i possiblesphericalpivotalstructures[]
+\f0\i0 ) after calculating the F-symbols. Note that only one of these possible pivotal structures is actually realized by the selected quantum group. One can calculated the modular data associated with any valid spherical pivotal structure by running 
+\f2\i calculatemodulardata[pivotalstructure]
+\f0\i0 . If the selected pivotal structure differs from the one coming from the selected quantum group, the calculated modular data is not the one coming from the quantum group. \
+ \
+When the theory is not unitary, the overall sign of the total quantum dimension is not determined because of the sign ambiguity of the square root, when calculating the total quantum dimension.  This leads to an overall sign ambiguity in the S-matrix, accompanied by the central charge being defined modulo 4 instead of eight. This sign is chosen to be positive, which in turn fixes the central charge modulo eight.\
+The variable 
+\f2\i centralcharge
+\f0\i0  is set to the appropriate rational number if the theory is modular. Otherwise, it is set to a 
+\f2\i Missing[]
+\f0\i0  object.\
+\
+
+\f1\b\fs32 The exact representation\
+\
+
+\f0\b0\fs28 It was observed that the numerically obtained F-symbols can be turned into exact expressions as follows. We represent q as q = e^(2 Pi i z/l), with z and l co-prime. Then, both the F- and R-symbols takes the form\
+
+\f2\i Exp[I Pi 
+\f0\i0 \uc0\u945 
+\f2\i ] Sqrt[ Sum[ a[i] Cos[2 Pi z/l]^i , \{i, 0 , EulerPhi[l]/2 - 1 \}] ]
+\f0\i0 ,\
+where alpha and the 
+\f2\i a[i]
+\f0\i0  are rational. We note that for the F-symbols, alpha is an element of \{0, 1/2, 1, -1/2\}. As stated above, one should not diagonalize the R-matrices if they are not diagonal, because this also changes the F-symbols, which might lead to F-symbols which can not be expressed in the exact form given above (one can 'undiagonalize' the R-matrices by running 
+\f2\i undiagonalizermatrices[]
+\f0\i0 ).\
+\
+The coefficients 
+\f2\i a[i]
+\f0\i0  are obtained by making use of the Lenstra-Lenstra-Lov\'e1sz integer relation algorithm, implemented in mathematica as 
+\f2\i LatticeReduce[]
+\f0\i0 . After numerically calculating the F-symbols (R-symbols), one can obtain the exact form of these symbols by running 
+\f2\i findexactfsymbols[]
+\f0\i0  (
+\f2\i findexactrsymbols[]
+\f0\i0 ). 
+\f2\i findexactfsymbols[]
+\f0\i0  obtains the exact form of the F-symbols, and checks the pentagon equations using a precision of 2*precision (with a default for precision = 100). 
+\f2\i findexactrsymbols[]
+\f0\i0  obtains the exact form of the R-symbols, and, provided that the exact form of the F-symbols was obtained, checks the hexagon equations using a precision of 2*precision. The exact form of the F- and R-symbols can be obtained via 
+\f2\i Fsymexact[]
+\f0\i0  and 
+\f2\i Rsymexact[]
+\f0\i0 . The format is \{\uc0\u945 , \{a[0], a[1], a[2], ... \}\}.\
+\
+If one calculates the exact form of the R-symbols before calculating the exact form of the F-symbols, the hexagon equations can not be checked using the exact form of the R-symbols, because the exact form of the F-symbols is also needed. However, one can check both the pentagon and hexagon equations numerically but using the exact form of the F- and R-symbols 'by hand' at a later stage,  by using the commands 
+\f2\i checkpentagonexactformnumerically[]
+\f0\i0  and 
+\f2\i checkhexagonexactformnumerically[]
+\f0\i0 .\
+\
+Finally, one can obtain the exact form of the modular data (provided the latter is calculated numerically first) by running 
+\f2\i findexactmodulardata[]
+\f0\i0 . This sets the following variables (with content that should be clear from the table above)\
+\{FPdimlistexact, qdimlistexact, pivotlistexact, thetalistexact, FSlistexact, smatexact, tmatexact, cmatexact\}.\
+\
+We note that for some 'larger' cases, it can happen that the default 
+\f2\i precision = 100
+\f0\i0 , is not enough to obtain the exact form of the F- and R-symbols correctly. In this case, the check of the pentagon and hexagon equations using the exact form of the F- and R-symbols fails (that is, the maximum deviation is of the order of or higher than 
+\f2\i 10^(-precision)
+\f0\i0 , while the check is done with 2*
+\f2\i precision
+\f0\i0 . If this happens, which for instance occurs for g_2 at level 3, one should increase the precision. For the case g_2 at level 3, 
+\f2\i precision = 150
+\f0\i0  suffices.\
+\
+It turns out that the phase of the S-matrix elements is not always of the form Exp[i Pi \uc0\u945 ], with \u945  a rational number. In these cases, the program tries to find a different exact representation of the phase, using a different integer number field (which is inspired by the rational coefficients a[i] for the absolute value of the given S-matrix element). It turns out that one can describe \u945  in the following way.\
+\uc0\u945  = +/- ArcCos[\{\u946 , \{b[0], b[1], b[2], ...\}]/Pi, where \{\u946 , \{b[0], b[1], b[2], ...\} describes the argument using an exact representation similar to the one above, i.e., including the square root, but typically using a different number field than the one used for the F- and R-symbols (that is, using a different l, and z = 1); finally \u946  is 0 or 1. Concretely, in the case \u945  is not a rational number, we represent the S-matrix element in the following way\
+\{\{\uc0\u947 , \{\u946 , \{b[0], b[1], b[2], ...\}\}, p\}, \{a[0], a[1], a[2], ...\}\}, with \u947  = 1,-1 and p is a positive integer. This represents the S-matrix element as follows\
+Exp[I Pi \uc0\u945 ] Sqrt[ Sum[ a[i] Cos[2 Pi z/l]^i , \{i, 0 , EulerPhi[l]/2 - 1 \}]], where \u945  is given by\
+\uc0\u945  = \u947 /Pi ArcCos[ (-1)^\u946  Sqrt[Sum[b[i] Cos[2 Pi/p]^i ,  \{i, 0, EulerPhi[p]/2 - 1\}] ] ]\
+If it turns out that the (phase of the) S-matrix element can not be described exactly in this way either, \uc0\u945  will be given as a 
+\f2\i Real
+\f0\i0  with 200 digits precision (this is the default precision for the when loading the data from file, see below). No cases where this is necessary are known so far.\
+\
+
+\f1\b\fs32 Saving and loading the data\
+\
+
+\f0\b0\fs28 Once the exact form of the F-symbols, R-symbols and the modular data is calculated, one can save this data by using the command 
+\f2\i savecurrentdata[]
+\f0\i0 . This saves the tensor category data in its exact form, but not, for instance, the q-Clebsch-Gordan coefficients, which are not obtained exactly. This data is stored (provided no errors occurred while calculating the data)  in the directory\
+
+\f2\i FileNameJoin[\{$UserBaseDirectory, "ApplicationData", "alatc"\}]
+\f0\i0 \
+(which is created if necessary).\
+At a later stage, this data can be loaded again by running\
+
+\f2\i loaddata[type, rank, level, rootfactor]
+\f0\i0 \
+which loads the exact data, and initializes the system, such that it is in a state equivalent to the state it would be in, if one had just calculated the exact form of the F- and R-symbols and the modular data (this pertains to the tensor category data, but not to most of the Lie-algebra data and the q-Clebsch-Gordan coefficients). The numerical values of the F- and R-symbols and the modular data, as given by FSym[] etc., ar evaluated with 200 digits precision.\
+\
+One can also load the data by making use of the l and z values (see above) by running\
+
+\f2\i loaddatalz[type, rank, l, z]
+\f1\i0\b\fs32 \
+\
+\
+
+\fs36 Examples using the package
+\fs32 \
+\
+
+\f0\b0\fs28 Examples using the package can be found in the accompanying file:\
+alatc-info-examples.nb\
+\
+}
