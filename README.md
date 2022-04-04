@@ -12,9 +12,13 @@ Last update: 2022-04-04
 The method used is described the paper:
 
 Clebsch-Gordan and 6j-coefficients for rank two quantum groups,
+
 E. Ardonne and J.K. Slingerland,
+
 J. Phys. A 43, 395205 (2010)
+
 https://doi.org/10.1088/1751-8113/43/39/395205
+
 https://arxiv.org/abs/1004.5456
 
 This package is released under the licence GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007.
