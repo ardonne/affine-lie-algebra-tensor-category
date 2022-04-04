@@ -1,11 +1,11 @@
 # affine-lie-algebra-tensor-category (alatc)
-Mathematica package for calculating the F- and R- symbols from the quantum groups associated with (non-twisted) affine Lie algebras, as well as the associated modular data.
+Mathematica package for calculating the F- and R- symbols from the quantum groups associated with (non-twisted) affine Lie algebras, as well as the associated modular data, both numerically and in exact form.
 
 Author: Eddy Ardonne
 
 Many thanks to: Achim Krause, François Brunault, Eric Rowell, Steve Simon, Joost Slingerland, Gert Vercleyen
 
-Last update: 2022-03-10
+Last update: 2022-04-04
 
 The method used is described the paper:
 
