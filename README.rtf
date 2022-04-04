@@ -254,6 +254,14 @@ type == "g" && (Mod[l,3] == 1 || Mod[l,3] == 2) && l >= 7\
 \f2\i initializelz ["x", rank, l, z]
 \f0\i0 \
 \
+For the non-uniform cases, it is customary to introduce a so-called 'fractional level' k_frac, such that 
+\f2\i tmax (k_frac + g) == (k+g)
+\f0\i0 , so 
+\f2\i k_frac == (k+g)/tmax - g
+\f0\i0 , where '
+\f2\i k
+\f0\i0 ' is the integer 'level' as used above. One can not initialize the system using the fractional level.\
+\
 
 \f1\b\fs32 The F- and R-symbols
 \f0\b0\fs28 \
