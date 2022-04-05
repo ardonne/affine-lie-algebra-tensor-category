@@ -248,7 +248,7 @@ are not loaded (this data is not stored)."
 Begin["`Private`"];
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*General functions*)
 
 
@@ -274,7 +274,7 @@ Steve Simon, Joost Slingerland, Gert Vercleyen\n" ,
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2022-04-04\n\
+       "Last revision: 2022-04-05\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -2158,7 +2158,7 @@ generateqcgcoefficients[] := With[{},
 
 constructfsymbols[] := With[{},
       
-   Do[fsym[Sequence @@ flist[[i]]] = N[Chop[Sum[
+   (*Do[fsym[Sequence @@ flist[[i]]] = N[Chop[Sum[
         qcg[flist[[i, 1]], {m1, d1}, flist[[i, 2]], {m2, d2}, flist[[i, 5]], {m12, d12}, flist[[i, 7, 1]]] *
           qcg[flist[[i, 5]], {m12, d12}, flist[[i, 3]], {m3, d3}, flist[[i, 4]], {flist[[i, 4]], 1}, flist[[i, 7, 2]]] *
           qcg[flist[[i, 2]], {m2, d2}, flist[[i, 3]], {m3, d3}, flist[[i, 6]], {m23, d23}, flist[[i, 7, 3]]] *
@@ -2169,7 +2169,22 @@ constructfsymbols[] := With[{},
         {m3, Cases[weights[flist[[i, 3]]], x_ /; (m12 + x) == flist[[i, 4]]]}, {d3, 1, wdim[flist[[i, 3]], m3]}, 
         {m23, Cases[weights[flist[[i, 6]]], x_ /; (m2 + m3) == x]}, {d23, 1, wdim[flist[[i, 6]], m23]}
         ] , 10^(-20)], precision];
+    , {i, 1, Length[flist]}];*)
+    
+    
+      Do[fsym[Sequence @@ flist[[i]]] = N[Chop[Sum[
+        qcg[flist[[i, 1]], {m1, d1}, flist[[i, 2]], {m2, d2}, flist[[i, 5]], {m1+m2, d12}, flist[[i, 7, 1]]] *
+          qcg[flist[[i, 5]], {m1+m2, d12}, flist[[i, 3]], {flist[[i, 4]] - m1 - m2, d3}, flist[[i, 4]], {flist[[i, 4]], 1}, flist[[i, 7, 2]]] *
+          qcg[flist[[i, 2]], {m2, d2}, flist[[i, 3]], {flist[[i, 4]] - m1 - m2, d3}, flist[[i, 6]], {flist[[i, 4]] - m1, d23}, flist[[i, 7, 3]]] *
+          qcg[flist[[i, 1]], {m1, d1}, flist[[i, 6]], {flist[[i, 4]] - m1, d23}, flist[[i, 4]], {flist[[i, 4]], 1}, flist[[i, 7, 4]]],
+        {m1, weights[flist[[i, 1]]]}, {d1, 1, wdim[flist[[i, 1]], m1]},
+        {m2, weights[flist[[i, 2]]]}, {d2, 1, wdim[flist[[i, 2]], m2]},
+        {d12, 1, If[MemberQ[weights[flist[[i, 5]]], m1 + m2], wdim[flist[[i, 5]], m1 + m2], 0]},
+        {d3, 1, If[MemberQ[weights[flist[[i, 3]]], flist[[i, 4]] - m1 - m2], wdim[flist[[i, 3]], flist[[i, 4]] - m1 - m2], 0]},
+        {d23, 1, If[MemberQ[weights[flist[[i, 6]]],flist[[i, 4]] - m1], wdim[flist[[i, 6]], flist[[i, 4]] - m1], 0]}
+        ] , 10^(-20)], precision];
     , {i, 1, Length[flist]}];
+ 
    
    Do[
     fmat[Sequence @@ fm] =

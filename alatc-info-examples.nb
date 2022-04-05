@@ -35,7 +35,7 @@ Eric Rowell, Steve Simon, Joost Slingerland, Gert Vercleyen\\n\"\>",
     FontFamily->"Source Sans Pro",
     FontSize->15,
     FontWeight->Bold], "\[InvisibleSpace]", 
-   StyleBox["\<\"Last revision: 2022-04-04\\n\"\>",
+   StyleBox["\<\"Last revision: 2022-04-05\\n\"\>",
     StripOnInput->False,
     FontFamily->"Source Sans Pro",
     FontSize->15,
@@ -80,52 +80,52 @@ are:\\n\"\>",
     FontFamily->"Source Sans Pro",
     FontSize->15], "\[InvisibleSpace]", 
    TagBox[GridBox[{
-      {Cell["type",ExpressionUUID->"1a59c557-214a-4c5e-81b3-cf4ae5f69893"], 
-       Cell["rank",ExpressionUUID->"7478365a-91d5-4518-a862-c6bf59d2dbaa"], 
-       Cell["tmax",ExpressionUUID->"541fe43f-1650-4e17-9904-5343b1987bdb"], 
-       Cell["g",ExpressionUUID->"def2c1f8-98d9-43d7-a01e-b37bd6c45c99"], Cell[
-       "note",ExpressionUUID->"fec6803a-cedd-4565-ab72-a91b28b827d5"]},
-      {Cell["\"a\"",ExpressionUUID->"7d9dd124-ecd7-4e30-b343-124cbea71e0b"], 
+      {Cell["type",ExpressionUUID->"4feeec0b-af19-4a57-b7fc-7ad57bec0b9f"], 
+       Cell["rank",ExpressionUUID->"3c81fcdc-86d6-43de-89ad-50e49aea7970"], 
+       Cell["tmax",ExpressionUUID->"f14197d5-1d53-4bd6-9041-9e7df3d20e90"], 
+       Cell["g",ExpressionUUID->"b2e1b667-c3ec-4654-a7cf-42054bbbdc46"], Cell[
+       "note",ExpressionUUID->"00176ae1-87e5-4be6-9307-9e40652a2ccb"]},
+      {Cell["\"a\"",ExpressionUUID->"7f8c9efb-8766-4875-8665-96d606f461d3"], 
        Cell["r \[GreaterEqual] 1",ExpressionUUID->
-        "948eafd0-2566-466d-9b56-29e28c8ab125"], Cell[
-       "1",ExpressionUUID->"ee01bef2-5ffc-4a38-ac71-7b4fdcd9a797"], Cell[
-       "r+1",ExpressionUUID->"0493c298-a074-48e8-b2d3-140d0d5ca5aa"], Cell[
-       "su(r+1)",ExpressionUUID->"d57e25ef-c916-482c-8f8b-333d35455711"]},
-      {Cell["\"b\"",ExpressionUUID->"87305f90-8a04-436f-9c00-40ecddc3b4ca"], 
+        "d6d147ae-36b3-45e8-bf49-6d8acf0bac7c"], Cell[
+       "1",ExpressionUUID->"ba2c030b-0215-4dab-914f-433c71f9cd24"], Cell[
+       "r+1",ExpressionUUID->"8134746f-346d-4b5b-bd4c-5b8e6f858af4"], Cell[
+       "su(r+1)",ExpressionUUID->"13af40f0-3cd8-4d7f-92c7-2ff0a13007e3"]},
+      {Cell["\"b\"",ExpressionUUID->"4b09a5f3-88eb-49df-b21e-de06a4fb0af1"], 
        Cell["r \[GreaterEqual] 3",ExpressionUUID->
-        "3a21133c-c2d7-4afd-905f-f349ca2e7886"], Cell[
-       "2",ExpressionUUID->"239d5e66-a55e-43fb-9154-dbdec732e1b1"], Cell[
-       "2r-1",ExpressionUUID->"dd370348-a8f9-47e4-a179-2d364a27c086"], Cell[
+        "26828490-7439-4d28-8bcf-9c65a0064070"], Cell[
+       "2",ExpressionUUID->"880df364-0427-426f-8cc4-131197ca725e"], Cell[
+       "2r-1",ExpressionUUID->"60e16700-42c3-4c38-83d1-4b9938370a19"], Cell[
        "so(2r+1), so(5) is implemented as sp(4)",ExpressionUUID->
-        "5db87b14-17ae-47aa-bb28-9b6f985ef2e3"]},
-      {Cell["\"c\"",ExpressionUUID->"56e5808d-d634-41c1-8df2-89353a41e52e"], 
+        "ca1c9ff6-999f-433f-b36e-c2582ef6cf20"]},
+      {Cell["\"c\"",ExpressionUUID->"63d80343-3757-49a4-98ab-f9bb210d4aba"], 
        Cell["r \[GreaterEqual] 2",ExpressionUUID->
-        "44466752-4267-4cb7-966a-b31bfa7a604f"], Cell[
-       "2",ExpressionUUID->"da07130e-5462-475f-a789-cab35f869ee6"], Cell[
-       "r+1",ExpressionUUID->"974559e0-5185-445c-9c92-bb0245fded15"], Cell[
-       "sp(2r)",ExpressionUUID->"edc214b3-b184-436a-afff-b9dec29db177"]},
-      {Cell["\"d\"",ExpressionUUID->"605ad35b-8361-4584-8f63-9e6ecf9fe785"], 
+        "4f3938a1-5e13-4eaf-85b5-3ae9503b9df7"], Cell[
+       "2",ExpressionUUID->"17424600-5f6e-45a1-9f97-260b8b6b50a0"], Cell[
+       "r+1",ExpressionUUID->"38125c7a-54f2-44d3-a085-f770efc9066f"], Cell[
+       "sp(2r)",ExpressionUUID->"8063b4bd-bc7e-46b8-be14-3a40f0f41381"]},
+      {Cell["\"d\"",ExpressionUUID->"88885d0f-9583-4805-8dc5-2a8535323ce4"], 
        Cell["r \[GreaterEqual] 4",ExpressionUUID->
-        "b75c1601-29eb-4f20-8a70-0af34fd91fde"], Cell[
-       "1",ExpressionUUID->"f476439c-64a9-49a2-a12a-f9386821f520"], Cell[
-       "2r-2",ExpressionUUID->"f514f679-0118-4a4b-9db2-658372b77bdb"], Cell[
-       "so(2r)",ExpressionUUID->"e74b3749-74a4-40c1-aa22-b72eaf902381"]},
-      {Cell["\"e\"",ExpressionUUID->"4e759015-5a5f-40df-9ba6-e5bf5755e6da"], 
+        "1e47fbda-f7eb-4e0c-a2f7-49e8491b59d6"], Cell[
+       "1",ExpressionUUID->"d057d28c-9161-462f-8cd2-9aa78c0a68a9"], Cell[
+       "2r-2",ExpressionUUID->"5a530e1f-249e-4567-907c-7ce806e96b41"], Cell[
+       "so(2r)",ExpressionUUID->"3c851972-bf66-4456-bb7b-9bf6ed606895"]},
+      {Cell["\"e\"",ExpressionUUID->"0bfe5fd6-9bae-431f-8f24-58657228ca00"], 
        Cell["r \[Element] {6,7,8}",ExpressionUUID->
-        "f51cc933-ed48-4f5d-b9cf-3f5431edc6b6"], Cell[
-       "1",ExpressionUUID->"c5282ff9-7341-4ca7-98da-c159de9f0209"], Cell[
-       "{12,18,30}",ExpressionUUID->"8b4e85d5-bb46-4281-9519-1204634645dd"], 
-       Cell["",ExpressionUUID->"68da6e3a-d135-4da8-8898-e9f1dd4316e4"]},
-      {Cell["\"f\"",ExpressionUUID->"9432a6e0-0b0b-4d68-8afd-2c28c6bd2335"], 
-       Cell["r == 4",ExpressionUUID->"d8c5d211-1f42-48ad-8107-1f58474ea983"], 
-       Cell["2",ExpressionUUID->"065f075d-3239-4058-a5a1-93f7489d6ea0"], Cell[
-       "9",ExpressionUUID->"0aca5018-a2d3-4880-8e04-f959eda7305d"], Cell[
-       "",ExpressionUUID->"764869da-b84a-4327-aee7-9fd7560993c4"]},
-      {Cell["\"g\"",ExpressionUUID->"6ba03689-94ea-47fe-8c37-68b17032112a"], 
-       Cell["r == 2",ExpressionUUID->"b4a4273a-c82c-4673-9089-5a254f435338"], 
-       Cell["3",ExpressionUUID->"a068a503-b9aa-426e-8020-f02eeece5b13"], Cell[
-       "4",ExpressionUUID->"48745c7d-d3a3-4730-a606-80ce677d3a42"], Cell[
-       "",ExpressionUUID->"64760a39-f3d8-48c2-9af5-deb98d8c14d4"]}
+        "b0ac85b7-a56c-41fc-ae13-dfe23ea41e07"], Cell[
+       "1",ExpressionUUID->"b465a0ac-a434-4d7b-a0f7-733d8c439cee"], Cell[
+       "{12,18,30}",ExpressionUUID->"a10502a0-ca31-4f74-ae25-13ba09bc2a6e"], 
+       Cell["",ExpressionUUID->"82244431-df86-462b-853c-fa25748d6d14"]},
+      {Cell["\"f\"",ExpressionUUID->"0e2165cf-91a1-4fc1-a24c-0287042f1701"], 
+       Cell["r == 4",ExpressionUUID->"cce4b7a7-c7dd-4fe8-a64e-3bf9b23e4ae3"], 
+       Cell["2",ExpressionUUID->"66cd24a7-47f1-4cd5-a562-42189dff195f"], Cell[
+       "9",ExpressionUUID->"a9284db0-3043-47ee-b632-691505ada56f"], Cell[
+       "",ExpressionUUID->"e132fe8d-1efc-4e30-8e55-55b0c5be9c1f"]},
+      {Cell["\"g\"",ExpressionUUID->"53a37c4a-760f-4e9e-96f0-b8a443158a2f"], 
+       Cell["r == 2",ExpressionUUID->"81f5f3fe-5a13-4d82-a30c-8f0d3c668ea2"], 
+       Cell["3",ExpressionUUID->"2800a4da-570e-4344-861a-24148b461d8d"], Cell[
+       "4",ExpressionUUID->"c2875174-b50e-45b1-b607-0487b1365a0a"], Cell[
+       "",ExpressionUUID->"832a1974-37a8-4b23-abf2-9e1698dfbe79"]}
      },
      AutoDelete->False,
      GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -288,7 +288,7 @@ Rowell, Steve Simon, Joost Slingerland, Gert Vercleyen\n", FontSize -> 15,
     FontFamily -> "Source Sans Pro", Bold], 
    Style["License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n", 
     FontSize -> 15, FontFamily -> "Source Sans Pro", Bold], 
-   Style["Last revision: 2022-04-04\n", FontSize -> 15, FontFamily -> 
+   Style["Last revision: 2022-04-05\n", FontSize -> 15, FontFamily -> 
     "Source Sans Pro", Bold], 
    Style["\nThis package is based on the paper:\n", FontSize -> 15, 
     FontFamily -> "Source Sans Pro"], 
@@ -393,7 +393,7 @@ extend, the ones described in the paper above.", FontSize -> 15, FontFamily ->
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[3]:=",ExpressionUUID->"43b640f2-1d92-4c1a-a6dc-bced416f192f"]
+In[76]:=",ExpressionUUID->"58e3dee9-2344-46d8-9822-c7dbd36db6e0"]
 }, Closed]],
 
 Cell[CellGroupData[{
@@ -445,7 +445,7 @@ Cell["After installing the package, it can be loaded as follows:", \
 
 Cell[BoxData[
  RowBox[{"<<", "alatc`"}]], "Input",
- CellLabel->"In[1]:=",ExpressionUUID->"3bb82215-bd94-4968-b329-73469efec09d"],
+ CellLabel->"In[75]:=",ExpressionUUID->"3bb82215-bd94-4968-b329-73469efec09d"],
 
 Cell["To get basic info on the package, run: displayinfo[]", \
 "Text",ExpressionUUID->"77416482-b650-42da-afd4-4e1893faa8f8"],
@@ -454,7 +454,7 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"displayinfo", "[", "]"}]], "Input",
- CellLabel->"In[3]:=",ExpressionUUID->"9f64e6a4-05e0-4f59-bcd6-36a0651bea8a"],
+ CellLabel->"In[76]:=",ExpressionUUID->"9f64e6a4-05e0-4f59-bcd6-36a0651bea8a"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -480,7 +480,7 @@ Eric Rowell, Steve Simon, Joost Slingerland, Gert Vercleyen\\n\"\>",
     FontFamily->"Source Sans Pro",
     FontSize->15,
     FontWeight->Bold], "\[InvisibleSpace]", 
-   StyleBox["\<\"Last revision: 2022-04-04\\n\"\>",
+   StyleBox["\<\"Last revision: 2022-04-05\\n\"\>",
     StripOnInput->False,
     FontFamily->"Source Sans Pro",
     FontSize->15,
@@ -525,52 +525,52 @@ are:\\n\"\>",
     FontFamily->"Source Sans Pro",
     FontSize->15], "\[InvisibleSpace]", 
    TagBox[GridBox[{
-      {Cell["type",ExpressionUUID->"4204e17b-538f-4aab-bb53-f931ecd9df3b"], 
-       Cell["rank",ExpressionUUID->"a0ed7142-2d17-4d2f-b14f-83deddb394d9"], 
-       Cell["tmax",ExpressionUUID->"d7a38ff5-8db1-4f82-afab-5b9155da0990"], 
-       Cell["g",ExpressionUUID->"a08a1731-ada7-48fa-a7d6-c09c197b5617"], Cell[
-       "note",ExpressionUUID->"fcd901ba-980e-428b-a408-7a3a24a927a9"]},
-      {Cell["\"a\"",ExpressionUUID->"5d8086e6-8613-4130-80bf-dcb88b31496c"], 
+      {Cell["type",ExpressionUUID->"b1ae8d5b-acdc-41d9-849b-1fef4b4ff9c3"], 
+       Cell["rank",ExpressionUUID->"cf4185dd-2fb1-415a-ac42-60846485a243"], 
+       Cell["tmax",ExpressionUUID->"6a41b581-bdb8-4b40-a2bb-a87d9e6d533b"], 
+       Cell["g",ExpressionUUID->"a12a1ddd-a97c-44f7-aa90-4920887a702d"], Cell[
+       "note",ExpressionUUID->"e93eb0bc-45d1-4e9f-8a14-bc3bb24134d7"]},
+      {Cell["\"a\"",ExpressionUUID->"4f95f2e5-5295-4691-b5ba-af7067b4dcf9"], 
        Cell["r \[GreaterEqual] 1",ExpressionUUID->
-        "79f5ffce-5020-4c90-8575-a47469678b91"], Cell[
-       "1",ExpressionUUID->"85cf8b35-4396-4a84-a9d5-e663e6380488"], Cell[
-       "r+1",ExpressionUUID->"dd9bf37b-9f5e-4f43-af79-132cc455792a"], Cell[
-       "su(r+1)",ExpressionUUID->"47a8ff65-2bf2-4aab-8d01-e8cd282b62ba"]},
-      {Cell["\"b\"",ExpressionUUID->"4dcc56c0-b846-4ff3-92d4-78650b4b0dd1"], 
+        "a89c1b63-e829-48c0-aa7d-39f4c1854f2f"], Cell[
+       "1",ExpressionUUID->"a2cf04f6-3f06-471f-922e-a5b098a9972a"], Cell[
+       "r+1",ExpressionUUID->"f532cca2-b298-4823-8e31-c982f52ffb87"], Cell[
+       "su(r+1)",ExpressionUUID->"3ad310bb-d30b-4214-843b-8912002b41be"]},
+      {Cell["\"b\"",ExpressionUUID->"1d736b46-8e84-44f0-bbbe-362bfed05eeb"], 
        Cell["r \[GreaterEqual] 3",ExpressionUUID->
-        "f2c75c6c-c4d6-45cf-98a0-e26651db6beb"], Cell[
-       "2",ExpressionUUID->"6c20530d-92a9-46a3-8fe9-8f44798e1839"], Cell[
-       "2r-1",ExpressionUUID->"baeaa307-f962-4eab-938d-7bb9ee581bea"], Cell[
+        "15eff8cd-bad2-470a-ac12-853222a1fac9"], Cell[
+       "2",ExpressionUUID->"fd05d745-e7f7-465a-bddf-64f34a1f941c"], Cell[
+       "2r-1",ExpressionUUID->"4a72a690-7c3c-4c80-9b9f-ffa5b8122bf0"], Cell[
        "so(2r+1), so(5) is implemented as sp(4)",ExpressionUUID->
-        "5a38d6a3-6dbf-4ee9-bacf-439119141a14"]},
-      {Cell["\"c\"",ExpressionUUID->"f423e4d5-a8a1-4b06-b1d0-99a21b3a07a1"], 
+        "3ac0ca7d-3197-4c73-999d-ddfa96da2b64"]},
+      {Cell["\"c\"",ExpressionUUID->"b602327e-49ce-47d1-897e-e71b0de05d42"], 
        Cell["r \[GreaterEqual] 2",ExpressionUUID->
-        "010f0d03-28bf-491f-88dd-69bc890b5ebd"], Cell[
-       "2",ExpressionUUID->"086e30a2-3439-4352-846b-b1aafe6fce6c"], Cell[
-       "r+1",ExpressionUUID->"8b246292-bb92-4c71-8a0e-373e42ae3212"], Cell[
-       "sp(2r)",ExpressionUUID->"c77f6309-ea55-4338-9135-e134f480cba2"]},
-      {Cell["\"d\"",ExpressionUUID->"57abd9ec-74e8-43f7-b82d-d04e82a6966b"], 
+        "fa55a972-3c38-4e67-a5ce-41aa17f16e49"], Cell[
+       "2",ExpressionUUID->"e56067b3-b8a5-40b1-a887-eeb7f77d580f"], Cell[
+       "r+1",ExpressionUUID->"7914575c-3b66-45ce-af18-6016f6e5274f"], Cell[
+       "sp(2r)",ExpressionUUID->"c6726b23-3201-47d9-9d6c-255bf990c153"]},
+      {Cell["\"d\"",ExpressionUUID->"66f82063-bba9-49f2-8dfc-036bb6e6a23b"], 
        Cell["r \[GreaterEqual] 4",ExpressionUUID->
-        "b919ffe7-26ef-4d38-b67d-782b77f5d1e8"], Cell[
-       "1",ExpressionUUID->"1cc0b4aa-5195-4af8-a70f-3b731a3a7789"], Cell[
-       "2r-2",ExpressionUUID->"2c478091-6ec8-4e49-aee0-c1f42038db70"], Cell[
-       "so(2r)",ExpressionUUID->"1de08249-d6c7-4cdb-b978-61ead9e47354"]},
-      {Cell["\"e\"",ExpressionUUID->"e53c1b21-4446-473f-a4d5-d6b6b067098c"], 
+        "615eccaf-d25b-452f-a508-d0a18f3ed03a"], Cell[
+       "1",ExpressionUUID->"2b200b2b-69c4-4184-8754-8eac7c8f0f35"], Cell[
+       "2r-2",ExpressionUUID->"187fb21f-51cd-4777-9430-af550b52a949"], Cell[
+       "so(2r)",ExpressionUUID->"f4eb5aa4-b94c-48e1-9e92-e706523d4f48"]},
+      {Cell["\"e\"",ExpressionUUID->"aa65adb2-7d55-4014-85d5-bfd75e1377d3"], 
        Cell["r \[Element] {6,7,8}",ExpressionUUID->
-        "9cdd85cc-e8c8-4092-a151-73dc7fb05f09"], Cell[
-       "1",ExpressionUUID->"e7abd7f0-0577-4df9-ba6f-aeafd0947c19"], Cell[
-       "{12,18,30}",ExpressionUUID->"c4d678ad-7943-4bf1-9cfc-8cdf9e5cfe2a"], 
-       Cell["",ExpressionUUID->"14174912-e0f7-4415-aef6-713f3c87579f"]},
-      {Cell["\"f\"",ExpressionUUID->"7371362a-ab83-44f8-9d3d-b4bc22acc9b3"], 
-       Cell["r == 4",ExpressionUUID->"2ae36129-2514-434e-bbb1-31518637174a"], 
-       Cell["2",ExpressionUUID->"267eafb0-f90d-4a22-94d4-3f8fde226d56"], Cell[
-       "9",ExpressionUUID->"bc778bfb-7f68-4dd2-8a10-14be2dc6da02"], Cell[
-       "",ExpressionUUID->"ebe40300-6b1c-4f8d-b14c-fff2dd40b14d"]},
-      {Cell["\"g\"",ExpressionUUID->"c3ca52f8-a19b-488b-a223-549730512713"], 
-       Cell["r == 2",ExpressionUUID->"0682c865-8542-478d-a6aa-72b53925880b"], 
-       Cell["3",ExpressionUUID->"425ddb29-de07-43fb-98ae-1d5f3594a2f4"], Cell[
-       "4",ExpressionUUID->"3867f91e-f34b-40fe-a45e-17d11d9f9580"], Cell[
-       "",ExpressionUUID->"1340ec23-6004-484d-89e9-e7fe32679f96"]}
+        "0a22e0c8-8b26-4c99-afad-0dd396247971"], Cell[
+       "1",ExpressionUUID->"3370161d-ffb2-4678-be2e-9440f40b4ae6"], Cell[
+       "{12,18,30}",ExpressionUUID->"74119362-48c8-4f77-ba67-9f58bf438947"], 
+       Cell["",ExpressionUUID->"ce7a682b-8389-4551-a7bc-298b11c7afef"]},
+      {Cell["\"f\"",ExpressionUUID->"de80ed7d-c4da-46b4-bd66-d72e3f4cb543"], 
+       Cell["r == 4",ExpressionUUID->"19243e93-bb56-47e1-b4df-a3b683995579"], 
+       Cell["2",ExpressionUUID->"47d992d9-8e60-4382-af4c-febb06a0380d"], Cell[
+       "9",ExpressionUUID->"08aae66f-e9a4-4837-980d-6b21b991b412"], Cell[
+       "",ExpressionUUID->"bded8915-9166-4689-b6e6-1a5e45325a44"]},
+      {Cell["\"g\"",ExpressionUUID->"972fbced-10d9-415e-badc-9349e2632221"], 
+       Cell["r == 2",ExpressionUUID->"38ca871a-cdc1-4fe0-88d7-799ff295b00e"], 
+       Cell["3",ExpressionUUID->"f2b68778-393e-4be9-a84a-2f6fa72f54d0"], Cell[
+       "4",ExpressionUUID->"debd29e9-42be-4d7a-967a-7e39770a2a86"], Cell[
+       "",ExpressionUUID->"f452d07f-e36e-4f10-ad6f-2909eaaf176c"]}
      },
      AutoDelete->False,
      GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -733,7 +733,7 @@ Rowell, Steve Simon, Joost Slingerland, Gert Vercleyen\n", FontSize -> 15,
     FontFamily -> "Source Sans Pro", Bold], 
    Style["License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n", 
     FontSize -> 15, FontFamily -> "Source Sans Pro", Bold], 
-   Style["Last revision: 2022-04-04\n", FontSize -> 15, FontFamily -> 
+   Style["Last revision: 2022-04-05\n", FontSize -> 15, FontFamily -> 
     "Source Sans Pro", Bold], 
    Style["\nThis package is based on the paper:\n", FontSize -> 15, 
     FontFamily -> "Source Sans Pro"], 
@@ -838,7 +838,7 @@ extend, the ones described in the paper above.", FontSize -> 15, FontFamily ->
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[3]:=",ExpressionUUID->"3bde3475-371d-4fd0-8858-13956a2f331e"]
+In[76]:=",ExpressionUUID->"151e918c-f49a-4c4a-a895-60e2d4b3af0d"]
 }, Open  ]],
 
 Cell["\<\
@@ -1669,7 +1669,7 @@ Cell["Examples using the package", \
 
 Cell[BoxData[
  RowBox[{"<<", "alatc`"}]], "Input",
- CellLabel->"In[80]:=",ExpressionUUID->"31a46145-9666-4929-8c34-137b1cca2678"],
+ CellLabel->"In[77]:=",ExpressionUUID->"31a46145-9666-4929-8c34-137b1cca2678"],
 
 Cell[CellGroupData[{
 
@@ -1682,7 +1682,7 @@ Cell[BoxData[{
  RowBox[{"initialize", "[", 
   RowBox[{"\"\<a\>\"", ",", "2"}], "]"}], "\[IndentingNewLine]", 
  RowBox[{"initializelevel", "[", "2", "]"}]}], "Input",
- CellLabel->"In[81]:=",ExpressionUUID->"0beefed9-8476-4eb3-acda-ae2eae324e88"],
+ CellLabel->"In[78]:=",ExpressionUUID->"0beefed9-8476-4eb3-acda-ae2eae324e88"],
 
 Cell[CellGroupData[{
 
@@ -1696,7 +1696,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[81]:=",ExpressionUUID->"2513a72a-1d01-4a9a-b7d9-2a4671dc6aa9"],
+In[78]:=",ExpressionUUID->"2ee940bd-ebe0-4518-af74-9d4a1b33f9b8"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1705,7 +1705,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[81]:=",ExpressionUUID->"ed7511f6-2816-4f28-9493-d2f44fe6601f"],
+In[78]:=",ExpressionUUID->"5cc9e298-5862-4bec-9847-5c1ee44065ea"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1734,7 +1734,7 @@ non-uniform cases.\"\>"}],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[81]:=",ExpressionUUID->"6cb37eff-d93a-476c-b3d1-0eb9683ae3be"]
+In[78]:=",ExpressionUUID->"8ddcdde3-22bd-491d-8825-c3142eb74c69"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1742,7 +1742,7 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"initializerootofunity", "[", "1", "]"}]], "Input",
- CellLabel->"In[83]:=",ExpressionUUID->"13001f9b-fe98-4721-b077-f511f1ad58fb"],
+ CellLabel->"In[80]:=",ExpressionUUID->"13001f9b-fe98-4721-b077-f511f1ad58fb"],
 
 Cell[CellGroupData[{
 
@@ -1754,7 +1754,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[83]:=",ExpressionUUID->"6ca81429-abaa-4e46-94a1-516955658965"],
+In[80]:=",ExpressionUUID->"68dcaac9-6539-4b3d-bc5a-faea838f3983"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1769,13 +1769,13 @@ to ", {"a", 2, 2, 1}, ". This is a uniform case."],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[83]:=",ExpressionUUID->"8b2c4251-4774-4454-9285-5a624463acae"],
+In[80]:=",ExpressionUUID->"7f2d6b06-980a-4231-bb2f-933eec4433c0"],
 
 Cell[BoxData["\<\"You can proceed to calculate the F-symbols :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[83]:=",ExpressionUUID->"b5bc9ffb-651f-49d2-b410-f689876b6614"]
+In[80]:=",ExpressionUUID->"415d7e48-37e1-4b46-bfcf-4c7b8adbcb25"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1783,26 +1783,26 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"calculatefsymbols", "[", "]"}]], "Input",
- CellLabel->"In[84]:=",ExpressionUUID->"4364ae50-5657-4f7f-a756-d80dc97b23d3"],
+ CellLabel->"In[81]:=",ExpressionUUID->"4364ae50-5657-4f7f-a756-d80dc97b23d3"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData["\<\"Initializing the weight spaces...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"228d1b36-b201-4e71-b43a-53b18498d515"],
+In[81]:=",ExpressionUUID->"cb310dd6-393f-4050-a133-7a41509d413c"],
 
 Cell[BoxData["\<\"Constructing the bases for the weightspaces...\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"cb615ea1-666e-4584-b44c-36217be76ffd"],
+In[81]:=",ExpressionUUID->"a7c045ae-c725-443b-84a5-3b0a5838ae13"],
 
 Cell[BoxData["\<\"The constructed bases for the weightspaces are orthonormal \
 :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"467bc6c4-6400-47ce-8d23-109f7c628dbd"],
+In[81]:=",ExpressionUUID->"7e8e8540-353c-4892-98b9-48253c159a39"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1812,30 +1812,30 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"ead76c4b-5f9e-49fd-b036-8640c68bee32"],
+In[81]:=",ExpressionUUID->"8774548a-b392-4fa2-9711-46f6f5fdc1f0"],
 
 Cell[BoxData["\<\"Constructing the fusion rules...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"11e065c6-cecb-452e-b8db-2c713e12832b"],
+In[81]:=",ExpressionUUID->"88e6f6b3-e46b-4fa8-a920-20a962134042"],
 
 Cell[BoxData["\<\"The calculated fusion rules are consistent :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"30ea839f-9f6d-4730-ad6d-47ea0fe2ed21"],
+In[81]:=",ExpressionUUID->"e2b7d170-6555-469b-9452-7f0dc469d4c2"],
 
 Cell[BoxData["\<\"Constructing the bases for the tensorproduct \
 weightspaces...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"6f429e36-6f17-4254-acd3-5e60f6427d8c"],
+In[81]:=",ExpressionUUID->"ee154042-5f21-47d9-8d8e-f7070ee9ac0c"],
 
 Cell[BoxData["\<\"The calculated q-CG coefficients satisfy the orthonormality \
 conditions :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"33fcc70d-5257-4ac4-b3ab-fad62f3ec7e3"],
+In[81]:=",ExpressionUUID->"54732a4a-eabd-46b2-8a9e-fd8107166a65"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1845,7 +1845,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"39016bed-156f-4777-b273-7a6e20cf84be"],
+In[81]:=",ExpressionUUID->"621d8127-b6af-4d4d-b2c0-d5b9f7262503"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1858,7 +1858,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"e65fd9fb-fdbd-457e-94b5-0c5cbde23024"],
+In[81]:=",ExpressionUUID->"ac82645d-a1dd-440a-a8d2-10e2c316ae35"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1868,12 +1868,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"8a3b0618-e3b8-49bd-a831-173144f696b4"],
+In[81]:=",ExpressionUUID->"e87275cc-9b07-44b4-b841-bb142a0d05c1"],
 
 Cell[BoxData["\<\"The pentagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"61a9d76b-2c05-4d46-9c53-cf5e81944e43"],
+In[81]:=",ExpressionUUID->"0631dec2-f417-42df-b0bf-1c13e49550ac"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1883,39 +1883,39 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"9379c460-f392-4030-b181-04c3778e313d"],
+In[81]:=",ExpressionUUID->"61e32932-bf03-4105-b002-fda86c8bc4d8"],
 
 Cell[BoxData["\<\"There are no fusion multiplicities.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"de0efd69-9d66-426e-8130-55315d0e98d5"],
+In[81]:=",ExpressionUUID->"0c01b7b7-aa86-4402-bf4d-a97f5a6340e4"],
 
 Cell[BoxData["\<\"The F-matrices are unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"9390f477-f400-4ce4-b09a-03c2421c071a"],
+In[81]:=",ExpressionUUID->"632fd40e-c40b-4a48-ae38-abb1399f7bc5"],
 
 Cell[BoxData["\<\"The F-matrices are orthogonal.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"0b17faac-32ac-430a-b4bc-e141080dbbea"],
+In[81]:=",ExpressionUUID->"dea9503e-753e-42df-98f9-d9220b9929d4"],
 
 Cell[BoxData["\<\"The F-symbols are all real or purely imaginary (all real, \
 in fact).\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"8b4f0cc1-85ac-4686-a7f7-c737a2bf3f34"],
+In[81]:=",ExpressionUUID->"a4e81d19-1212-4be9-9552-8675a2c95ef3"],
 
 Cell[BoxData["\<\"You can proceed to calculate the R-symbols :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"9863f560-2505-4733-8b41-700c078a5c79"],
+In[81]:=",ExpressionUUID->"dc1ad7cd-a113-44b1-8bc8-9aff1c1bdf45"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[84]:=",ExpressionUUID->"08cf446e-5085-4fa9-87c9-98828da57959"]
+In[81]:=",ExpressionUUID->"72d80116-c1ba-48dc-994e-97d518e130c2"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1923,14 +1923,14 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"calculatersymbols", "[", "]"}]], "Input",
- CellLabel->"In[85]:=",ExpressionUUID->"b7a47509-af89-45cb-bcdd-6fc0fed0d2ba"],
+ CellLabel->"In[82]:=",ExpressionUUID->"b7a47509-af89-45cb-bcdd-6fc0fed0d2ba"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData["\<\"Constructing the R-symbols...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[85]:=",ExpressionUUID->"3c1f1db5-311a-4499-8f4d-9282010a364c"],
+In[82]:=",ExpressionUUID->"07495330-149e-4ea8-96bf-0102c1f9143c"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1940,12 +1940,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[85]:=",ExpressionUUID->"a84d0c79-8dbf-4fb1-93b4-eb1b8dfda13d"],
+In[82]:=",ExpressionUUID->"acc2f9e3-1672-4a4b-8103-89dde7c5bd12"],
 
 Cell[BoxData["\<\"The hexagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[85]:=",ExpressionUUID->"9b44ede7-7c32-48c6-9d76-2006a2a043fa"],
+In[82]:=",ExpressionUUID->"52eb8819-b1fb-41ba-b8de-3c9acd48a89b"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1955,17 +1955,17 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[85]:=",ExpressionUUID->"52a2c797-0587-4b93-bcdb-4e0f6fef3902"],
+In[82]:=",ExpressionUUID->"a7bd2fec-ea53-41c6-b6d4-8461a27ddc30"],
 
 Cell[BoxData["\<\"The R-matrices are unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[85]:=",ExpressionUUID->"65e80a6d-9e60-4707-be2d-50e89a2579f7"],
+In[82]:=",ExpressionUUID->"0a3364e5-5118-4b45-9626-a60a55fe5bbb"],
 
 Cell[BoxData["\<\"The R-matrices are diagonal.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[85]:=",ExpressionUUID->"aae44feb-726a-406c-aa06-0eae1308014f"],
+In[82]:=",ExpressionUUID->"9ae57aa8-d8d1-406d-8089-c41c24b0fe74"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1978,18 +1978,18 @@ R^{a,b}_c = e^(i\[Pi] r/s) one encounters is: ", 15],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[85]:=",ExpressionUUID->"0456fe2b-c23b-4159-bed0-7289b0e1efbe"],
+In[82]:=",ExpressionUUID->"425cf6dc-50bf-40b1-b8dd-e96cf22ba077"],
 
 Cell[BoxData["\<\"You can proceed to calculate the modular data :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[85]:=",ExpressionUUID->"c70dbaf9-34e4-4ac1-965d-5db2381b12b8"],
+In[82]:=",ExpressionUUID->"4833c0fa-b3ee-45e5-bbef-c05785ffcd5a"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[85]:=",ExpressionUUID->"09b2df3e-aae6-4c0c-ba84-bc5de6c8af5b"]
+In[82]:=",ExpressionUUID->"011339ae-29fd-41f3-a15a-3074667c6d34"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1997,7 +1997,7 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"calculatemodulardata", "[", "]"}]], "Input",
- CellLabel->"In[86]:=",ExpressionUUID->"74bea718-3b1d-4ce3-841b-184c52f531c8"],
+ CellLabel->"In[83]:=",ExpressionUUID->"74bea718-3b1d-4ce3-841b-184c52f531c8"],
 
 Cell[CellGroupData[{
 
@@ -2024,7 +2024,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"9fa023a3-3607-40cf-82e3-75a04d6383ee"],
+In[83]:=",ExpressionUUID->"148e2f3d-3a56-455d-a561-5c6cb805dea3"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -2038,7 +2038,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"647d38f2-3aad-42d1-af8d-cf4f04ffbc38"],
+In[83]:=",ExpressionUUID->"0c88502b-0b4b-402f-9262-e9ea314474f2"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -2048,7 +2048,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"8c66537a-71db-4722-8d6c-5cf813d2ceb5"],
+In[83]:=",ExpressionUUID->"ae545450-b844-4437-abae-5ffa6417ec68"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -2064,7 +2064,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"3bb6c77b-9368-4f09-b4a7-2285197e64e3"],
+In[83]:=",ExpressionUUID->"5d306e4a-dd85-48db-8cf0-f28951ccaffd"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -2074,7 +2074,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"59b9a589-ed95-4cc2-94dc-c1a4fb24e343"],
+In[83]:=",ExpressionUUID->"a6ee122e-8f6f-453d-aa6f-51c37a240f57"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -2085,12 +2085,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"8f2449df-277b-4122-8c09-5d0659450945"],
+In[83]:=",ExpressionUUID->"5790b22c-c046-44b6-b5fa-dabe4348db86"],
 
 Cell[BoxData["\<\"The pivotal equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"4ec4a7c2-7f15-4803-b7ac-1f18ab790aa2"],
+In[83]:=",ExpressionUUID->"80d1b0b6-1434-4285-b749-40d327a3a01d"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -2101,7 +2101,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"8a610b54-3af9-437e-94e5-8bf648779129"],
+In[83]:=",ExpressionUUID->"037d0a9c-7b51-499b-850d-fddf311e3c6e"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -2117,7 +2117,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"7012dbbe-106f-454b-b0a9-5bd792e9662b"],
+In[83]:=",ExpressionUUID->"edd9d3c6-1cb4-4a87-8520-090ae0dab2c1"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -2132,7 +2132,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"4c428a29-3418-4482-ae19-c220e70e7970"],
+In[83]:=",ExpressionUUID->"266f4ef9-06d9-4116-b857-08652ece2ea3"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -2156,17 +2156,17 @@ are: \"\>", "\[InvisibleSpace]",
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"147fa4e9-98cf-4783-b1ce-ef6dcdf62b7b"],
+In[83]:=",ExpressionUUID->"3c4a3ea9-08a7-41fc-a59b-121bd4878bee"],
 
 Cell[BoxData["\<\"The theory is unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"1ff4be39-2f6e-454f-8abf-8395b2e78b23"],
+In[83]:=",ExpressionUUID->"aa6cf61d-bd27-4ea4-826e-dcb6a72b25cd"],
 
 Cell[BoxData["\<\"The theory is modular.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"9aff489e-c59c-4f03-953b-1683dc8d5c9e"],
+In[83]:=",ExpressionUUID->"4001cb4e-fc2b-4e50-86be-1dc753a32e6e"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -2178,12 +2178,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"2b11c2b3-d829-484d-889d-3a4ccd60e940"],
+In[83]:=",ExpressionUUID->"8ac9b77f-e3d6-4522-bc91-033a10cb9174"],
 
 Cell[BoxData["\<\"The S-matrix is given by:\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"ac2bd1e6-47de-4a7e-af68-2677c71d44c1"],
+In[83]:=",ExpressionUUID->"8f9eeaf4-74b7-4511-90cd-818f88561e35"],
 
 Cell[BoxData[
  TagBox[
@@ -2260,18 +2260,18 @@ Cell[BoxData[
    MatrixForm[BoxForm`e$]]]], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"7fbb1631-9a1a-403c-a2d5-09dc8e318ce3"],
+In[83]:=",ExpressionUUID->"e8e9d1be-d459-4b2f-a8ac-c51271d20dc7"],
 
 Cell[BoxData["\<\"The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 \
 = S^2 = C are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"831f9fe5-5b4d-4599-883f-f1d5c88ea4d5"],
+In[83]:=",ExpressionUUID->"c9363d23-97a3-4fff-a81b-5686eaafa152"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[86]:=",ExpressionUUID->"23c88593-b651-4061-bcc2-2fa0129cb658"]
+In[83]:=",ExpressionUUID->"2cd431e7-7915-470f-8402-d58b92c9f654"]
 }, Open  ]]
 }, Open  ]],
 
@@ -2301,7 +2301,7 @@ Cell[BoxData[
       RowBox[{
        RowBox[{"-", "1"}], ",", "0"}], "}"}], ",", "1"}], "}"}], ",", "1"}], 
   "]"}]], "Input",
- CellLabel->"In[87]:=",ExpressionUUID->"c4c2923b-1757-4544-afb9-604713252f38"],
+ CellLabel->"In[84]:=",ExpressionUUID->"c4c2923b-1757-4544-afb9-604713252f38"],
 
 Cell[BoxData[
  RowBox[{
@@ -2310,7 +2310,7 @@ Cell[BoxData[
 46959228415442102887611080700457158465859486502`97.32542226295435"}], "-", 
   RowBox[{"0.5`97.64256914168129", " ", "\[ImaginaryI]"}]}]], "Output",
  CellLabel->
-  "Out[87]=",ExpressionUUID->"ac0e6263-7b52-4290-a9a2-9748b1a0567b"]
+  "Out[84]=",ExpressionUUID->"26302194-15f3-414f-9c4a-4e2e1358c300"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2332,13 +2332,13 @@ Cell[BoxData[
     RowBox[{"0", ",", "0"}], "}"}], ",", 
    RowBox[{"{", 
     RowBox[{"1", ",", "1", ",", "1", ",", "1"}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[88]:=",ExpressionUUID->"989b02f8-72a9-4920-b849-1d2fc22948f9"],
+ CellLabel->"In[85]:=",ExpressionUUID->"989b02f8-72a9-4920-b849-1d2fc22948f9"],
 
 Cell[BoxData["0.\
 786151377757423286069558585842958929523122057837723237664901970101182047622310\
 9137119128891585081355648790122441446`97.47776201844943"], "Output",
  CellLabel->
-  "Out[88]=",ExpressionUUID->"882ceea4-d335-4ca7-a3ac-a3cf1c532e67"]
+  "Out[85]=",ExpressionUUID->"28c22506-de82-4a13-a056-a87566b9753b"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2380,7 +2380,7 @@ Cell[BoxData[{
       RowBox[{"{", 
        RowBox[{"1", ",", "1"}], "}"}]}], "]"}], "//", "Arg"}], ")"}], "/", 
   "Pi"}]}], "Input",
- CellLabel->"In[89]:=",ExpressionUUID->"4d18dac2-3451-440d-95ec-b75c618feb9e"],
+ CellLabel->"In[86]:=",ExpressionUUID->"4d18dac2-3451-440d-95ec-b75c618feb9e"],
 
 Cell[BoxData[
  RowBox[{
@@ -2391,19 +2391,19 @@ Cell[BoxData[
   "0.9510565162951535721164393333793821434056986341257502224473056444301531700\
 851935017187928109708113816758997175514028`95.57009800928918", " ", 
    "\[ImaginaryI]"}]}]], "Output",
- CellLabel->"Out[89]=",ExpressionUUID->"b8650002-84b9-4dac-94b3-b6224b5048e3"],
+ CellLabel->"Out[86]=",ExpressionUUID->"00efed12-faad-4450-8d0d-cf78844f31d5"],
 
 Cell[BoxData["0.\
 999999999999999999999999999999999999999999999999999999999999999999999999999999\
 9999999999999999999999999999999999997`95.56595864231161"], "Output",
- CellLabel->"Out[90]=",ExpressionUUID->"11ca4bc6-5b04-49f1-93dd-75e059faaac1"],
+ CellLabel->"Out[87]=",ExpressionUUID->"4a791bb9-7caa-468d-beab-6d1be0c8d837"],
 
 Cell[BoxData[
  RowBox[{"-", 
   "0.5999999999999999999999999999999999999999999999999999999999999999999999999\
 999999999999999999999999999999999999999999`96.05493124560066"}]], "Output",
  CellLabel->
-  "Out[91]=",ExpressionUUID->"ce91b385-04a1-4298-9036-baf349133ae4"]
+  "Out[88]=",ExpressionUUID->"178dc29a-28b9-4be6-bda3-a6edf687197e"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2422,7 +2422,7 @@ Cell[BoxData[
      RowBox[{"{", 
       RowBox[{"1", ",", "1"}], "}"}]}], "]"}], "//", "N"}], "//", 
   "MatrixForm"}]], "Input",
- CellLabel->"In[92]:=",ExpressionUUID->"dbbf394d-08b3-4a0a-b397-64990ec0f453"],
+ CellLabel->"In[89]:=",ExpressionUUID->"dbbf394d-08b3-4a0a-b397-64990ec0f453"],
 
 Cell[BoxData[
  TagBox[
@@ -2442,8 +2442,8 @@ Cell[BoxData[
   Function[BoxForm`e$, 
    MatrixForm[BoxForm`e$]]]], "Output",
  CellLabel->
-  "Out[92]//MatrixForm=",ExpressionUUID->"e5564e0d-a2b5-4867-bdc0-\
-0ee16a853f04"]
+  "Out[89]//MatrixForm=",ExpressionUUID->"7580da55-b087-40b8-8a77-\
+95913efa6370"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2460,7 +2460,7 @@ Cell[BoxData[
      RowBox[{"{", 
       RowBox[{"1", ",", "0"}], "}"}]}], "]"}], "//", "N"}], "//", 
   "MatrixForm"}]], "Input",
- CellLabel->"In[93]:=",ExpressionUUID->"3e8dbf88-f0bf-430e-8689-e6d9e8b18de6"],
+ CellLabel->"In[90]:=",ExpressionUUID->"3e8dbf88-f0bf-430e-8689-e6d9e8b18de6"],
 
 Cell[BoxData[
  TagBox[
@@ -2481,14 +2481,14 @@ Cell[BoxData[
   Function[BoxForm`e$, 
    MatrixForm[BoxForm`e$]]]], "Output",
  CellLabel->
-  "Out[93]//MatrixForm=",ExpressionUUID->"1170af29-5e0b-47c7-a008-\
-baaddde767f6"]
+  "Out[90]//MatrixForm=",ExpressionUUID->"cbf8dc6f-41db-4a2e-a6ea-\
+26c5e60a2329"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
 Cell[BoxData["irreps"], "Input",
- CellLabel->"In[94]:=",ExpressionUUID->"49614366-6950-4f1f-a9d5-e107ffe14e1f"],
+ CellLabel->"In[91]:=",ExpressionUUID->"49614366-6950-4f1f-a9d5-e107ffe14e1f"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -2506,7 +2506,7 @@ Cell[BoxData[
    RowBox[{"{", 
     RowBox[{"2", ",", "0"}], "}"}]}], "}"}]], "Output",
  CellLabel->
-  "Out[94]=",ExpressionUUID->"0e1b4a5f-b2ed-40e4-b763-f2be2e0a7243"]
+  "Out[91]=",ExpressionUUID->"0688f715-1e4c-482d-b7f3-eaf7f447c1e1"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2518,7 +2518,7 @@ Cell[BoxData[
     RowBox[{
      RowBox[{"Nmat", "[", "#", "]"}], "&"}], "/@", "irreps"}], 
    ")"}]}]], "Input",
- CellLabel->"In[95]:=",ExpressionUUID->"b1004792-1a18-4ee1-986e-92e01e98e0ef"],
+ CellLabel->"In[92]:=",ExpressionUUID->"b1004792-1a18-4ee1-986e-92e01e98e0ef"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -2638,7 +2638,7 @@ Cell[BoxData[
     Function[BoxForm`e$, 
      MatrixForm[BoxForm`e$]]]}], "}"}]], "Output",
  CellLabel->
-  "Out[95]=",ExpressionUUID->"952cd4b1-bc89-4e22-8cb3-fd109a78ad8b"]
+  "Out[92]=",ExpressionUUID->"d0e1ef09-6415-4064-b8d3-a1313974bc2d"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2673,10 +2673,10 @@ Cell[BoxData[{
     RowBox[{"1", ",", "1"}], "}"}], ",", 
    RowBox[{"{", 
     RowBox[{"1", ",", "1"}], "}"}]}], "]"}]}], "Input",
- CellLabel->"In[96]:=",ExpressionUUID->"71611a6d-dc57-42bf-a4a8-4a576cae0b63"],
+ CellLabel->"In[93]:=",ExpressionUUID->"71611a6d-dc57-42bf-a4a8-4a576cae0b63"],
 
 Cell[BoxData["1"], "Output",
- CellLabel->"Out[96]=",ExpressionUUID->"9bca5bce-cc60-4d8d-8688-5f22782f6bca"],
+ CellLabel->"Out[93]=",ExpressionUUID->"d951f4ba-6cd3-4b7d-8acc-1233129f06ed"],
 
 Cell[BoxData[
  RowBox[{"alatc`Private`nv", "[", 
@@ -2687,11 +2687,11 @@ Cell[BoxData[
     RowBox[{"1", ",", "0"}], "}"}], ",", 
    RowBox[{"{", 
     RowBox[{"0", ",", "1"}], "}"}]}], "]"}]], "Output",
- CellLabel->"Out[97]=",ExpressionUUID->"701c9515-603a-4368-a47e-bb460c5548a2"],
+ CellLabel->"Out[94]=",ExpressionUUID->"517286e3-2549-4386-acce-d1fe13f35f1b"],
 
 Cell[BoxData["1"], "Output",
  CellLabel->
-  "Out[98]=",ExpressionUUID->"2f676729-bb7c-4cdc-8f5f-1af19c3252ba"]
+  "Out[95]=",ExpressionUUID->"1687304a-2f3b-4fd0-99e0-e49324411b5c"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2713,7 +2713,7 @@ Cell[BoxData[{
     RowBox[{"ir1", ",", "ir2", ",", "#"}], "]"}], "&"}], "/@", 
   RowBox[{"Fusion", "[", 
    RowBox[{"ir1", ",", "ir2"}], "]"}]}]}], "Input",
- CellLabel->"In[99]:=",ExpressionUUID->"616ea563-a186-4387-a253-38ed9308bf8e"],
+ CellLabel->"In[96]:=",ExpressionUUID->"616ea563-a186-4387-a253-38ed9308bf8e"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -2722,13 +2722,13 @@ Cell[BoxData[
     RowBox[{"0", ",", "0"}], "}"}], ",", 
    RowBox[{"{", 
     RowBox[{"1", ",", "1"}], "}"}]}], "}"}]], "Output",
- CellLabel->
-  "Out[101]=",ExpressionUUID->"82cb8d4d-8900-4b50-8f64-287c25c0a8ad"],
+ CellLabel->"Out[98]=",ExpressionUUID->"5b7f5db9-cd9c-455b-9080-bb6d9d049ab6"],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"1", ",", "1"}], "}"}]], "Output",
- CellLabel->"Out[102]=",ExpressionUUID->"55909ca5-f94d-4f87-9e14-65b974b0c975"]
+ CellLabel->
+  "Out[99]=",ExpressionUUID->"432438ba-051d-45c1-b5c9-fdb1016aa0d4"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2736,7 +2736,7 @@ Cell[CellGroupData[{
 Cell[BoxData[{"FPdimlist", "\[IndentingNewLine]", "qdimlist", "\
 \[IndentingNewLine]", "FSlist"}], "Input",
  CellLabel->
-  "In[103]:=",ExpressionUUID->"9681b76c-0879-44cb-8404-c75f727befc5"],
+  "In[100]:=",ExpressionUUID->"9681b76c-0879-44cb-8404-c75f727befc5"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -2750,7 +2750,7 @@ Cell[BoxData[
 8189024497072072041893911374847540880753869`100.", ",", "1.`100."}], 
   "}"}]], "Output",
  CellLabel->
-  "Out[103]=",ExpressionUUID->"4dbd8f7f-1165-424d-b897-fcba204893f6"],
+  "Out[100]=",ExpressionUUID->"29f78957-8de8-4c32-b2f7-5a086fb90061"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -2768,13 +2768,13 @@ Cell[BoxData[
 9999999999999999999999999999999999999999999`99.07546459743271"}], 
   "}"}]], "Output",
  CellLabel->
-  "Out[104]=",ExpressionUUID->"5bb8a50a-e76a-46b3-b198-61ce7326b2e5"],
+  "Out[101]=",ExpressionUUID->"95b60d5a-9535-4bb1-b316-b6d8dd753fab"],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"1", ",", "0", ",", "0", ",", "0", ",", "1", ",", "0"}], 
   "}"}]], "Output",
- CellLabel->"Out[105]=",ExpressionUUID->"24ce5d14-8ba3-4963-958b-51f909ae9b35"]
+ CellLabel->"Out[102]=",ExpressionUUID->"65aab187-532c-4cb5-b608-83b659ccc1fa"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2809,7 +2809,7 @@ Cell[BoxData[{
        RowBox[{"Sequence", "@@", "#"}], "]"}], "]"}], "]"}]}], "&"}], "/@", 
   "rlist"}]}], "Input",
  CellLabel->
-  "In[106]:=",ExpressionUUID->"52377748-9ed7-422d-925a-5029c075abf4"],
+  "In[103]:=",ExpressionUUID->"52377748-9ed7-422d-925a-5029c075abf4"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -2976,7 +2976,7 @@ Cell[BoxData[
    RowBox[{"-", "1.`"}], ",", "1.`", ",", "1.`", ",", 
    RowBox[{"-", "1.`"}], ",", "1.`"}], "}"}]], "Output",
  CellLabel->
-  "Out[106]=",ExpressionUUID->"0f4d90fd-433d-4885-9e2f-f02ea9845076"],
+  "Out[103]=",ExpressionUUID->"df6576b0-7808-4e9f-971c-e5178a678113"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -3078,7 +3078,7 @@ Cell[BoxData[
     RowBox[{"0.8660254037844386`", " ", "\[ImaginaryI]"}]}]}], 
   "}"}]], "Output",
  CellLabel->
-  "Out[107]=",ExpressionUUID->"552cf4b6-724a-47bc-95bb-55ad780efafe"],
+  "Out[104]=",ExpressionUUID->"4d1802b7-8e15-4e90-a722-65ad96976d85"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -3097,7 +3097,7 @@ Cell[BoxData[
    "0.9999999999999999`", ",", "1.`", ",", "0.9999999999999999`"}], 
   "}"}]], "Output",
  CellLabel->
-  "Out[108]=",ExpressionUUID->"4a826f91-68e6-4108-bb05-ae557de973c7"],
+  "Out[105]=",ExpressionUUID->"d08d331c-d558-4bfd-8eda-f13edbcb52d5"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -3124,21 +3124,21 @@ Cell[BoxData[
    RowBox[{"-", "0.6666666666666667`"}], ",", "0.6666666666666667`", ",", 
    "0.6666666666666667`", ",", "0", ",", 
    RowBox[{"-", "0.6666666666666667`"}]}], "}"}]], "Output",
- CellLabel->"Out[109]=",ExpressionUUID->"594761a0-08c8-415a-83f8-43bdc1b7fc85"]
+ CellLabel->"Out[106]=",ExpressionUUID->"60f6bdcc-fde8-4100-9d56-7f6fa0237754"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[{"unitary", "\[IndentingNewLine]", "modular"}], "Input",
  CellLabel->
-  "In[110]:=",ExpressionUUID->"ce24f516-0c5b-4fef-a607-680421af1fb3"],
+  "In[107]:=",ExpressionUUID->"ce24f516-0c5b-4fef-a607-680421af1fb3"],
 
 Cell[BoxData["True"], "Output",
  CellLabel->
-  "Out[110]=",ExpressionUUID->"29159a83-40d5-49e6-b22e-7539d1634be8"],
+  "Out[107]=",ExpressionUUID->"6a260565-a5db-43a7-937d-10b7e7a24e59"],
 
 Cell[BoxData["True"], "Output",
- CellLabel->"Out[111]=",ExpressionUUID->"36d4ba30-fe20-4c48-9945-65faace81899"]
+ CellLabel->"Out[108]=",ExpressionUUID->"0ac67df8-ba6d-48fc-a196-aa0a4531b01a"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -3152,7 +3152,7 @@ Cell[BoxData[{
    RowBox[{"{", 
     RowBox[{"fs", ",", "flist"}], "}"}]}], "]"}]}], "Input",
  CellLabel->
-  "In[112]:=",ExpressionUUID->"44d1d3a0-a424-40a3-9b31-760ea752cf0b"],
+  "In[109]:=",ExpressionUUID->"44d1d3a0-a424-40a3-9b31-760ea752cf0b"],
 
 Cell[CellGroupData[{
 
@@ -3160,12 +3160,12 @@ Cell[BoxData["\<\"Trying to find the exact form of the F-symbols...\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[112]:=",ExpressionUUID->"a0c436e5-771c-40c6-ba0f-856d1951d691"],
+In[109]:=",ExpressionUUID->"b60239c1-47e9-4ab2-ad82-9bdbc1eed68e"],
 
 Cell[BoxData["\<\"Found the exact form of the F-symbols :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[112]:=",ExpressionUUID->"40c5db75-8468-4faf-b69f-ff3201b96d58"],
+In[109]:=",ExpressionUUID->"00a3a049-1538-438b-bb6f-db144b1a593c"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -3178,7 +3178,7 @@ F-symbols...\"\>"}],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[112]:=",ExpressionUUID->"f6b1c244-296d-4347-9a87-c012824faa3f"],
+In[109]:=",ExpressionUUID->"98cbe2a8-b069-425a-9144-bc42dc0e3606"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -3192,12 +3192,12 @@ with precision ", 200, " and they hold with accuracy ", 199, " :-)"],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[112]:=",ExpressionUUID->"00872c56-8a11-48f7-861a-1a62f732e27f"],
+In[109]:=",ExpressionUUID->"9748c755-06a3-4fc7-88d5-499da1cc5366"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[112]:=",ExpressionUUID->"b8cb07bb-f221-4ea6-aa9f-911d6a660b85"]
+In[109]:=",ExpressionUUID->"4803c73f-1456-41db-80f9-ab756753021a"]
 }, Open  ]],
 
 Cell[BoxData[
@@ -4877,7 +4877,7 @@ Cell[BoxData[
     RowBox[{"0", ",", 
      RowBox[{"{", 
       RowBox[{"1", ",", "0"}], "}"}]}], "}"}]}], "}"}]], "Output",
- CellLabel->"Out[113]=",ExpressionUUID->"83f41934-d03e-431b-a55b-0a0d4a79ae42"]
+ CellLabel->"Out[110]=",ExpressionUUID->"23362973-32e8-4351-a0f5-4ee043ecb6f8"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -4891,7 +4891,7 @@ Cell[BoxData[{
    RowBox[{"{", 
     RowBox[{"rs", ",", "rlist"}], "}"}]}], "]"}]}], "Input",
  CellLabel->
-  "In[114]:=",ExpressionUUID->"34d0b878-816f-4ae1-84ea-c00d590ac357"],
+  "In[111]:=",ExpressionUUID->"34d0b878-816f-4ae1-84ea-c00d590ac357"],
 
 Cell[CellGroupData[{
 
@@ -4899,12 +4899,12 @@ Cell[BoxData["\<\"Trying to find the exact form of the R-symbols...\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[114]:=",ExpressionUUID->"2ec0c5ab-51ed-407e-91a5-2a97fcaf7bcc"],
+In[111]:=",ExpressionUUID->"7bca29d2-0a73-470f-b692-d4d5e08f1c30"],
 
 Cell[BoxData["\<\"Found the exact form of the R-symbols :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[114]:=",ExpressionUUID->"ad6a2c90-7542-41a9-bff5-8c1b52b2fdc7"],
+In[111]:=",ExpressionUUID->"85c007a0-bbf6-4b8f-bd77-8fa5626450a3"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -4917,7 +4917,7 @@ F- and R-symbols...\"\>"}],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[114]:=",ExpressionUUID->"06c9715c-23e8-49e8-87e3-bcec288dde07"],
+In[111]:=",ExpressionUUID->"2d8f179c-9046-4e67-9e3e-468e25146e7e"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -4932,12 +4932,12 @@ R-symbols, with precision ", 200, " and they hold with accuracy ", 199,
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[114]:=",ExpressionUUID->"a626939f-a30d-4f81-8b0b-ce1156b39306"],
+In[111]:=",ExpressionUUID->"06fd3ba5-f676-4266-b093-35c61fddb42c"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[114]:=",ExpressionUUID->"92dd66ec-6d69-40c1-8cbe-f185e1e42bb1"]
+In[111]:=",ExpressionUUID->"768d9064-fb58-4106-beb8-838c84dd704b"]
 }, Open  ]],
 
 Cell[BoxData[
@@ -5166,7 +5166,7 @@ Cell[BoxData[
       FractionBox["2", "3"]}], ",", 
      RowBox[{"{", 
       RowBox[{"1", ",", "0"}], "}"}]}], "}"}]}], "}"}]], "Output",
- CellLabel->"Out[115]=",ExpressionUUID->"540ca830-f573-4bbc-bad9-be7690859e39"]
+ CellLabel->"Out[112]=",ExpressionUUID->"1b389e1c-d8c1-4fdc-9c92-9ab87dede4f8"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -5174,7 +5174,7 @@ Cell[CellGroupData[{
 Cell[BoxData[
  RowBox[{"findexactmodulardata", "[", "]"}]], "Input",
  CellLabel->
-  "In[116]:=",ExpressionUUID->"8f33736a-44f0-473f-9dc9-c37e5695a556"],
+  "In[113]:=",ExpressionUUID->"8f33736a-44f0-473f-9dc9-c37e5695a556"],
 
 Cell[CellGroupData[{
 
@@ -5214,7 +5214,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[116]:=",ExpressionUUID->"af593400-0f93-4432-af27-40bfb8624f3a"],
+In[113]:=",ExpressionUUID->"8062c10c-c011-43e1-8dcf-bb7577b33448"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5228,7 +5228,7 @@ with precision ", 200, " and they hold with accuracy ", 199, " :-)"],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[116]:=",ExpressionUUID->"396d5d39-e5d7-4d71-8ea4-8347574410df"],
+In[113]:=",ExpressionUUID->"9a76afc0-0cf9-4380-810f-fcb2c8746f4f"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5266,7 +5266,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[116]:=",ExpressionUUID->"65cb6daf-2c99-4649-99eb-25cf5a4f5b7d"],
+In[113]:=",ExpressionUUID->"1e7d7c0f-6183-45f4-b73a-73f6128004af"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5304,7 +5304,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[116]:=",ExpressionUUID->"ad4d7376-f28f-4c15-8eba-b15602175b74"],
+In[113]:=",ExpressionUUID->"82f9add0-70da-4f87-852b-a66b6f8e030e"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5342,7 +5342,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[116]:=",ExpressionUUID->"379d44d6-c47e-49c8-a270-0ad0f23d0cfb"],
+In[113]:=",ExpressionUUID->"1745b9dd-9b15-481c-9b2e-678b74d06d53"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5391,12 +5391,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[116]:=",ExpressionUUID->"93e5fedd-5102-4764-8f84-a31429381a07"],
+In[113]:=",ExpressionUUID->"66449b77-0496-4e19-a22d-8ca4c3c58086"],
 
 Cell[BoxData["\<\"The exact form of the S-matrix is given by:\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[116]:=",ExpressionUUID->"035df138-c1d7-419f-91aa-d7d936562e62"],
+In[113]:=",ExpressionUUID->"5589116e-6be0-4aa6-8b60-7452bfd4dc8f"],
 
 Cell[BoxData[
  TagBox[
@@ -5678,7 +5678,7 @@ Cell[BoxData[
    MatrixForm[BoxForm`e$, TableDepth -> 2]]]], "Print",
  CellLabel->
   "During evaluation of \
-In[116]:=",ExpressionUUID->"ba9050cc-93ea-43da-a344-9c783b9dfa7f"],
+In[113]:=",ExpressionUUID->"2aa7af19-2bc8-46be-97c4-936c4d5f9a01"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5694,12 +5694,12 @@ checked with the exact form of the S-matrix, with precision ", 200,
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[116]:=",ExpressionUUID->"88fed6b9-65dd-46ab-ade0-54b30f94d752"],
+In[113]:=",ExpressionUUID->"6d3206a2-707a-443a-88b4-f8f495a25548"],
 
 Cell[BoxData["\<\"Done, all relations hold :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[116]:=",ExpressionUUID->"9238791b-8855-4433-a50e-743f9ea8cee9"]
+In[113]:=",ExpressionUUID->"04f4cb88-8e92-4bee-8122-2abfec1f92e5"]
 }, Open  ]]
 }, Open  ]]
 }, Closed]],
@@ -5715,7 +5715,7 @@ Cell[BoxData[
  RowBox[{"initialize", "[", 
   RowBox[{"\"\<a\>\"", ",", "2", ",", "3"}], "]"}]], "Input",
  CellLabel->
-  "In[117]:=",ExpressionUUID->"daab7cef-d61c-4519-9af5-ce360672056a"],
+  "In[114]:=",ExpressionUUID->"daab7cef-d61c-4519-9af5-ce360672056a"],
 
 Cell[CellGroupData[{
 
@@ -5731,7 +5731,7 @@ to \"\>", "\[InvisibleSpace]",
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[117]:=",ExpressionUUID->"fcd4f6d8-8bc6-46aa-baaf-93e9bf94df69"],
+In[114]:=",ExpressionUUID->"d9be23f3-051d-48fb-9d75-822172c90354"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5759,7 +5759,7 @@ non-uniform cases.\"\>"}],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[117]:=",ExpressionUUID->"cfe0e649-96bd-496e-ab98-7616da504dc2"]
+In[114]:=",ExpressionUUID->"972635df-570f-4db2-a053-9fcefe945c4e"]
 }, Open  ]]
 }, Open  ]],
 
@@ -5768,7 +5768,7 @@ Cell[CellGroupData[{
 Cell[BoxData[
  RowBox[{"initializerootofunity", "[", "1", "]"}]], "Input",
  CellLabel->
-  "In[118]:=",ExpressionUUID->"4c6b0f29-daab-42eb-be08-326ceda68eb1"],
+  "In[115]:=",ExpressionUUID->"4c6b0f29-daab-42eb-be08-326ceda68eb1"],
 
 Cell[CellGroupData[{
 
@@ -5780,7 +5780,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[118]:=",ExpressionUUID->"d814f6ee-6033-4dfa-87df-e4eaed67175b"],
+In[115]:=",ExpressionUUID->"42ead52e-579f-46c9-9c54-24b61930b2c5"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5795,13 +5795,13 @@ to ", {"a", 2, 3, 1}, ". This is a uniform case."],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[118]:=",ExpressionUUID->"d73e3a73-c978-41fc-b26e-326d122b18c6"],
+In[115]:=",ExpressionUUID->"c755ca92-3ad6-4e02-b470-1000aec0a647"],
 
 Cell[BoxData["\<\"You can proceed to calculate the F-symbols :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[118]:=",ExpressionUUID->"e3114b69-be90-49a2-ad70-876b9e65e64f"]
+In[115]:=",ExpressionUUID->"9082316a-c13d-4b90-9f0b-6ae2e1cf9b7b"]
 }, Open  ]]
 }, Open  ]],
 
@@ -5812,26 +5812,26 @@ Cell[BoxData[{
  RowBox[{"calculatersymbols", "[", "]"}], "\[IndentingNewLine]", 
  RowBox[{"calculatemodulardata", "[", "]"}]}], "Input",
  CellLabel->
-  "In[119]:=",ExpressionUUID->"e04cc711-dfbc-4bc9-8787-8efcb5733853"],
+  "In[116]:=",ExpressionUUID->"e04cc711-dfbc-4bc9-8787-8efcb5733853"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData["\<\"Initializing the weight spaces...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"94f27e97-d026-4563-ad5b-16337678ea1b"],
+In[116]:=",ExpressionUUID->"0fdc0eb4-a9e8-4c2f-b888-40f95f86703d"],
 
 Cell[BoxData["\<\"Constructing the bases for the weightspaces...\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"15d34e61-4f47-4b12-91fe-e1ee744debc3"],
+In[116]:=",ExpressionUUID->"51bca1f7-afff-4a9f-ba27-aaab8897b0d5"],
 
 Cell[BoxData["\<\"The constructed bases for the weightspaces are orthonormal \
 :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"0bb667d7-c3f7-4d11-a969-6afa55d1f038"],
+In[116]:=",ExpressionUUID->"e981a50b-2e3f-4229-87cf-20441733668c"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5841,30 +5841,30 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"93ed5075-8e02-4395-b1dd-5a9ec0363b1a"],
+In[116]:=",ExpressionUUID->"5df561ed-8b2f-47ee-94bd-0b28366a67b1"],
 
 Cell[BoxData["\<\"Constructing the fusion rules...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"0b4250d1-e0b7-442c-a8d6-5ba86083c652"],
+In[116]:=",ExpressionUUID->"01508089-b583-4def-9ef0-631ebb91a03c"],
 
 Cell[BoxData["\<\"The calculated fusion rules are consistent :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"d69f83b2-b0ce-49d8-9659-8de274f3048b"],
+In[116]:=",ExpressionUUID->"21287451-eb14-4cdd-abc1-b1d547e29dd7"],
 
 Cell[BoxData["\<\"Constructing the bases for the tensorproduct \
 weightspaces...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"e519e7a6-036e-4e24-8f95-43e91d8cf001"],
+In[116]:=",ExpressionUUID->"0227a8cf-d787-4e28-bd2f-32f9fbcff2a5"],
 
 Cell[BoxData["\<\"The calculated q-CG coefficients satisfy the orthonormality \
 conditions :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"02218af2-79cc-4f2e-ac8d-a75d34583dab"],
+In[116]:=",ExpressionUUID->"27bdaf61-cebc-4a64-9505-4e826e267d95"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5874,7 +5874,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"46cbd21c-9e66-4060-968c-00fa397afb40"],
+In[116]:=",ExpressionUUID->"50539d15-80fa-4bde-bdca-74c2c8a70df8"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5887,7 +5887,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"1fc643e6-0ff7-4faa-b4ee-94bc69b3fff0"],
+In[116]:=",ExpressionUUID->"72e176a6-e6fb-4195-b488-27546e76261d"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5897,12 +5897,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"06596c4a-a7c6-4bbb-9ecf-a786ef003060"],
+In[116]:=",ExpressionUUID->"720685b3-b4eb-4b9c-961c-17b290733a5e"],
 
 Cell[BoxData["\<\"The pentagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"4b475c12-66f1-46b6-a9db-b9e9d751e4fd"],
+In[116]:=",ExpressionUUID->"65746337-7a13-42c9-861a-f48f3d007945"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5912,12 +5912,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"0a2756b4-3f11-4021-babb-aba06782ad38"],
+In[116]:=",ExpressionUUID->"647558e4-a60f-443e-bef5-f83d1da5ff18"],
 
 Cell[BoxData["\<\"There is one fusion multiplicity.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"7baf882e-56e0-4e06-af16-603645a785dd"],
+In[116]:=",ExpressionUUID->"b8aad4b4-68da-4691-8e36-56f84b144938"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5927,39 +5927,39 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"1dc5c546-933e-4479-bcd1-610d763cb267"],
+In[116]:=",ExpressionUUID->"3e81b1b2-9eae-4b7a-8f72-f1b5a6fbc81a"],
 
 Cell[BoxData["\<\"The F-matrices are unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"f0349a35-57e6-4396-b608-a9ef7a8c36fb"],
+In[116]:=",ExpressionUUID->"7ba70b3c-81fd-41c5-aea0-6e2f78a8157e"],
 
 Cell[BoxData["\<\"The F-matrices are orthogonal.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"8fc83ffe-14cb-47a6-ba15-354751a5dc0c"],
+In[116]:=",ExpressionUUID->"9c700f22-8ad0-4097-80c0-32f417c460e6"],
 
 Cell[BoxData["\<\"The F-symbols are all real or purely imaginary (all real, \
 in fact).\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"1de14707-e8fc-4654-ad28-f71bd226fb8a"],
+In[116]:=",ExpressionUUID->"5ad582bf-a365-49ea-bcd9-b98a6e3a4be6"],
 
 Cell[BoxData["\<\"You can proceed to calculate the R-symbols :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"c171bde0-43d6-4a13-accd-89b7a0173e28"],
+In[116]:=",ExpressionUUID->"6925de95-c84b-424f-b354-8efaaeac8c7d"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"996b0626-bb15-43e1-8b13-ee85f23aa247"],
+In[116]:=",ExpressionUUID->"4fce7671-e05b-4ac1-90f1-52f646b860eb"],
 
 Cell[BoxData["\<\"Constructing the R-symbols...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"22072279-d1ce-4434-a425-714bd65bbd84"],
+In[116]:=",ExpressionUUID->"fece307a-1033-418a-a6de-d861d093a270"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5969,12 +5969,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"db7e61da-bcb4-4536-8437-670cb67226c2"],
+In[116]:=",ExpressionUUID->"cb7d3b39-85c3-49ba-9d30-e9f2bf107054"],
 
 Cell[BoxData["\<\"The hexagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"7fd25c68-a22d-4bc0-a30f-038f14a844db"],
+In[116]:=",ExpressionUUID->"70e841c9-026e-44c7-a532-e772653c5ea7"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -5984,17 +5984,17 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"0d1633c4-61bb-4e47-89c6-37e4cb2b310b"],
+In[116]:=",ExpressionUUID->"ebb54bc5-37f7-4931-9473-9e0a9737976c"],
 
 Cell[BoxData["\<\"The R-matrices are unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"1aa33167-213e-45a2-94c9-4d8785200739"],
+In[116]:=",ExpressionUUID->"4287087b-57c4-4867-b582-29ff3c0ffb5c"],
 
 Cell[BoxData["\<\"The R-matrices are not all diagonal.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"4db0024b-7db4-4e07-8294-ad038d1f5b34"],
+In[116]:=",ExpressionUUID->"e801281c-d3c5-4795-bdda-88fa174a518d"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6008,7 +6008,7 @@ encounters after diagonalization is: ", 18],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"dfc1d0e3-9257-4cb4-a76e-b3332e529375"],
+In[116]:=",ExpressionUUID->"289b9df2-eb4e-45ed-ae54-583bb0050182"],
 
 Cell[BoxData["\<\"The R-matrices can be diagonalized by running \
 diagonalizermatrices[].\\n This will change both F- and R-symbols, so by \
@@ -6016,18 +6016,18 @@ running diagonalizermatrices[], the pentagon and hexagon equations will be \
 checked again.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"e44d0eef-a859-4d0c-bbf6-6c65232894c9"],
+In[116]:=",ExpressionUUID->"1fab6bc5-2e32-4eed-bb44-c5d277cc74b1"],
 
 Cell[BoxData["\<\"You can proceed to calculate the modular data :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"087a6c0b-2193-4cfb-824e-d9fceee87942"],
+In[116]:=",ExpressionUUID->"139cda80-7b3a-499f-a9f4-71a245832a04"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"86abcaf2-77da-46d2-b3b0-37b7ee8102c9"],
+In[116]:=",ExpressionUUID->"819f5063-fded-46d4-9df0-16966370588a"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6060,7 +6060,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"08e03442-171a-41a4-9eb2-8c6e5c38b2c9"],
+In[116]:=",ExpressionUUID->"e65e75df-b3d9-4319-aff8-c27e86a1b6b1"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6075,7 +6075,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"32eb814e-0daa-4e1b-8294-b912dd9aad59"],
+In[116]:=",ExpressionUUID->"9f3633d6-d516-4580-ac61-9a1b1636ed07"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6085,7 +6085,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"60e90047-2abd-49e0-b2d9-fcb43fbab50a"],
+In[116]:=",ExpressionUUID->"e3f75a40-72b4-4363-aa7b-aafd7b3b2cd3"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6101,7 +6101,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"9dfec963-05f3-4f7f-828d-ae4e921932c2"],
+In[116]:=",ExpressionUUID->"320a5e00-86c9-4393-8c6d-f86af643ea8a"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6111,7 +6111,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"ac2e9107-4b64-4104-b82f-ce578ed61d18"],
+In[116]:=",ExpressionUUID->"6022db3a-5895-4c56-87db-be5d76d32776"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6124,12 +6124,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"66363862-f8a1-467f-b0f3-88f4a65b3e0b"],
+In[116]:=",ExpressionUUID->"3f7781da-c68a-4ef8-937f-7cf46088a563"],
 
 Cell[BoxData["\<\"The pivotal equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"e06040e6-622f-4b98-8464-b462956d0424"],
+In[116]:=",ExpressionUUID->"205f13f3-cc8e-4b64-8294-81e4d4e2ccf0"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6143,7 +6143,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"ad189561-455a-48b3-a709-20cbcc2c8fe7"],
+In[116]:=",ExpressionUUID->"5b9a78ff-b61c-4275-9556-3f815fe9fd3c"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6159,7 +6159,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"bd05e6e5-0b89-4983-8ff6-f6fbcda3d646"],
+In[116]:=",ExpressionUUID->"025be1d9-6231-4147-b64f-9edd163c2caa"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6173,7 +6173,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"25de3c0b-82fd-4715-8f55-fd1583553aeb"],
+In[116]:=",ExpressionUUID->"69f3cdbe-2bf7-4c84-af45-bf913d37b53e"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6201,17 +6201,17 @@ are: \"\>", "\[InvisibleSpace]",
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"04e241ce-c0eb-4a00-bd99-fff3a58175bf"],
+In[116]:=",ExpressionUUID->"a4ac1d68-3a44-4c88-a50d-70e8f0205520"],
 
 Cell[BoxData["\<\"The theory is unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"126ccba9-75d2-4b5c-be8b-90092702de53"],
+In[116]:=",ExpressionUUID->"2a68ff5e-88da-4577-b24f-84e27ddbc081"],
 
 Cell[BoxData["\<\"The theory is modular.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"03d2f209-f34a-4192-aea9-c98f0570579e"],
+In[116]:=",ExpressionUUID->"1be60afd-58a8-4ede-9b34-446930560aae"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6221,12 +6221,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"afe3ad18-e0af-418d-9fbe-62a164365ccb"],
+In[116]:=",ExpressionUUID->"37ce1fd1-ae41-4594-9224-f17415803daf"],
 
 Cell[BoxData["\<\"The S-matrix is given by:\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"d5871ade-a74e-4b29-a425-0fcbde9abe1d"],
+In[116]:=",ExpressionUUID->"ec0371f2-44ad-46af-af0f-b1827a21f665"],
 
 Cell[BoxData[
  TagBox[
@@ -6430,18 +6430,18 @@ Cell[BoxData[
    MatrixForm[BoxForm`e$]]]], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"b93fe265-c02a-4268-b9cc-e79a315fe649"],
+In[116]:=",ExpressionUUID->"a8f83c7a-a7da-4d3a-a56f-045ebab99882"],
 
 Cell[BoxData["\<\"The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 \
 = S^2 = C are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"d9635a64-4cf6-457e-bae2-87361192e529"],
+In[116]:=",ExpressionUUID->"e45bb399-8dd2-4a06-9430-572708fa1c4f"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[119]:=",ExpressionUUID->"485876f2-3454-4d09-8c70-e4eda0da2903"]
+In[116]:=",ExpressionUUID->"2b9447d0-ed30-48ee-a80f-887a753eed0e"]
 }, Open  ]]
 }, Open  ]],
 
@@ -6450,7 +6450,7 @@ Cell[CellGroupData[{
 Cell[BoxData[
  RowBox[{"diagonalizermatrices", "[", "]"}]], "Input",
  CellLabel->
-  "In[122]:=",ExpressionUUID->"37ec6dda-d0c4-4644-a109-25d353c3ad9f"],
+  "In[119]:=",ExpressionUUID->"37ec6dda-d0c4-4644-a109-25d353c3ad9f"],
 
 Cell[CellGroupData[{
 
@@ -6463,12 +6463,12 @@ R-symbols, the original, non-diagonalized form should be used! One can \
 "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"366d642f-ea07-437f-b0c3-62b14ce58bc3"],
+In[119]:=",ExpressionUUID->"77cf076d-9649-4318-a5f8-4884dbd2e594"],
 
 Cell[BoxData["\<\"Diagonalizing the R-matrices...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"489e465d-9d9e-4269-9fa0-d9439c5dbde2"],
+In[119]:=",ExpressionUUID->"573ddd64-6c83-4c2d-b5dd-88c83915e67a"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6478,12 +6478,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"7dbab17f-d7dd-4d11-9443-3b2a88baba32"],
+In[119]:=",ExpressionUUID->"3bccfcb9-85f8-442a-a35f-58691338b229"],
 
 Cell[BoxData["\<\"The pentagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"c1f01059-0f56-44cf-a806-be06e9e35959"],
+In[119]:=",ExpressionUUID->"75a87a76-71d4-4777-ad03-f1d8a86aaa65"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6493,23 +6493,23 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"6ffa379e-f0b0-4a8a-a813-48a9099e5274"],
+In[119]:=",ExpressionUUID->"6fca79ff-ed11-43d0-a386-9aef615158cd"],
 
 Cell[BoxData["\<\"The F-matrices are unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"ab8015a7-bcdc-4742-9c0e-3ccbe718fb92"],
+In[119]:=",ExpressionUUID->"4053be89-4f3e-4f24-951b-abdb37915aaf"],
 
 Cell[BoxData["\<\"The F-matrices are orthogonal.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"32410f79-2752-4087-9060-869382511d92"],
+In[119]:=",ExpressionUUID->"2d2099a6-dc31-422f-88df-47b12398d4a4"],
 
 Cell[BoxData["\<\"The F-symbols are all real or purely imaginary (all real, \
 in fact).\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"4d4a9ba6-6a7f-417f-98e7-abc4e57d2ec7"],
+In[119]:=",ExpressionUUID->"617cd632-b298-4e4f-901f-7324f7d32379"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6519,12 +6519,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"0ab3b32d-c5f7-42df-a1e5-096bda4a339f"],
+In[119]:=",ExpressionUUID->"7e5f90df-3991-4ef0-b196-79daef80fe58"],
 
 Cell[BoxData["\<\"The hexagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"bf82e451-b0b8-418f-9abc-e52840f157a7"],
+In[119]:=",ExpressionUUID->"f1d3721b-f4c8-411e-b552-39c0cdabf0de"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6534,17 +6534,17 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"7fe7ffb1-d5aa-4a99-871e-c14e635af797"],
+In[119]:=",ExpressionUUID->"0346e197-3b78-4aa2-a4cb-a6d6e2e3fd8a"],
 
 Cell[BoxData["\<\"The R-matrices are unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"d5e3e668-2d63-4f92-91a4-cf57e2359d84"],
+In[119]:=",ExpressionUUID->"6d91950e-5ee0-46e6-993d-61713c2b5862"],
 
 Cell[BoxData["\<\"The R-matrices are diagonal.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"07a3e14f-146d-4af7-98de-ed2e972b76e6"],
+In[119]:=",ExpressionUUID->"11beb818-70a4-4dbe-84b5-a07e333d6960"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6557,12 +6557,12 @@ R^{a,b}_c = e^(i\[Pi] r/s) one encounters is: ", 18],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"429bd3a6-1f82-4e1f-9994-5a0cbc2167cc"],
+In[119]:=",ExpressionUUID->"4912f098-d024-4877-a587-14d3b3854709"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[122]:=",ExpressionUUID->"800b288e-136a-44eb-9d21-be4c9baf8f52"]
+In[119]:=",ExpressionUUID->"a120e6d2-e558-42a9-b0f0-3ed2921a0182"]
 }, Open  ]]
 }, Open  ]],
 
@@ -6597,7 +6597,7 @@ Cell[BoxData[
     RowBox[{"Fusion", "[", 
      RowBox[{"ir1", ",", "ir2"}], "]"}]}]}]}]], "Input",
  CellLabel->
-  "In[123]:=",ExpressionUUID->"78d102cc-5e72-4a57-be34-a09617baefbc"],
+  "In[120]:=",ExpressionUUID->"78d102cc-5e72-4a57-be34-a09617baefbc"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -6611,12 +6611,12 @@ Cell[BoxData[
    RowBox[{"{", 
     RowBox[{"3", ",", "0"}], "}"}]}], "}"}]], "Output",
  CellLabel->
-  "Out[125]=",ExpressionUUID->"c7d855fc-e01c-40c7-b0f8-9d879765e523"],
+  "Out[122]=",ExpressionUUID->"48296675-4172-4923-ab5c-dad4661a4027"],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"1", ",", "1", ",", "2", ",", "1"}], "}"}]], "Output",
- CellLabel->"Out[126]=",ExpressionUUID->"69db31a4-134a-4472-b78a-d648d3d5dda0"]
+ CellLabel->"Out[123]=",ExpressionUUID->"78e7779b-40d1-4bf9-b4a5-3c969ed267c1"]
 }, Open  ]]
 }, Closed]],
 
@@ -6631,7 +6631,7 @@ Cell[BoxData[
  RowBox[{"possiblerootfactors", "[", 
   RowBox[{"\"\<g\>\"", ",", "2", ",", "1"}], "]"}]], "Input",
  CellLabel->
-  "In[127]:=",ExpressionUUID->"04c89086-6ecc-4a89-9f2c-4348ca3a97ad"],
+  "In[124]:=",ExpressionUUID->"04c89086-6ecc-4a89-9f2c-4348ca3a97ad"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -6641,7 +6641,7 @@ Cell[BoxData[
     "1", ",", "2", ",", "4", ",", "7", ",", "8", ",", "11", ",", "13", ",", 
      "14"}], "}"}], ",", 
    RowBox[{"{", "}"}]}], "}"}]], "Output",
- CellLabel->"Out[127]=",ExpressionUUID->"b718f07d-fa8f-49d4-800a-affb028e8119"]
+ CellLabel->"Out[124]=",ExpressionUUID->"faaaa083-b0fa-4c6d-86f3-b10b0e6cddb6"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -6650,7 +6650,7 @@ Cell[BoxData[
  RowBox[{"initialize", "[", 
   RowBox[{"\"\<g\>\"", ",", "2", ",", "1", ",", "2"}], "]"}]], "Input",
  CellLabel->
-  "In[128]:=",ExpressionUUID->"f5547a62-4f82-422b-9dcf-9d34323f1791"],
+  "In[125]:=",ExpressionUUID->"f5547a62-4f82-422b-9dcf-9d34323f1791"],
 
 Cell[CellGroupData[{
 
@@ -6667,13 +6667,13 @@ to ", {"g", 2, 1, 2}, ". This is a uniform case."],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[128]:=",ExpressionUUID->"a4c7b2fe-49d0-41c2-917a-88f48a4a6c11"],
+In[125]:=",ExpressionUUID->"4274b500-0b08-4f97-9cec-e719fd4d6a82"],
 
 Cell[BoxData["\<\"You can proceed to calculate the F-symbols :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[128]:=",ExpressionUUID->"888a2fc0-38e4-4f8c-a58d-274f09f8becb"]
+In[125]:=",ExpressionUUID->"af1b4af5-84dc-4d7a-928a-553f56524a7c"]
 }, Open  ]]
 }, Open  ]],
 
@@ -6684,26 +6684,26 @@ Cell[BoxData[{
  RowBox[{"calculatersymbols", "[", "]"}], "\[IndentingNewLine]", 
  RowBox[{"calculatemodulardata", "[", "]"}]}], "Input",
  CellLabel->
-  "In[129]:=",ExpressionUUID->"7b36cd9b-08b3-4af7-a111-fdc5cb0e3571"],
+  "In[126]:=",ExpressionUUID->"7b36cd9b-08b3-4af7-a111-fdc5cb0e3571"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData["\<\"Initializing the weight spaces...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"db668a61-0728-476b-9b79-75f6055b84aa"],
+In[126]:=",ExpressionUUID->"930b463e-817a-4d2c-86ce-d65a92545cd8"],
 
 Cell[BoxData["\<\"Constructing the bases for the weightspaces...\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"872f74de-e847-4ec6-9549-c9e6c1d9b08c"],
+In[126]:=",ExpressionUUID->"40ce5fa7-01bb-40c1-997b-ae0be16a2866"],
 
 Cell[BoxData["\<\"The constructed bases for the weightspaces are orthonormal \
 :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"5a4c47e6-92d6-41ff-9fec-c9eb63e7fa8c"],
+In[126]:=",ExpressionUUID->"8541eac7-a835-455d-b666-c007d9d08664"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6713,30 +6713,30 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"1d9e25d2-e5a7-4848-8cba-49bc0f50b601"],
+In[126]:=",ExpressionUUID->"8457f827-040b-4285-a705-e344d53edc98"],
 
 Cell[BoxData["\<\"Constructing the fusion rules...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"1fa87667-21ae-42ec-b2dc-36002e4fbaf4"],
+In[126]:=",ExpressionUUID->"a2a861de-62a9-438e-8228-c4347649a21b"],
 
 Cell[BoxData["\<\"The calculated fusion rules are consistent :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"7b9e0723-6aa5-47b2-a263-345d6daab1b4"],
+In[126]:=",ExpressionUUID->"2f749147-b8ee-40ce-8263-a85d2657d26f"],
 
 Cell[BoxData["\<\"Constructing the bases for the tensorproduct \
 weightspaces...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"d2d69138-b2f8-46e3-8614-347aebf548d2"],
+In[126]:=",ExpressionUUID->"153650cf-d04d-47e7-8e7d-5c75503c7ae2"],
 
 Cell[BoxData["\<\"The calculated q-CG coefficients satisfy the orthonormality \
 conditions :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"ffc4cc61-932b-4bdf-b400-254d17fd3c4c"],
+In[126]:=",ExpressionUUID->"9e26edb4-1abf-4d7c-a727-a05bdafedbdd"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6746,7 +6746,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"a46bd1f7-ff6c-4f87-97c3-370feaa0462d"],
+In[126]:=",ExpressionUUID->"24674534-56e9-4f12-ae46-1563adaef890"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6758,7 +6758,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"461f6b74-a50b-49f3-a906-cbf80f738bde"],
+In[126]:=",ExpressionUUID->"9dc65e5c-55a1-47dc-8797-79db9bc055db"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6768,12 +6768,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"55bf0897-a445-49f7-8e68-be2690c718fa"],
+In[126]:=",ExpressionUUID->"9a151e67-a52b-409c-9770-95f6d205ad0c"],
 
 Cell[BoxData["\<\"The pentagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"b187f12a-63ab-4b7b-9791-702e7aab5354"],
+In[126]:=",ExpressionUUID->"51852ee5-ca62-484f-8a23-79a3b7d3d42d"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6783,50 +6783,50 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"ff4755c9-fd7e-47cc-9640-5d0f040f3dc0"],
+In[126]:=",ExpressionUUID->"518de25b-8eb8-444b-8d8a-5e37ac501850"],
 
 Cell[BoxData["\<\"There are no fusion multiplicities.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"afdf607b-0534-4778-af07-3a06d0743908"],
+In[126]:=",ExpressionUUID->"eec3e181-3d4a-497b-94d8-1c312175ab05"],
 
 Cell[BoxData["\<\"The F-matrices are not all unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"ae66d9ed-3fac-4bd3-a2ad-4e52559a1afe"],
+In[126]:=",ExpressionUUID->"abbdec8c-1ff3-4802-b8b4-08ec5cd24501"],
 
 Cell[BoxData["\<\"The F-matrices are not all real.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"aa7ca145-3554-4bca-8887-c44095414bc3"],
+In[126]:=",ExpressionUUID->"a8ad9aee-be42-4bb0-9dc4-5898fb68d026"],
 
 Cell[BoxData["\<\"The F-matrices satisfy F.(F^T) = (F^T).F = 1\"\>"], "Print",
  
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"77535038-47dd-43cf-8901-62a7c7582ea2"],
+In[126]:=",ExpressionUUID->"7f68082c-eed3-4756-b9d4-66277560825f"],
 
 Cell[BoxData["\<\"The F-symbols are all real or purely imaginary.\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"3313f151-deed-41a0-8b5e-c91aaef53f61"],
+In[126]:=",ExpressionUUID->"f7ff0b33-267a-4e44-a663-2d6be9a74ae5"],
 
 Cell[BoxData["\<\"You can proceed to calculate the R-symbols :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"9e3af87b-2b8e-44e3-88d7-e9a531e8955e"],
+In[126]:=",ExpressionUUID->"d0628aed-da4e-43d8-ae9f-ee711958d94a"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"e969fdf3-e2aa-480d-b999-749e40d89910"],
+In[126]:=",ExpressionUUID->"2ef19a3a-224e-4bad-892f-4cae9f976e39"],
 
 Cell[BoxData["\<\"Constructing the R-symbols...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"b235c53d-ba44-416a-84f8-24df03a098f9"],
+In[126]:=",ExpressionUUID->"c9dba793-4a1b-4db5-9bc9-f3f07296e769"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6836,12 +6836,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"86e0f9e9-1f57-47e6-8807-d298033e589f"],
+In[126]:=",ExpressionUUID->"28a16169-78a5-4e60-9518-0510ffb8069a"],
 
 Cell[BoxData["\<\"The hexagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"7f67b9af-6bea-4a99-b5cc-701e8808517b"],
+In[126]:=",ExpressionUUID->"d6b1fbed-4320-41cd-85a5-64355c73aaac"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6851,17 +6851,17 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"4ee14e22-457c-470c-95b5-8348ac20dc96"],
+In[126]:=",ExpressionUUID->"2f9f5eb4-8130-4769-a626-84884b8256d8"],
 
 Cell[BoxData["\<\"The R-matrices are unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"e61d3912-3394-4ed0-a409-9ca6ac44c892"],
+In[126]:=",ExpressionUUID->"73450b00-9652-4267-a04c-1794d0e2e5d6"],
 
 Cell[BoxData["\<\"The R-matrices are diagonal.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"789a4158-081b-4af7-8954-393a02a35bd6"],
+In[126]:=",ExpressionUUID->"c16bb29a-a9d9-4b6a-ba6b-e410fe180afe"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6874,18 +6874,18 @@ R^{a,b}_c = e^(i\[Pi] r/s) one encounters is: ", 5],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"6901a0f6-5635-4e76-9095-e703d834a934"],
+In[126]:=",ExpressionUUID->"df684059-2c5e-4e2b-babd-26892b257b60"],
 
 Cell[BoxData["\<\"You can proceed to calculate the modular data :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"3fecbb17-6ab9-4cb3-86ad-b39f2b212677"],
+In[126]:=",ExpressionUUID->"2ae8004c-fd24-4e73-8956-b9b1eb4186f3"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"3b62b8f4-f8c0-4d85-8427-085288108612"],
+In[126]:=",ExpressionUUID->"71530eec-906e-46e1-8d29-b97624ebe07c"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6900,7 +6900,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"5f1bb27d-d7ef-481e-acec-f1007a51d7aa"],
+In[126]:=",ExpressionUUID->"73f17a95-2b79-4abf-80af-8a2c646ab1c0"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6911,7 +6911,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"9e841734-10a5-4aa8-a82a-bfa0ebca790c"],
+In[126]:=",ExpressionUUID->"540ac889-aeb0-4c3f-8edb-75ba5f94c48c"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6921,7 +6921,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"54984afa-85e1-4908-b7ac-88a5b5229b7b"],
+In[126]:=",ExpressionUUID->"16309cdd-9a26-4fae-90b8-e5c9b2bbd25d"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6933,7 +6933,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"eeffe843-ec9f-4e27-84e3-24c10751b223"],
+In[126]:=",ExpressionUUID->"92833d55-9fc9-4792-8aac-b7cc4cf8487d"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6943,7 +6943,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"4fe71932-3add-434b-a29e-9d474efb2d08"],
+In[126]:=",ExpressionUUID->"07cefbfc-fc9e-4570-bbc1-d51967bf27fd"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6954,12 +6954,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"d59f030e-9c23-4675-a383-5483195c1779"],
+In[126]:=",ExpressionUUID->"7dee76f7-d12a-4f49-9d91-cd9557317f45"],
 
 Cell[BoxData["\<\"The pivotal equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"c276a268-525d-4251-ac92-acbcc6c28f6d"],
+In[126]:=",ExpressionUUID->"e8209b98-7b45-46ef-80e4-7974eeac2b92"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6970,7 +6970,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"cd867605-2f6f-4033-8740-7ed1f45f50cf"],
+In[126]:=",ExpressionUUID->"9d86c9b0-dd33-4c98-bcbb-8d36f9b46f6f"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6983,7 +6983,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"13b462f1-f7a2-4b09-9eec-6dbc7c5a622b"],
+In[126]:=",ExpressionUUID->"d757a0f0-9046-4879-8106-39b7079bfd26"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -6995,7 +6995,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"5ad9a392-d1a7-449c-b147-867e911c4679"],
+In[126]:=",ExpressionUUID->"65e7c322-4c23-49cc-b109-98e390f9df86"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7011,17 +7011,17 @@ are: \"\>", "\[InvisibleSpace]",
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"9225c790-80f6-4f5b-a47a-0cfbc101fd3c"],
+In[126]:=",ExpressionUUID->"445c2142-9edd-462e-9b39-11a3f44f844a"],
 
 Cell[BoxData["\<\"The theory is NOT unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"cb81ca91-9197-4f84-8bfd-c3c41356f669"],
+In[126]:=",ExpressionUUID->"5ee496e1-c03f-4fd9-a927-f8f5c2088c41"],
 
 Cell[BoxData["\<\"The theory is modular.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"05e0b679-b432-42b8-92f9-51eb2b0e8cee"],
+In[126]:=",ExpressionUUID->"0dda569a-e3c0-4a82-be5a-b246a586aa2e"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7033,13 +7033,13 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"c4bc4ced-f8b5-4838-83e1-10a08742d3c3"],
+In[126]:=",ExpressionUUID->"df3ff1a1-9c60-43fc-ac6a-0dcc773f4a70"],
 
 Cell[BoxData["\<\"The S-matrix is given by (up to an overall sign):\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"e896e79d-b3f2-40cd-aa74-ed7a30123b43"],
+In[126]:=",ExpressionUUID->"a753227b-b3f0-4b25-bee3-15b4621bfbdf"],
 
 Cell[BoxData[
  TagBox[
@@ -7062,18 +7062,18 @@ Cell[BoxData[
    MatrixForm[BoxForm`e$]]]], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"d67071aa-b331-4ac0-8971-f78dbf15ff5b"],
+In[126]:=",ExpressionUUID->"79cf1018-d51a-4a55-b325-8d88c21a6f0f"],
 
 Cell[BoxData["\<\"The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 \
 = S^2 = C are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"fcb8ed93-b9f1-4313-b4e3-ecf21e44f524"],
+In[126]:=",ExpressionUUID->"63f3ab81-3eb9-41d2-898b-fa4dc7b25a35"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[129]:=",ExpressionUUID->"d72f01e0-0f23-497b-828b-cc0344cec3fe"]
+In[126]:=",ExpressionUUID->"70fa3a12-437d-426d-90e5-227416d93122"]
 }, Open  ]]
 }, Open  ]],
 
@@ -7083,25 +7083,25 @@ Cell[BoxData[{
  RowBox[{"FPdimlist", "//", "N"}], "\[IndentingNewLine]", 
  RowBox[{"qdimlist", "//", "N"}], "\[IndentingNewLine]", "FSlist"}], "Input",
  CellLabel->
-  "In[132]:=",ExpressionUUID->"f6369ccb-33dc-42c7-8665-6822881dce54"],
+  "In[129]:=",ExpressionUUID->"f6369ccb-33dc-42c7-8665-6822881dce54"],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"1.`", ",", "1.618033988749895`"}], "}"}]], "Output",
  CellLabel->
-  "Out[132]=",ExpressionUUID->"346f2f26-ae5e-458f-bcf9-075a90778c29"],
+  "Out[129]=",ExpressionUUID->"8cb6c3bd-2551-4eb2-93b0-69b061be4dfe"],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"1.`", ",", 
    RowBox[{"-", "0.6180339887498949`"}]}], "}"}]], "Output",
  CellLabel->
-  "Out[133]=",ExpressionUUID->"139ae32c-4f76-425a-a195-489ec0cdb063"],
+  "Out[130]=",ExpressionUUID->"85dc0dcc-9870-4822-897e-437802bd186d"],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"1", ",", "1"}], "}"}]], "Output",
- CellLabel->"Out[134]=",ExpressionUUID->"848495aa-c94a-4ac4-96b8-018f7016981b"]
+ CellLabel->"Out[131]=",ExpressionUUID->"401fe16e-7bcf-4e6c-895c-b8bdfc4d486e"]
 }, Open  ]]
 }, Closed]],
 
@@ -7116,7 +7116,7 @@ Cell[BoxData[
  RowBox[{"initialize", "[", 
   RowBox[{"\"\<c\>\"", ",", "2"}], "]"}]], "Input",
  CellLabel->
-  "In[135]:=",ExpressionUUID->"ca59010d-d584-4934-bfc0-75318d111f03"],
+  "In[132]:=",ExpressionUUID->"ca59010d-d584-4934-bfc0-75318d111f03"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7128,7 +7128,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[135]:=",ExpressionUUID->"2fc57e61-fd38-41df-9614-b8652b903c7b"]
+In[132]:=",ExpressionUUID->"1362b8b9-5b27-4275-bfc0-eed310f6a80c"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -7136,7 +7136,7 @@ Cell[CellGroupData[{
 Cell[BoxData[
  RowBox[{"initializelevel", "[", "2", "]"}]], "Input",
  CellLabel->
-  "In[136]:=",ExpressionUUID->"ef25810d-8242-44b2-aa77-7f677a20c2d9"],
+  "In[133]:=",ExpressionUUID->"ef25810d-8242-44b2-aa77-7f677a20c2d9"],
 
 Cell[CellGroupData[{
 
@@ -7147,7 +7147,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[136]:=",ExpressionUUID->"ad8c56f6-062b-40e5-9787-5d977e933de6"],
+In[133]:=",ExpressionUUID->"acd114d7-326b-481f-bb16-a4c5241d7d32"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7185,7 +7185,7 @@ fractional level: ",
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[136]:=",ExpressionUUID->"0e045ee7-efe6-484e-b893-a106d7e49832"]
+In[133]:=",ExpressionUUID->"9558276c-fe54-4e8f-a3ec-7cc4e6f82943"]
 }, Open  ]]
 }, Open  ]],
 
@@ -7194,7 +7194,7 @@ Cell[CellGroupData[{
 Cell[BoxData[
  RowBox[{"initializerootofunity", "[", "2", "]"}]], "Input",
  CellLabel->
-  "In[137]:=",ExpressionUUID->"fe451a96-5c19-450d-9d85-3fc1353a3e91"],
+  "In[134]:=",ExpressionUUID->"fe451a96-5c19-450d-9d85-3fc1353a3e91"],
 
 Cell[CellGroupData[{
 
@@ -7206,7 +7206,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[137]:=",ExpressionUUID->"31623950-b7b5-46c7-8de0-8f268a13f1c7"],
+In[134]:=",ExpressionUUID->"22dfa2db-6558-46e9-aed5-a9ee48820b14"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7226,13 +7226,13 @@ to ", {"c", 2, 2, 2},
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[137]:=",ExpressionUUID->"04dad6af-66a5-451b-a3a5-188878c53086"],
+In[134]:=",ExpressionUUID->"34a7109b-d4cb-41f3-a3e4-1396d3127ce2"],
 
 Cell[BoxData["\<\"You can proceed to calculate the F-symbols :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[137]:=",ExpressionUUID->"65ccbfc2-041e-4870-b323-a8c2261ec39a"]
+In[134]:=",ExpressionUUID->"dcb763d2-c775-47df-95cc-1fa58a7a8667"]
 }, Open  ]]
 }, Open  ]],
 
@@ -7243,26 +7243,26 @@ Cell[BoxData[{
  RowBox[{"calculatersymbols", "[", "]"}], "\[IndentingNewLine]", 
  RowBox[{"calculatemodulardata", "[", "]"}]}], "Input",
  CellLabel->
-  "In[138]:=",ExpressionUUID->"bbe0a11d-2a0f-41e3-a370-ee90f81b1127"],
+  "In[135]:=",ExpressionUUID->"bbe0a11d-2a0f-41e3-a370-ee90f81b1127"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData["\<\"Initializing the weight spaces...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"89916344-d64a-454f-a750-99c1e1ecb4c8"],
+In[135]:=",ExpressionUUID->"c28720bc-90e7-4e25-8c53-ff9233d71f4a"],
 
 Cell[BoxData["\<\"Constructing the bases for the weightspaces...\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"3288af21-8d9e-4d9f-8302-0c306e4abda9"],
+In[135]:=",ExpressionUUID->"0d9bab8b-fd52-4f19-9749-ed34bd850610"],
 
 Cell[BoxData["\<\"The constructed bases for the weightspaces are orthonormal \
 :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"984b132e-1573-4705-af13-8679a324f00e"],
+In[135]:=",ExpressionUUID->"5b5d2c07-9c0e-4ea3-8ac4-f348d2d85ea7"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7271,30 +7271,30 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"7aaf86c5-deab-44dc-8fac-931c189926f8"],
+In[135]:=",ExpressionUUID->"d1d89da6-dd8e-4d29-ad96-11fb035c2d31"],
 
 Cell[BoxData["\<\"Constructing the fusion rules...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"9fdac202-6caf-4f76-a651-6a10f6f2a721"],
+In[135]:=",ExpressionUUID->"4980f918-f18f-4e97-93b1-0d756c22f1f9"],
 
 Cell[BoxData["\<\"The calculated fusion rules are consistent :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"79f679bf-b564-47d1-9bd8-8d5b87ef5ba3"],
+In[135]:=",ExpressionUUID->"4c49c002-0089-4222-8726-8e4acbff0b35"],
 
 Cell[BoxData["\<\"Constructing the bases for the tensorproduct \
 weightspaces...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"fc62007a-0590-4ab9-9e61-550fe3a49c55"],
+In[135]:=",ExpressionUUID->"bf3e67ef-5358-4639-a5e5-aab19b10e5ac"],
 
 Cell[BoxData["\<\"The calculated q-CG coefficients satisfy the orthonormality \
 conditions :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"e71740cd-28d2-41b4-bc20-ba7ea06a4a41"],
+In[135]:=",ExpressionUUID->"1634fba1-8a91-459a-a39e-f48e22a2051b"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7304,7 +7304,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"117a4130-c076-44b4-8d19-d11e8fc95a90"],
+In[135]:=",ExpressionUUID->"db1b4237-9ed9-4853-a4de-3536a82ade89"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7317,7 +7317,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"264a7309-5d16-4db8-b3dc-25ddab2d0112"],
+In[135]:=",ExpressionUUID->"4fb0dbe4-f451-423c-8205-a9bb7f038be6"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7327,12 +7327,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"cf15ca07-c5f6-4e4b-b59c-e788f9baa284"],
+In[135]:=",ExpressionUUID->"0c8f3df7-dc44-4acf-9e1f-d423ee58ebe1"],
 
 Cell[BoxData["\<\"The pentagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"80c29def-f378-4da2-a1d0-69c7fb86fa55"],
+In[135]:=",ExpressionUUID->"ab5f8783-4f54-48d9-bd47-33896b493673"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7342,44 +7342,44 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"aa344d20-1c72-489b-aeca-25f3607a5858"],
+In[135]:=",ExpressionUUID->"9526f59c-5ea8-4a10-b232-3fe5aa586e55"],
 
 Cell[BoxData["\<\"There are no fusion multiplicities.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"9b75c364-083b-415e-9a0c-6071faaeedc3"],
+In[135]:=",ExpressionUUID->"022884bd-dd14-46a1-8c84-7e5f21010e23"],
 
 Cell[BoxData["\<\"The F-matrices are unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"22942420-2da0-4abe-9940-aa98c5a8fbe8"],
+In[135]:=",ExpressionUUID->"50505918-99d9-4f87-9075-4bd3bf86a1f3"],
 
 Cell[BoxData["\<\"The F-matrices are orthogonal.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"305ef6f0-3030-48bd-9df8-4c0218ee10a5"],
+In[135]:=",ExpressionUUID->"af9e1dfc-a6c1-4160-bdac-c8323b35e9d8"],
 
 Cell[BoxData["\<\"The F-symbols are all real or purely imaginary (all real, \
 in fact).\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"0a8b6186-d5e7-4d53-9f0b-7bd6b3b23352"],
+In[135]:=",ExpressionUUID->"02f89c14-9f6a-43e3-a3e7-6ec9972d770c"],
 
 Cell[BoxData["\<\"You can proceed to calculate the R-symbols :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"ccea9f26-29a8-4bc1-95f5-09bc99d79078"],
+In[135]:=",ExpressionUUID->"f3ce4f74-0ab1-482d-a60c-414690f717e4"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"69564d8c-d78c-43de-9528-b99e8b0a0d05"],
+In[135]:=",ExpressionUUID->"cb7b8175-6cbc-49cb-9510-23ce1ff446ef"],
 
 Cell[BoxData["\<\"Constructing the R-symbols...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"0dc01325-596d-4a00-af88-f111667a7919"],
+In[135]:=",ExpressionUUID->"6c03d4b8-4104-4d01-9861-a4f013ef5219"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7389,12 +7389,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"f68cb04d-de4b-4be6-8115-d72148bd2b1d"],
+In[135]:=",ExpressionUUID->"c06ccde3-29e2-407c-bcec-0ca1893e5f02"],
 
 Cell[BoxData["\<\"The hexagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"3836bbe6-148c-467d-ae52-b7e9d40db2b4"],
+In[135]:=",ExpressionUUID->"43607f3f-a6f4-4c90-9b3c-98e2a18c31f5"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7404,17 +7404,17 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"813586af-a9db-46b0-9d68-c05b44eb4380"],
+In[135]:=",ExpressionUUID->"41693ed6-0325-4959-b2c9-1585a67d8fd0"],
 
 Cell[BoxData["\<\"The R-matrices are unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"d3285b80-5cbc-47ab-a083-697794b63658"],
+In[135]:=",ExpressionUUID->"c3780289-b36b-4412-aea9-45185915acc5"],
 
 Cell[BoxData["\<\"The R-matrices are diagonal.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"9287c179-aa6a-48d9-ab77-5ac086be2a1d"],
+In[135]:=",ExpressionUUID->"0a3c6d4b-ec5c-4c4e-851b-2a1cf5ef8e2d"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7427,18 +7427,18 @@ R^{a,b}_c = e^(i\[Pi] r/s) one encounters is: ", 1],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"4efccfd6-4f5f-4e8f-86af-d8d9d339c270"],
+In[135]:=",ExpressionUUID->"5d144062-78f5-4485-a675-0fbaf481a69d"],
 
 Cell[BoxData["\<\"You can proceed to calculate the modular data :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"75e8125e-b17a-4a50-83b9-bd6ff0b11845"],
+In[135]:=",ExpressionUUID->"1efd4f20-024a-4525-b0b3-54917dd8e323"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"3a82eb2b-248d-438c-b14b-2c28f641d20d"],
+In[135]:=",ExpressionUUID->"24adb026-2d30-4ee0-ab83-8935d84a0eb5"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7453,7 +7453,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"8fe4b287-2e93-467b-ab4c-948f5fa60fea"],
+In[135]:=",ExpressionUUID->"970a18da-d691-4fc7-906d-49ea5131ffc7"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7464,7 +7464,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"aa2b128a-a598-4356-9e2e-0cc04038ec1d"],
+In[135]:=",ExpressionUUID->"c7df6ba7-78a5-4023-a268-a2257025f0ab"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7474,7 +7474,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"e715f66f-e1d0-4cf2-9fce-12f7c2d6879e"],
+In[135]:=",ExpressionUUID->"b57198e2-f393-41f9-8b00-e6c4e890af4c"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7486,7 +7486,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"4f647ff2-7b30-4743-80a5-bbd6c78297b2"],
+In[135]:=",ExpressionUUID->"4197e67c-40bd-4a3c-92f7-7e0adcb4ffd5"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7496,7 +7496,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"4a575672-a407-4290-a06c-4235465db188"],
+In[135]:=",ExpressionUUID->"b51767c4-00de-4de9-b343-ae1109282128"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7508,12 +7508,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"7e941384-3746-4b0b-9a3d-c7cbc5cc2fc6"],
+In[135]:=",ExpressionUUID->"67db32cd-db03-44db-9eeb-03835313ba81"],
 
 Cell[BoxData["\<\"The pivotal equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"cc3b6d21-da93-4980-a17d-aa2fc058b955"],
+In[135]:=",ExpressionUUID->"8019b04b-5681-4c57-ac1a-6bcd5d1f6756"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7525,7 +7525,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"9ada8091-c41f-498a-b9e3-4d050f16aa7e"],
+In[135]:=",ExpressionUUID->"e9b34cc8-2d94-446c-9699-43169e2f053f"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7537,7 +7537,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"990ee422-8d36-4582-b3cc-3a46b00c4343"],
+In[135]:=",ExpressionUUID->"ef6daf8d-1671-4e38-9741-acc6884fafc6"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7549,7 +7549,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"dafc30e4-746f-4c1c-a1f0-77945442c567"],
+In[135]:=",ExpressionUUID->"05813871-1ff0-4544-bcc7-3581c20e2372"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7565,30 +7565,30 @@ are: \"\>", "\[InvisibleSpace]",
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"3cf1d399-a283-4322-986b-b58cecd6f2ae"],
+In[135]:=",ExpressionUUID->"21ba8579-c5b2-4940-af30-4a9dc54c7def"],
 
 Cell[BoxData["\<\"The F-matrices are all unitary, but the quantum dimensions \
 are not all positive. Presumably, there exists a different pivotal structure, \
 such that all the quantum dimensions are positive.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"12819c85-a560-48af-b3b3-02c575525b37"],
+In[135]:=",ExpressionUUID->"e95e65b4-c765-4cf3-bde9-ad7e019c59c7"],
 
 Cell[BoxData["\<\"The theory is NOT unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"940d6aee-66d4-446d-9812-65757c6a5a2e"],
+In[135]:=",ExpressionUUID->"43eeda25-0110-4dac-88e4-4a3d52fa1319"],
 
 Cell[BoxData["\<\"The theory is NOT modular.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"006d02f6-b1b0-45ae-8c17-80db78601b47"],
+In[135]:=",ExpressionUUID->"071b61a5-7876-4528-ad74-236cb927ce22"],
 
 Cell[BoxData["\<\"The (non-modular!) S-matrix is given by (up to an overall \
 sign):\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"d30a08ab-b05c-4b9b-b52f-24c44e98cd28"],
+In[135]:=",ExpressionUUID->"fda9cce3-7efe-4094-aa1a-0cd7df8f9605"],
 
 Cell[BoxData[
  TagBox[
@@ -7610,12 +7610,12 @@ Cell[BoxData[
    MatrixForm[BoxForm`e$]]]], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"03d9af95-0498-4ac4-ae3f-108374706522"],
+In[135]:=",ExpressionUUID->"2194810c-c907-4e23-8215-f854a0fc05ce"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[138]:=",ExpressionUUID->"da5610ab-0319-4c99-9a92-e5a44588a826"]
+In[135]:=",ExpressionUUID->"cb6d6eda-a0a5-4b97-88f9-31deba4a16c7"]
 }, Open  ]]
 }, Open  ]],
 
@@ -7630,7 +7630,7 @@ Cell[BoxData[
  RowBox[{"initializelz", "[", 
   RowBox[{"\"\<c\>\"", ",", "2", ",", "5", ",", "1"}], "]"}]], "Input",
  CellLabel->
-  "In[141]:=",ExpressionUUID->"a2a5f35e-b891-487f-b326-be3cd077ef26"],
+  "In[138]:=",ExpressionUUID->"a2a5f35e-b891-487f-b326-be3cd077ef26"],
 
 Cell[CellGroupData[{
 
@@ -7652,13 +7652,13 @@ fractional level: \"\>", "\[InvisibleSpace]",
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[141]:=",ExpressionUUID->"41081cb0-3eb2-4b20-8ee7-26ea204132ee"],
+In[138]:=",ExpressionUUID->"29aba6fe-6610-4b2b-8e53-67943bb92ff4"],
 
 Cell[BoxData["\<\"You can proceed to calculate the F-symbols :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[141]:=",ExpressionUUID->"c071bf14-ffad-4733-a278-964a5c390c4b"]
+In[138]:=",ExpressionUUID->"fdae81c0-b7f4-4d81-9a8c-eaf3fbbf705f"]
 }, Open  ]]
 }, Open  ]],
 
@@ -7669,26 +7669,26 @@ Cell[BoxData[{
  RowBox[{"calculatersymbols", "[", "]"}], "\[IndentingNewLine]", 
  RowBox[{"calculatemodulardata", "[", "]"}]}], "Input",
  CellLabel->
-  "In[142]:=",ExpressionUUID->"b7f155e9-38b5-4966-a8de-2d9e9e9204d9"],
+  "In[139]:=",ExpressionUUID->"b7f155e9-38b5-4966-a8de-2d9e9e9204d9"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData["\<\"Initializing the weight spaces...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"763e8412-1c19-4e86-8b63-72cb0668b900"],
+In[139]:=",ExpressionUUID->"231606f4-e026-49d1-9668-7e43ef26672b"],
 
 Cell[BoxData["\<\"Constructing the bases for the weightspaces...\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"8385fe35-46e1-479d-8f0e-77b1675d931f"],
+In[139]:=",ExpressionUUID->"0c0b1815-1082-4422-adb1-9afe535461ef"],
 
 Cell[BoxData["\<\"The constructed bases for the weightspaces are orthonormal \
 :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"03c6fdd7-27fb-459f-9a44-7253e031e616"],
+In[139]:=",ExpressionUUID->"f60b2076-1592-4fff-b30d-9c4644e5f7e8"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7697,30 +7697,30 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"41b4d8c9-444d-41d7-bf09-81ed2891b241"],
+In[139]:=",ExpressionUUID->"6f6f1ed9-ea17-4272-8c77-b1097549a205"],
 
 Cell[BoxData["\<\"Constructing the fusion rules...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"ee822517-6586-44c9-9226-13c81c886550"],
+In[139]:=",ExpressionUUID->"39aa99c5-6e06-4c27-9e6b-18167861857d"],
 
 Cell[BoxData["\<\"The calculated fusion rules are consistent :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"f799dbb0-1e52-4c80-a299-f0db2429ef06"],
+In[139]:=",ExpressionUUID->"ea7e49d1-f4f2-4f3d-a7bc-744ed31ef676"],
 
 Cell[BoxData["\<\"Constructing the bases for the tensorproduct \
 weightspaces...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"acecac71-1fe0-4f06-8154-32cece3baab0"],
+In[139]:=",ExpressionUUID->"b7bf63ae-5469-4190-9c6e-71822530dc87"],
 
 Cell[BoxData["\<\"The calculated q-CG coefficients satisfy the orthonormality \
 conditions :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"27ca06a6-0fc1-4e5a-a32f-7cbc71ff2527"],
+In[139]:=",ExpressionUUID->"420ca234-cd86-4e98-8b39-fb092b4df136"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7730,7 +7730,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"f2e1977f-f417-498a-97a0-a22c6ac16258"],
+In[139]:=",ExpressionUUID->"7807ef78-d120-44d0-8a32-f7ce7611546f"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7743,7 +7743,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"bed1faa7-2a3f-4fa9-9b4a-0faec58458ba"],
+In[139]:=",ExpressionUUID->"5ef5e6c8-0870-44b7-b9ba-d59bb73dd21c"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7753,12 +7753,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"30690fcf-99ca-41c2-9702-bea9f1c0f0bf"],
+In[139]:=",ExpressionUUID->"8b897a9d-28bd-48b1-a00e-1cdaca0c247a"],
 
 Cell[BoxData["\<\"The pentagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"afc5cfaa-8453-473e-845d-421e8d427671"],
+In[139]:=",ExpressionUUID->"19518f1c-c91b-4d60-9617-b785f40e1755"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7768,44 +7768,44 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"eaf8e694-c912-4a1e-b0ea-d9ff57b02a8e"],
+In[139]:=",ExpressionUUID->"28478abb-17b6-4f67-a752-bb81cd230ef7"],
 
 Cell[BoxData["\<\"There are no fusion multiplicities.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"d2215c49-7ec7-4262-8819-c77afba48a4a"],
+In[139]:=",ExpressionUUID->"47abc3a8-6a35-4679-8e8a-9d0bd1469e1e"],
 
 Cell[BoxData["\<\"The F-matrices are unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"0f6d6690-f793-401e-895e-127ec3dea6cb"],
+In[139]:=",ExpressionUUID->"9f6e6a23-a80f-4232-8e44-9acd23a95777"],
 
 Cell[BoxData["\<\"The F-matrices are orthogonal.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"964f84d5-7116-4cee-b776-b0a5e961ef92"],
+In[139]:=",ExpressionUUID->"bd377085-54c8-4db9-8b42-7bd9cd5112bd"],
 
 Cell[BoxData["\<\"The F-symbols are all real or purely imaginary (all real, \
 in fact).\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"753e2576-356d-4fbc-a8c7-faca8c857c38"],
+In[139]:=",ExpressionUUID->"67533ee2-6548-4e81-a7da-a37888f960de"],
 
 Cell[BoxData["\<\"You can proceed to calculate the R-symbols :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"59cd6865-6932-4f9d-b497-b1823a6eb818"],
+In[139]:=",ExpressionUUID->"7368e748-f279-4291-a9f5-886b581b5569"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"fea2c8ec-a548-4b89-810a-6bb934baa061"],
+In[139]:=",ExpressionUUID->"90b4312d-f7e5-49d8-bf80-de99f2efe0c8"],
 
 Cell[BoxData["\<\"Constructing the R-symbols...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"48b7c1ec-4741-4f69-90f9-91dfa83644c9"],
+In[139]:=",ExpressionUUID->"c683ca44-67df-4102-bdc1-cded20eb80e1"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7815,12 +7815,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"a9c6b2fe-b4eb-43c4-9aa0-9e73354cfcec"],
+In[139]:=",ExpressionUUID->"a13b7de0-160e-43b0-8045-c360d4b3072c"],
 
 Cell[BoxData["\<\"The hexagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"bc137d0e-3721-478a-b737-7396fde3132d"],
+In[139]:=",ExpressionUUID->"ff8b0d5f-04ac-4057-bffc-d02f8c273411"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7830,17 +7830,17 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"51823435-bee0-428e-a66f-6387c9eb2eeb"],
+In[139]:=",ExpressionUUID->"8a6b125b-318e-4824-a175-9afc4ae076a7"],
 
 Cell[BoxData["\<\"The R-matrices are unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"f3462465-710b-4261-b759-c67c23158e8c"],
+In[139]:=",ExpressionUUID->"79b4530e-26a4-4a35-b8c7-0f11618e8c9f"],
 
 Cell[BoxData["\<\"The R-matrices are diagonal.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"ce37d34f-94ee-4a73-a228-6153af21fff6"],
+In[139]:=",ExpressionUUID->"26fefc11-17a3-4197-a9d4-ac6998516aa8"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7853,18 +7853,18 @@ R^{a,b}_c = e^(i\[Pi] r/s) one encounters is: ", 1],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"4574acf3-cb64-4cc6-a72c-6cb6aedc4888"],
+In[139]:=",ExpressionUUID->"741601bb-8e6b-4b7f-a74a-c3cba1470164"],
 
 Cell[BoxData["\<\"You can proceed to calculate the modular data :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"855dc7c1-28fb-44d9-9002-dfe369170be5"],
+In[139]:=",ExpressionUUID->"0e847b39-f3df-4bd1-885a-4db3baa6d08a"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"202d8820-aee2-4fec-a3b0-ba65603dd28e"],
+In[139]:=",ExpressionUUID->"bf3358ad-cdd9-49b5-8c33-86e6dc632444"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7879,7 +7879,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"b6e5a6b7-3f61-435b-8eaf-5352afa73a5b"],
+In[139]:=",ExpressionUUID->"290e6d07-c6f4-4c2b-893c-ec8e95ef2ebc"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7890,7 +7890,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"2c16c596-86b9-4d3b-9874-cb8b89d73797"],
+In[139]:=",ExpressionUUID->"ba0968f1-63c8-4c16-a81b-bc44df0c29b5"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7900,7 +7900,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"e91eef08-19ce-4c90-a40d-8b8023e3f03f"],
+In[139]:=",ExpressionUUID->"d87c31a9-de21-4399-9bca-58aa984e3c6a"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7912,7 +7912,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"813c279e-3fba-4d67-b091-6ebe235864e9"],
+In[139]:=",ExpressionUUID->"fc884c49-90fd-4f73-a4f4-a827ba365784"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7922,7 +7922,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"088a926f-bb6c-4edc-aabc-7bf290079ad6"],
+In[139]:=",ExpressionUUID->"9b4a4159-c7b0-42f0-8550-7d805b2ca791"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7934,12 +7934,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"beed59a0-8726-4098-b471-a5ab13422b07"],
+In[139]:=",ExpressionUUID->"7c9c2f19-66b4-4fde-8e1d-05228e265d33"],
 
 Cell[BoxData["\<\"The pivotal equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"333c871b-6d55-4629-af7d-0af1c10d9e08"],
+In[139]:=",ExpressionUUID->"4f6b3c8e-a782-4496-8802-9f33f060379e"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7951,7 +7951,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"724f4c9d-a91e-40a8-aef3-e33188720ffb"],
+In[139]:=",ExpressionUUID->"36d3cef1-f82d-431a-8fab-9fd50ccaea79"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7963,7 +7963,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"fefd0b2d-79fe-4f26-a1af-e0167651c2b7"],
+In[139]:=",ExpressionUUID->"27aded38-a08e-4bf0-b29b-b885e004ff09"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7975,7 +7975,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"5d53550a-0db4-4ed6-8233-8a320a7e32a7"],
+In[139]:=",ExpressionUUID->"d49d6ae9-8fa4-4e63-874e-39cb67d7044b"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -7991,30 +7991,30 @@ are: \"\>", "\[InvisibleSpace]",
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"d35cd05c-9926-4409-8c14-ee58335dd4be"],
+In[139]:=",ExpressionUUID->"39b3b97d-03c9-4878-9d16-a3b5c7a80ca0"],
 
 Cell[BoxData["\<\"The F-matrices are all unitary, but the quantum dimensions \
 are not all positive. Presumably, there exists a different pivotal structure, \
 such that all the quantum dimensions are positive.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"33db0225-221b-4942-9c73-4dc08f172930"],
+In[139]:=",ExpressionUUID->"28ca987a-f195-4c31-a83e-29e6c8bbd825"],
 
 Cell[BoxData["\<\"The theory is NOT unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"e4d04d0d-04b1-45ba-86fd-c1792d3c2b5c"],
+In[139]:=",ExpressionUUID->"7be76aa6-96a1-4ca9-80e7-03bea288d08a"],
 
 Cell[BoxData["\<\"The theory is NOT modular.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"fbf422ef-73ac-4ec1-b348-4dcc7bab0769"],
+In[139]:=",ExpressionUUID->"4b2a4d2e-160e-4c27-acbb-5f0523a3ec4b"],
 
 Cell[BoxData["\<\"The (non-modular!) S-matrix is given by (up to an overall \
 sign):\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"061a2fc3-ec76-4f5a-a985-80dd574576b7"],
+In[139]:=",ExpressionUUID->"99b1c27a-1c1e-4278-a2a3-3583b5fa9b05"],
 
 Cell[BoxData[
  TagBox[
@@ -8036,12 +8036,12 @@ Cell[BoxData[
    MatrixForm[BoxForm`e$]]]], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"d2d87625-58e1-4d02-816b-dba305dcdbb5"],
+In[139]:=",ExpressionUUID->"c8057ddf-7093-4020-9d5b-909ce6d1802b"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[142]:=",ExpressionUUID->"de260252-3f65-48e5-a865-591215b7329b"]
+In[139]:=",ExpressionUUID->"f8d7f972-4b60-4af6-8e11-36ab5f2b4bd3"]
 }, Open  ]]
 }, Open  ]],
 
@@ -8050,7 +8050,7 @@ Cell[CellGroupData[{
 Cell[BoxData[
  RowBox[{"possiblesphericalpivotalstructures", "[", "]"}]], "Input",
  CellLabel->
-  "In[145]:=",ExpressionUUID->"ce32dcb4-f47e-47e1-af20-e291a19a2614"],
+  "In[142]:=",ExpressionUUID->"ce32dcb4-f47e-47e1-af20-e291a19a2614"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -8060,7 +8060,7 @@ Cell[BoxData[
      RowBox[{"-", "1"}]}], "}"}], ",", 
    RowBox[{"{", 
     RowBox[{"1", ",", "1"}], "}"}]}], "}"}]], "Output",
- CellLabel->"Out[145]=",ExpressionUUID->"fdc8008e-4aca-4b2d-a9dc-c45e90f1e74d"]
+ CellLabel->"Out[142]=",ExpressionUUID->"4c48efad-1c42-44b7-887d-c8b8d81aea0f"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -8070,14 +8070,14 @@ Cell[BoxData[
   RowBox[{"{", 
    RowBox[{"1", ",", "1"}], "}"}], "]"}]], "Input",
  CellLabel->
-  "In[146]:=",ExpressionUUID->"7a0b0c39-1f8c-4197-a610-7db910a13db9"],
+  "In[143]:=",ExpressionUUID->"7a0b0c39-1f8c-4197-a610-7db910a13db9"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData["\<\"The pivotal equations are satisfied :-) \"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"66c055be-0281-4014-8c92-699eeec82500"],
+In[143]:=",ExpressionUUID->"c4f7671d-6f3a-48a1-8798-cce298882dc4"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8099,7 +8099,7 @@ data for the quantum group, you should run calculatemodulardata[] first."],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"3bcc85be-d64a-4051-aa20-fe1a48398cf4"],
+In[143]:=",ExpressionUUID->"5137a4fa-cdc3-4741-ac38-2873e401a7de"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8114,7 +8114,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"ed0797e0-24e5-4014-9b99-57ec7d61656c"],
+In[143]:=",ExpressionUUID->"7d632ad1-d7c0-4956-ad00-d38880794483"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8125,7 +8125,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"be489aaf-3836-4feb-954d-c8d6620cbb8c"],
+In[143]:=",ExpressionUUID->"6ce579ec-232f-4e4b-bac2-d306a33369d6"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8135,7 +8135,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"c95d3f2f-c3d6-4f77-b6bc-77f41addf7d5"],
+In[143]:=",ExpressionUUID->"cdd0b643-f6f3-4a96-b229-9465bccaa0c6"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8147,7 +8147,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"ba864f84-03ba-48c7-ba8d-9cdfdfe35dc4"],
+In[143]:=",ExpressionUUID->"d5b2dd76-b082-474d-b0ef-b3b16c622378"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8157,7 +8157,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"414d64cd-42c1-430e-ac43-3c2f9a12004e"],
+In[143]:=",ExpressionUUID->"fe94c4d9-3e3c-44fb-ab74-7d98c43e3cb8"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8168,7 +8168,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"79a8e6e4-f09d-4f83-952d-86b4f4ad08f8"],
+In[143]:=",ExpressionUUID->"73c07c95-4b57-4e9e-89f6-3945f0e76daf"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8180,7 +8180,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"56fb4c22-4e69-4c1d-aac3-41bb02946418"],
+In[143]:=",ExpressionUUID->"cdc4899d-7348-460b-90a6-229ffee4be63"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8191,7 +8191,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"5a70e25a-2b43-4016-8237-80aba3abe8a2"],
+In[143]:=",ExpressionUUID->"722b8412-ae6b-4391-9dac-8a5b339fd049"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8205,22 +8205,22 @@ are: \"\>", "\[InvisibleSpace]",
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"7ec08799-0fb2-4987-a35a-82fdb452e4d0"],
+In[143]:=",ExpressionUUID->"a00da2f5-d97e-4a06-8c98-49d5d9f45e1f"],
 
 Cell[BoxData["\<\"The theory is unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"50fb009e-1756-4309-b200-b9303ec1609a"],
+In[143]:=",ExpressionUUID->"375741c2-ea05-4231-b2fc-253080216632"],
 
 Cell[BoxData["\<\"The theory is NOT modular.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"c73735a8-7e92-4b2c-87f7-2e2bc588441f"],
+In[143]:=",ExpressionUUID->"3f24b215-914d-4237-b2a3-41dc4231c951"],
 
 Cell[BoxData["\<\"The (non-modular!) S-matrix is given by:\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"5bd483a5-3fb8-4a6d-88c4-0a652b95aee2"],
+In[143]:=",ExpressionUUID->"0876c5ff-a809-44dc-8927-459de0a4f17c"],
 
 Cell[BoxData[
  TagBox[
@@ -8240,12 +8240,12 @@ Cell[BoxData[
    MatrixForm[BoxForm`e$]]]], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"93aa8212-becb-458a-88af-b16fc6d3ef50"],
+In[143]:=",ExpressionUUID->"eff6766f-da1a-4de1-a83e-474f703a2bda"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[146]:=",ExpressionUUID->"69221545-1eed-4c57-8e3f-1c98235e7026"]
+In[143]:=",ExpressionUUID->"c2eb6f44-a1d7-4d27-a2bf-46eadd9efe22"]
 }, Open  ]]
 }, Open  ]]
 }, Closed]],
@@ -8269,7 +8269,7 @@ Cell[BoxData[{
  RowBox[{"findexactrsymbols", "[", "]"}], "\[IndentingNewLine]", 
  RowBox[{"findexactmodulardata", "[", "]"}]}], "Input",
  CellLabel->
-  "In[147]:=",ExpressionUUID->"57c2e095-09d8-491d-824d-bc1df7ca989d"],
+  "In[144]:=",ExpressionUUID->"57c2e095-09d8-491d-824d-bc1df7ca989d"],
 
 Cell[CellGroupData[{
 
@@ -8286,30 +8286,30 @@ to ", {"g", 2, 2, 5}, ". This is a uniform case."],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"33546c42-b3ae-4189-a90e-69f318594012"],
+In[144]:=",ExpressionUUID->"24f5acd4-b545-4ee6-880a-c9443a971db2"],
 
 Cell[BoxData["\<\"You can proceed to calculate the F-symbols :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"2d20eff7-0888-4a35-9f58-554735c14ded"],
+In[144]:=",ExpressionUUID->"17e0ac29-69ec-473e-82ba-188a893151a5"],
 
 Cell[BoxData["\<\"Initializing the weight spaces...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"51a8f62c-6627-4e6c-9c94-c1ea1f7bb2ee"],
+In[144]:=",ExpressionUUID->"17993c3d-3d6e-45a8-ad4c-c7edd6ebea17"],
 
 Cell[BoxData["\<\"Constructing the bases for the weightspaces...\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"be4cae39-fcb1-4dec-bf3e-b299ad76328e"],
+In[144]:=",ExpressionUUID->"23cbc20b-c1a0-4a0e-98e0-180379a86601"],
 
 Cell[BoxData["\<\"The constructed bases for the weightspaces are orthonormal \
 :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"e7965052-aad9-47c2-9067-5e4700f194e6"],
+In[144]:=",ExpressionUUID->"678ca948-e709-4611-9600-0a1479115440"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8319,30 +8319,30 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"d50b1cc2-395c-4420-a57f-5d99354323f3"],
+In[144]:=",ExpressionUUID->"85286919-3172-4f06-ac2f-249b91d6ddce"],
 
 Cell[BoxData["\<\"Constructing the fusion rules...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"af4b3826-1b95-45ae-9852-1811cd8e98e6"],
+In[144]:=",ExpressionUUID->"31b63fd5-95c5-48f8-93ad-f9204e99621e"],
 
 Cell[BoxData["\<\"The calculated fusion rules are consistent :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"de049311-84e2-462e-b392-24bbfc7bc5bd"],
+In[144]:=",ExpressionUUID->"f6bd7942-a1ca-4487-86a3-4bb4364cb928"],
 
 Cell[BoxData["\<\"Constructing the bases for the tensorproduct \
 weightspaces...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"11e1d19b-013b-4cc2-af9b-7720bc8f5d74"],
+In[144]:=",ExpressionUUID->"4b99c30a-3606-4ff1-b77d-c7f6c5779ee1"],
 
 Cell[BoxData["\<\"The calculated q-CG coefficients satisfy the orthonormality \
 conditions :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"772bc132-e2b2-42fc-9ac0-ca304e839aee"],
+In[144]:=",ExpressionUUID->"baf4bb64-d762-4828-80f6-4b8f0b1b782d"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8352,7 +8352,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"7e3d678c-cd51-4d0c-b0aa-f319f3a5b68d"],
+In[144]:=",ExpressionUUID->"7c6dfdbd-5d4e-4cdd-a1f2-4dc664ba2bfd"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8365,7 +8365,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"9f61d3ce-249d-4baa-987c-fd172ac36b09"],
+In[144]:=",ExpressionUUID->"4ff588e8-1910-4bc3-b8b6-d317e7ae2e06"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8375,12 +8375,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"161523d9-0c2e-4f6b-9844-f89c0d117cf7"],
+In[144]:=",ExpressionUUID->"7d8d3ee7-3275-4842-8eb7-1dcc920194bd"],
 
 Cell[BoxData["\<\"The pentagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"238f1e92-9699-4b06-8778-b37b63f65aa6"],
+In[144]:=",ExpressionUUID->"d57e7d2e-dae5-4f3f-9c19-044147a1ed8f"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8390,50 +8390,50 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"05f10854-2da9-4b96-be0c-48d6daeeaae7"],
+In[144]:=",ExpressionUUID->"955b324e-c2cd-4c3f-85e1-62ea78d51ce4"],
 
 Cell[BoxData["\<\"There are no fusion multiplicities.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"cd71157f-7052-4f03-a810-122871ac222b"],
+In[144]:=",ExpressionUUID->"cf7f5994-ac7e-4ce7-b13e-672a3fb6ffd2"],
 
 Cell[BoxData["\<\"The F-matrices are not all unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"4ab1db67-6d4a-4452-b7d5-8dd728f485cf"],
+In[144]:=",ExpressionUUID->"8628d0c0-57f6-46f9-a04d-dd7980ee21a3"],
 
 Cell[BoxData["\<\"The F-matrices are not all real.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"e3b8fdfd-b8b5-4688-a22e-465b54245a18"],
+In[144]:=",ExpressionUUID->"a8b7d54e-937b-4012-9b30-190315cbc869"],
 
 Cell[BoxData["\<\"The F-matrices satisfy F.(F^T) = (F^T).F = 1\"\>"], "Print",
  
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"83dc5a1e-1a56-4d3d-bfae-7c763ab6c3f9"],
+In[144]:=",ExpressionUUID->"069fa951-5cdf-4071-8af8-147e9de6366e"],
 
 Cell[BoxData["\<\"The F-symbols are all real or purely imaginary.\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"35d5d213-4165-4e30-ab07-39d43cfe7fb5"],
+In[144]:=",ExpressionUUID->"d1e96ab6-54d7-4d81-be39-868537c1c4b2"],
 
 Cell[BoxData["\<\"You can proceed to calculate the R-symbols :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"18c319ef-9c80-490b-b9c8-82d2356bae2a"],
+In[144]:=",ExpressionUUID->"53874735-de16-4889-889c-9692265fd68d"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"101d6247-c784-4772-a218-aafd96499b92"],
+In[144]:=",ExpressionUUID->"3e421ad6-2322-493a-9505-bd10e8d0bcec"],
 
 Cell[BoxData["\<\"Constructing the R-symbols...\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"52699291-4314-43be-a4fc-6d9814dc80ee"],
+In[144]:=",ExpressionUUID->"a07efc6b-0060-454f-a534-240c10303175"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8443,12 +8443,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"696f62b2-5f1e-428a-91e4-4d4e8ae9209d"],
+In[144]:=",ExpressionUUID->"3b2299bf-9054-48a5-bf06-26a398a26a3e"],
 
 Cell[BoxData["\<\"The hexagon equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"1a9e53e2-f97f-46f6-aa0f-1ac72fd2eb28"],
+In[144]:=",ExpressionUUID->"809bd3a3-bef6-4483-b27c-9f9a45359344"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8458,17 +8458,17 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"f78d5391-bc34-45d1-902c-dd7a85acc397"],
+In[144]:=",ExpressionUUID->"52d061e1-31e0-4c15-9a19-da2c4d3d4b8a"],
 
 Cell[BoxData["\<\"The R-matrices are unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"b5f00ec2-9051-44be-bd20-05f65b07490c"],
+In[144]:=",ExpressionUUID->"bc0cca76-ba6a-487d-a4af-01014892d6e0"],
 
 Cell[BoxData["\<\"The R-matrices are diagonal.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"693614d3-7dcd-4218-8978-aead4d9c21bf"],
+In[144]:=",ExpressionUUID->"591057b3-c1bc-4b53-ab58-d333a39afe05"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8481,18 +8481,18 @@ R^{a,b}_c = e^(i\[Pi] r/s) one encounters is: ", 9],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"b17dde21-850a-44c6-89cb-e748f6151d56"],
+In[144]:=",ExpressionUUID->"c8026947-240f-46fc-b74f-2943db063431"],
 
 Cell[BoxData["\<\"You can proceed to calculate the modular data :-)\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"683ee774-6abb-4111-954b-196e02e271e8"],
+In[144]:=",ExpressionUUID->"bc94fb3c-ea4d-4374-a97c-30724d9b4c0e"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"49f193a4-717a-4615-bf15-78ee23d0edec"],
+In[144]:=",ExpressionUUID->"b1b25e40-9cc5-4667-9b45-5e9cb189a808"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8512,7 +8512,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"e28d8014-415f-43e9-9d4e-bbdb2a46cf6f"],
+In[144]:=",ExpressionUUID->"cd89af22-3e70-44da-97c6-0a014712be79"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8523,7 +8523,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"5275a134-7631-451d-8dde-84805ebceedf"],
+In[144]:=",ExpressionUUID->"91fe3a49-590f-4a4a-bbe9-8c2372bd8f6b"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8533,7 +8533,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"6e9ed291-6ce4-4283-b992-9db0752d1185"],
+In[144]:=",ExpressionUUID->"9be1c76b-40c2-4979-9082-f3186665fb26"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8546,7 +8546,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"40abccb1-91f6-4095-be27-ec24db8763ec"],
+In[144]:=",ExpressionUUID->"45c494d2-eb20-4b52-bd48-b04a2161f48a"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8556,7 +8556,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"80fbd406-dc6c-471e-bafc-f2bec5836447"],
+In[144]:=",ExpressionUUID->"2a48365e-0fc8-4992-9774-91380c12002a"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8567,12 +8567,12 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"404039db-c6ea-402c-9bd5-38e09fe090b2"],
+In[144]:=",ExpressionUUID->"0a449576-5223-4894-a942-827184dd3153"],
 
 Cell[BoxData["\<\"The pivotal equations are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"8b2e3aae-b336-4efe-825a-7c4f0fc380e3"],
+In[144]:=",ExpressionUUID->"85c661a6-9bba-4a42-805e-af098ffbbf7e"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8583,7 +8583,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"91c89bc1-6ed5-489d-9f5f-993c070f1af6"],
+In[144]:=",ExpressionUUID->"1f8557db-eb47-4e56-b7c3-b0179e5e6b28"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8599,7 +8599,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"a1330d46-c4b6-45d8-a8c2-a77186ba088b"],
+In[144]:=",ExpressionUUID->"054db1a7-409e-4f49-8066-9ef8b2a33fc6"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8614,7 +8614,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"dda1063f-7b18-447f-954b-8dd1958dd5cc"],
+In[144]:=",ExpressionUUID->"c4f68854-f33b-41a5-a241-57ad1c8068ce"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8634,17 +8634,17 @@ are: \"\>", "\[InvisibleSpace]",
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"dfe9b3a1-2e89-463b-bcd9-4af0748ea320"],
+In[144]:=",ExpressionUUID->"eebca311-2ca2-4e73-8b9b-ac348b1a3de8"],
 
 Cell[BoxData["\<\"The theory is NOT unitary.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"aaf80da6-672f-44e6-947e-d47468372f2e"],
+In[144]:=",ExpressionUUID->"d62af1ba-22de-4478-ab26-fb6d33baedc3"],
 
 Cell[BoxData["\<\"The theory is modular.\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"326b6f20-dfb0-4a61-8bc4-4586a9e6a350"],
+In[144]:=",ExpressionUUID->"7e8669bb-dd22-4d36-816d-a0178b5374a8"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8656,13 +8656,13 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"971c81a2-2ebb-4fbf-b525-64cfa164c697"],
+In[144]:=",ExpressionUUID->"b8c8d68a-8d31-4bb6-9d08-468fc697a719"],
 
 Cell[BoxData["\<\"The S-matrix is given by (up to an overall sign):\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"4e5191ef-deda-4a1e-b8d2-bc878a3f2800"],
+In[144]:=",ExpressionUUID->"379ae755-9363-4354-b4f9-475ce02db581"],
 
 Cell[BoxData[
  TagBox[
@@ -8694,29 +8694,29 @@ Cell[BoxData[
    MatrixForm[BoxForm`e$]]]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"b239eccd-27b0-43e7-ab8f-7311d890e7bb"],
+In[144]:=",ExpressionUUID->"e187b0b1-33b6-47d7-87bf-08efefc35c62"],
 
 Cell[BoxData["\<\"The modular relations Exp[- 2 Pi I/8 centralcharge](S.T)^3 \
 = S^2 = C are satisfied :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"859a4a7f-75ba-47e6-8030-c6262473e66c"],
+In[144]:=",ExpressionUUID->"0dee83a2-1297-4cf6-8577-33ae23013386"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"d165193d-8f02-41f9-b8de-005cdf45cb3c"],
+In[144]:=",ExpressionUUID->"43ceb9b4-6f5f-4e44-a0aa-877bbdef005b"],
 
 Cell[BoxData["\<\"Trying to find the exact form of the F-symbols...\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"b98d2684-c0d5-4047-acb5-03f23969542d"],
+In[144]:=",ExpressionUUID->"c00051c9-8c3c-4001-9283-7417bdf54e1d"],
 
 Cell[BoxData["\<\"Found the exact form of the F-symbols :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"05aac81f-e042-4ad3-bd62-c58d0e15cc2d"],
+In[144]:=",ExpressionUUID->"d3cc088f-ed49-4a71-8edf-67c98a9e01b4"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8729,7 +8729,7 @@ F-symbols...\"\>"}],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"9698c551-d468-4a3b-b250-098c447e2c92"],
+In[144]:=",ExpressionUUID->"aaad5d11-e856-4333-8665-deb366bf5330"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8743,23 +8743,23 @@ with precision ", 200, " and they hold with accuracy ", 197, " :-)"],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"f5190a1f-0b77-4836-b040-2dd084f3e164"],
+In[144]:=",ExpressionUUID->"67814c67-de48-410a-8239-8b71f2d73917"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"e6c02301-7754-4b3d-9ece-dcfc80d5961c"],
+In[144]:=",ExpressionUUID->"4ada1ba4-bdf4-4ab0-b231-e109a5c31d41"],
 
 Cell[BoxData["\<\"Trying to find the exact form of the R-symbols...\"\>"], \
 "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"178946f3-e6ad-4744-a213-8716eb91d56f"],
+In[144]:=",ExpressionUUID->"ca92c52f-4515-4797-ad2b-0a86208c0152"],
 
 Cell[BoxData["\<\"Found the exact form of the R-symbols :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"7bf2a56a-91f3-423d-b2f6-66a15f85abd1"],
+In[144]:=",ExpressionUUID->"e326be65-a5fc-4c5c-b2e7-d5f3aeffdd78"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8772,7 +8772,7 @@ F- and R-symbols...\"\>"}],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"f22f79ad-abe8-4fe4-9415-6ff98d0442e2"],
+In[144]:=",ExpressionUUID->"2ba61a15-6ed2-4c0c-8939-d47e92aae9d7"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8787,12 +8787,12 @@ R-symbols, with precision ", 200, " and they hold with accuracy ", 198,
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"2330c6f6-edfd-465e-beac-fad19066548a"],
+In[144]:=",ExpressionUUID->"bddab199-889f-4a80-9085-d166f6fc3f1b"],
 
 Cell[BoxData["\<\"Done :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"3f55c97e-0c65-4253-8288-a29c156834b1"],
+In[144]:=",ExpressionUUID->"4e0d4a47-6756-4d7c-a747-537f7f93f94f"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8822,7 +8822,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"66a128f0-fea5-4574-b6e3-073b9fcd0848"],
+In[144]:=",ExpressionUUID->"8d1264af-e8ed-4c3a-a1b6-dbeb00c011f6"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8836,7 +8836,7 @@ with precision ", 200, " and they hold with accuracy ", 199, " :-)"],
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"40ceffe3-2d71-4750-8e70-9f9613f98506"],
+In[144]:=",ExpressionUUID->"7df8e8ad-cc7c-4d69-980c-b8a1e842697a"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8866,7 +8866,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"3b1fd2f8-e01f-4606-a332-c4f7b4f4e6b1"],
+In[144]:=",ExpressionUUID->"8654d43f-b9b2-4fee-90ec-02fe89f6f696"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8899,7 +8899,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"67edca36-825c-4073-95ec-0530b6dc9cf7"],
+In[144]:=",ExpressionUUID->"11fba53d-f3cb-400e-a717-18f0c9b11c19"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8929,7 +8929,7 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"0f7233f7-9c23-49b5-8066-ce266366d790"],
+In[144]:=",ExpressionUUID->"327e9784-8299-4791-85ad-85a9818fb4b5"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -8965,13 +8965,13 @@ Cell[BoxData[
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"8331b8ef-0aad-4e81-9771-bac03b377b67"],
+In[144]:=",ExpressionUUID->"9cadf3cf-eac2-487f-a7c3-95d5532cb858"],
 
 Cell[BoxData["\<\"The exact form of the S-matrix is given by (up to an \
 overall sign):\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"5222ea18-0d44-46b4-ae38-bb5d4b33fe78"],
+In[144]:=",ExpressionUUID->"03c2f28d-dede-45df-8de8-772ef026e193"],
 
 Cell[BoxData[
  TagBox[
@@ -9087,7 +9087,7 @@ Cell[BoxData[
    MatrixForm[BoxForm`e$, TableDepth -> 2]]]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"0967802d-cf57-46cc-9765-4ba77a2d06da"],
+In[144]:=",ExpressionUUID->"74f47af0-df04-4a50-9232-0e60552855b3"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -9103,12 +9103,12 @@ checked with the exact form of the S-matrix, with precision ", 200,
   Editable->False]], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"0701fb58-2d67-468c-bb4b-ec0a5b8fa73b"],
+In[144]:=",ExpressionUUID->"53e24070-40d2-49a8-b7d9-0f32014bbbff"],
 
 Cell[BoxData["\<\"Done, all relations hold :-)\"\>"], "Print",
  CellLabel->
   "During evaluation of \
-In[147]:=",ExpressionUUID->"246a6a66-4ac5-4e6b-b213-61c88a152697"]
+In[144]:=",ExpressionUUID->"c7fc5e12-7ca3-4820-835e-723fafb67209"]
 }, Open  ]]
 }, Open  ]]
 }, Closed]]
@@ -9116,7 +9116,7 @@ In[147]:=",ExpressionUUID->"246a6a66-4ac5-4e6b-b213-61c88a152697"]
 }, Open  ]]
 },
 WindowSize->{1090, 755},
-WindowMargins->{{163, Automatic}, {Automatic, 0}},
+WindowMargins->{{Automatic, 151}, {Automatic, 0}},
 PrivateNotebookOptions->{"FileOutlineCache"->False},
 TrackCellChangeTimes->False,
 FrontEndVersion->"12.1 for Mac OS X x86 (64-bit) (March 13, 2020)",
