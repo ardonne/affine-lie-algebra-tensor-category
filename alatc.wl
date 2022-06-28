@@ -240,6 +240,11 @@ q = e^(2 Pi I z / l) ), such that it is in the same state as if one just had cal
 data (and its exact form). The exception is that most of the Lie algebra data and qCG coefficients \
 are not loaded (this data is not stored)."
 
+doitall::usage = 
+	"doitall[] assumes that the system is correctly initialized, and calculates the \
+F-symbols, the R-symbols, the modular data, the exact form of the F-symbols, \
+the exact form of the R-symbols and finally the exact form of the modular data."
+
 
 (* ::Section:: *)
 (*Begin `Private` Context*)
@@ -274,7 +279,7 @@ Steve Simon, Joost Slingerland, Gert Vercleyen\n" ,
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2022-04-05\n\
+       "Last revision: 2022-06-28\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -622,6 +627,16 @@ rangeok[type_,rank_]:=
   },
  False
 ];  
+
+
+doitall[] := With[{},
+	calculatefsymbols[];
+	calculatersymbols[];
+	calculatemodulardata[];
+	findexactfsymbols[];
+	findexactrsymbols[];
+	findexactmodulardata[];
+];
 
 
 (* ::Subsection::Closed:: *)
@@ -1021,6 +1036,81 @@ GDC[z,",lvalue,"] == 1."];
  
 ];
 
+initializelz[type_, rank_, lvalue_, zvalue_, prec_]:=
+Module[{typerangeok, currentlvalueok, currentzvalueok, currentlzvaluesok, lzlevel, lzrootfac},
+
+  If[Not[rangeok[type, rank]],
+   typerangeok = False;
+   Print["The type of algebra and the rank are not compatible!"];,
+   typerangeok = True;
+   ,
+   typerangeok = False;
+   Print["The type of algebra and the rank are not compatible!"];
+ ];
+ 
+ 
+ If[typerangeok,
+  If[Not[lvalueok[type, rank, lvalue]],
+  currentlvalueok = False;
+  Print["The value of l is not compatible with the type of algebra and its rank."];
+  lvaluespossible[type, rank];,
+  currentlvalueok = True;,
+  currentlvalueok = False;
+  Print["The value of l is not compatible with the type of algebra and its rank."];
+  lvaluespossible[type, rank];
+ ];
+ ];
+ 
+ If[typerangeok && currentlvalueok,
+   If[Not[zvalueok[lvalue,zvalue]],
+    currentzvalueok = False;
+    currentlzvaluesok = False;
+    Print["The value of z is not compatible with l. The possible values for z are: 0 < z < ", lvalue, ", such that \
+GDC[z,",lvalue,"] == 1."];,
+    currentzvalueok = True;
+    currentlzvaluesok = True;,
+    currentzvalueok = False;
+    currentlzvaluesok = False;
+    Print["The value of z is not compatible with l. The possible values for z are: 0 < z < ", lvalue, ", such that \
+GDC[z,",lvalue,"] == 1."];
+   ];
+  ];
+ 
+ If[typerangeok && currentlvalueok && currentzvalueok,
+    typerankinfo = False;
+    levelinfo = False;
+    rootfacinfo = False;
+    initialize[type,rank];
+    uniform = lzvaluesuniform[type, rank, lvalue, zvalue];
+    lzlevel = If[uniform, lvalue/tmax - g, lvalue - g];
+    lzrootfac = If[uniform, zvalue, tmax*zvalue];
+    initializelevel[lzlevel];
+    If[IntegerQ[prec] && prec > 100, setprecision[prec]; ];
+    lval = lvalue;
+    zval = zvalue;
+    initfromlz = True;
+    initializerootofunity[lzrootfac];
+    typerankinfo = True;
+    levelinfo = True;
+    rootfacinfo = True;
+    initfromlz = False;
+    ,
+    Print["No initialization was done!"];,
+    Print["No initialization was done!"];
+ ];
+ 
+ 
+];
+
+
+initialize[type_, rank_, level_, rootfac_, prec_ ]:=
+  With[{},
+    initialize[type, rank, level];
+    If[IntegerQ[prec] && prec > 100, setprecision[prec]; ];
+    initializerootofunity[rootfac];
+  ];
+  
+  
 
 
 setprecision[prec_] := With[{},
@@ -1388,8 +1478,48 @@ initializeweightspaces[irreps_] := Module[{inprod, factor, w, pos, dims, dim, te
 
 
 (*
+command to find the subset of (1,2,...,range), of length len, that followings currset,
+using the same ordering as Subsets would give.
+Could equally have used: Subsets[range,{len},{subspos}][[1]]
+*)
+
+nextset[currset_, range_, len_] :=
+Module[
+  {lastset, done, diff, posfromend, found, result, posfromstart},
+  lastset = Range[range - len + 1, range];
+  done = False;
+  If[currset == lastset, done = True; result = False];
+  If[Not[done],
+   diff = lastset - currset;
+   posfromend = 0;
+   found = False;
+    
+   While[Not[found],
+    posfromend++;
+    If[Not[diff[[-posfromend]] == 0], found = True];
+   ];
+    
+   posfromstart = len - posfromend + 1;
+    
+   If[
+    posfromend == 1,
+    result = Join[currset[[1 ;; -2]], {currset[[-1]] + 1}];
+   ];
+   If[
+    posfromstart < len,
+    result =
+     Join[
+      currset[[1 ;; posfromstart - 1]], 
+      Range[currset[[posfromstart]] + 1, currset[[posfromstart]] + 1 + posfromend - 1]
+     ];
+   ];
+  ];
+  result
+];
+
+(*
 generatestatespossible[] should not be necessary anymore, after the update dealing the precision in a better way.
-It is only used when the standard way of generating the states needed does not work
+It is only used when the standard way of generating the states (using generatestatesneeded[]) needed does not work
 *)
 
 generatestatespossible[] :=
@@ -1429,7 +1559,7 @@ generatestatespossible[] :=
    
 generatestatesneeded[] :=
   
-  Module[{weightsabove, allbasis, subs, subslength, notfound, subspos},
+  Module[{weightsabove, allbasis, subs, subslength, notfound, subspos, currsub},
    
    Clear[statesneeded];
    
@@ -1450,23 +1580,28 @@ generatestatesneeded[] :=
         , {i, 1, Length[weightsabove]}]
        , 1];
      
-     subs = Subsets[Range[Length[allbasis]], {wdim[l, currentweight]}];
-     subslength = Length[subs];
+     (* Subsets can cause memory problems, if the number of subsets is large *)
+     (*subs = Subsets[Range[Length[allbasis]], {wdim[l, currentweight]}];*)
+     
+     subslength = Binomial[Length[allbasis],wdim[l, currentweight]];
      notfound = True;
      subspos = 1;
+     currsub = Range[wdim[l, currentweight]];
      
      While[notfound && subspos <= subslength,
       If[
        MatrixRank[Table[
           Chop[innerproduct[l, w1, l, w2], 10^(-(Max[10, precision - 20]))]
-          , {w1, allbasis[[subs[[subspos]]]]}
-          , {w2, allbasis[[subs[[subspos]]]]}]
+          , {w1, allbasis[[currsub]]}
+          , {w2, allbasis[[currsub]]}]
           ] == wdim[l, currentweight]
        ,
        notfound = False;
-       statesneeded[l, currentweight] = allbasis[[subs[[subspos]]]];
+       statesneeded[l, currentweight] = allbasis[[currsub]];
        ];
-      subspos++];
+      subspos++;
+      currsub = nextset[currsub, Length[allbasis], wdim[l, currentweight]];
+      ];
      
      If[notfound,
       
