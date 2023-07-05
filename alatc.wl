@@ -253,7 +253,7 @@ the exact form of the R-symbols and finally the exact form of the modular data."
 Begin["`Private`"];
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*General functions*)
 
 
@@ -675,7 +675,7 @@ initialize[atype_, rr_] :=
     tmax = tmaxvalue[type];
     tvec = rootlengthfactorsinverted[type, rank];
     rho = Table[1, {j, 1, rank}];
-    a = icartan.rho;
+    a = icartan . rho;
 
 
     (* Generate the roots of the algebra *)
@@ -693,7 +693,7 @@ initialize[atype_, rr_] :=
     ];
     roots = 
      Sort[roots, 
-      Sum[(#1.icartan)[[j]] a[[j]], {j, 1, rank}] >= Sum[(#2.icartan)[[j]] a[[j]], {j, 1, rank}] &];
+      Sum[(#1 . icartan)[[j]] a[[j]], {j, 1, rank}] >= Sum[(#2 . icartan)[[j]] a[[j]], {j, 1, rank}] &];
     na = Dimensions[roots][[1]];
     If[typerankinfo,
      Print["The type of algebra and rank have been set to ", {type,rank}];
@@ -1161,12 +1161,12 @@ nonuniformpossible[type_, rank_, level_] :=
 
 irrepsuniform[type_, rank_, level_] :=
   Solve[
-  (Table[avar[i] + 1, {i, 1, rank}]).qfmatrix[type, rank].thveclong[type, rank] < level + dualcoxeter[type, rank] &&
+  (Table[avar[i] + 1, {i, 1, rank}]) . qfmatrix[type, rank] . thveclong[type, rank] < level + dualcoxeter[type, rank] &&
   And @@ Table[avar[i] >= 0, {i, 1, rank}], Integers][[All, All, 2]] // Sort;
   
 irrepsnonuniform[type_, rank_, level_] :=
  Solve[
-   tmaxvalue[type] (Table[avar[i] + 1, {i, 1, rank}]).qfmatrix[type, rank].thvecshort[type, rank] < level + dualcoxeter[type, rank] && 
+   tmaxvalue[type] (Table[avar[i] + 1, {i, 1, rank}]) . qfmatrix[type, rank] . thvecshort[type, rank] < level + dualcoxeter[type, rank] && 
    And @@ Table[avar[i] >= 0, {i, 1, rank}], Integers][[All, All, 2]] // Sort;
       
 possiblerootfactorsnonuniform[type_, rank_, level_] :=
@@ -1387,8 +1387,8 @@ initializeinnerproduct[] :=
 
 initializeweightspaces[irreps_] := Module[{inprod, factor, w, pos, dims, dim, temp, p1},
     
-    inprod[lp_, mm_] := lp.qfm.mm;
-    factor[lp_, hw_] := 2/((hw + rho).qfm.(hw + rho) - (lp + rho).qfm.(lp + rho));
+    inprod[lp_, mm_] := lp . qfm . mm;
+    factor[lp_, hw_] := 2/((hw + rho) . qfm . (hw + rho) - (lp + rho) . qfm . (lp + rho));
 
 
     (*
@@ -1473,7 +1473,7 @@ initializeweightspaces[irreps_] := Module[{inprod, factor, w, pos, dims, dim, te
 ];
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Routines to construct the bases for the weight spaces*)
 
 
@@ -1559,7 +1559,8 @@ generatestatespossible[] :=
    
 generatestatesneeded[] :=
   
-  Module[{weightsabove, allbasis, subs, subslength, notfound, subspos, currsub},
+  Module[{weightsabove, allbasis, subs, subslength, notfound, subspos,
+  currsub, allbasislength, currdim, currpos, tempnotfound, tempsub},
    
    Clear[statesneeded];
    
@@ -1582,12 +1583,13 @@ generatestatesneeded[] :=
      
      (* Subsets can cause memory problems, if the number of subsets is large *)
      (*subs = Subsets[Range[Length[allbasis]], {wdim[l, currentweight]}];*)
-     
-     subslength = Binomial[Length[allbasis],wdim[l, currentweight]];
+
+(* Below is the old way of generating the basis *)         
+(*     subslength = Binomial[Length[allbasis],wdim[l, currentweight]];
      notfound = True;
      subspos = 1;
      currsub = Range[wdim[l, currentweight]];
-     
+     (*Print[{subslength,wdim[l, currentweight]}];*)
      While[notfound && subspos <= subslength,
       If[
        MatrixRank[Table[
@@ -1602,7 +1604,38 @@ generatestatesneeded[] :=
       subspos++;
       currsub = nextset[currsub, Length[allbasis], wdim[l, currentweight]];
       ];
-     
+*)     
+
+(* Below is the new way of generating the basis *)
+      allbasislength = Length[allbasis];
+      currsub = {};
+      currdim = wdim[l, currentweight];
+           
+      Do[
+        currpos = If[j == 1, 1, currsub[[j-1]] + 1];
+        tempnotfound = True;
+        While[tempnotfound && currpos <= allbasislength,
+          tempsub = Append[currsub, currpos];
+          If[
+          MatrixRank[Table[
+          Chop[innerproduct[l, w1, l, w2], 10^(-(Max[10, precision - 20]))]
+          , {w1, allbasis[[tempsub]]}
+          , {w2, allbasis[[tempsub]]}]
+          ] == j,
+          tempnotfound = False;
+          currsub = tempsub;
+          ];
+        currpos++;
+        ];
+      
+      , {j, 1, currdim}];
+      
+      notfound = tempnotfound;
+      
+      If[Not[notfound],
+      statesneeded[l, currentweight] = allbasis[[currsub]];
+      ];
+           
      If[notfound,
       
       Print["Reverting to the other method.", {l, currentweight}];
@@ -1659,9 +1692,9 @@ constructbasis[] := Module[{norm},
    Do[
     basis[ir, w, i] =
      Table[If[j == i, 1, 0], {j, 1, wdim[ir, w]}] - 
-      Sum[basis[ir, w, j] (basis[ir, w, j].gramm[ir, w])[[i]], {j, 1, i - 1}];
+      Sum[basis[ir, w, j] (basis[ir, w, j] . gramm[ir, w])[[i]], {j, 1, i - 1}];
         
-    norm = basis[ir, w, i].gramm[ir, w].basis[ir, w, i];
+    norm = basis[ir, w, i] . gramm[ir, w] . basis[ir, w, i];
     
     If[Chop[norm, 10^(-(Max[10, precision - 20]))] != 0, 
      basis[ir, w, i] = 
@@ -1682,7 +1715,7 @@ checkweightspaceorthogonality[] := Module[{maxdev, tempdev},
    maxdev = 0;
    Do[
     tempdev =
-     Max[(Abs /@ Flatten[(basison[ir, w].gramm[ir, w].Transpose[basison[ir, w]] - IdentityMatrix[wdim[ir, w]])])];
+     Max[(Abs /@ Flatten[(basison[ir, w] . gramm[ir, w] . Transpose[basison[ir, w]] - IdentityMatrix[wdim[ir, w]])])];
     (*If[tempdev > maxdev, maxdev = tempdev];*)
     (*
       Max deals better with high precision numbers than > (Greater).
@@ -1735,10 +1768,10 @@ myorthogonalize[vecs_] := Module[
   Do[tempbas[i] =
     vecs[[i]] - 
      Sum[tempbas[
-        j] (tempbas[j].vecs[[i]])/(tempbas[j].tempbas[j]), {j, 1, i - 1}]
+        j] (tempbas[j] . vecs[[i]])/(tempbas[j] . tempbas[j]), {j, 1, i - 1}]
    , {i, 1, numvecs}];
-  Chop[Table[If[Chop[(tempbas[i].tempbas[i]), 10^(-(Max[10, precision - 20]))] != 0, 
-     tempbas[i]/Sqrt[tempbas[i].tempbas[i]], tempbas[i]]
+  Chop[Table[If[Chop[(tempbas[i] . tempbas[i]), 10^(-(Max[10, precision - 20]))] != 0, 
+     tempbas[i]/Sqrt[tempbas[i] . tempbas[i]], tempbas[i]]
      , {i, 1, numvecs}], 10^(-(Max[10, precision - 20]))]
   ];
   
@@ -1835,7 +1868,7 @@ generatefr[hw1_, hw2_, hw3_] :=
      
      
      rawipmat = 
-      Table[rawstates[[i]].rawstates[[j]], {i, 1, numofrawsol}, {j, 1, numofrawsol}];
+      Table[rawstates[[i]] . rawstates[[j]], {i, 1, numofrawsol}, {j, 1, numofrawsol}];
          
      numofsol = MatrixRank[rawipmat];
      If[numofsol > 0,
@@ -1876,14 +1909,14 @@ generateraisingloweringoperators[] := With[{},
    Do[
     If[raising[ir, w, alpha] == {},
      basisraising[ir, w, alpha] = {},
-     basisraising[ir, w, alpha] = basison[ir, w].stateraising[ir, w, alpha].Transpose[basison[ir, raising[ir, w, alpha]]]
+     basisraising[ir, w, alpha] = basison[ir, w] . stateraising[ir, w, alpha] . Transpose[basison[ir, raising[ir, w, alpha]]]
      ]
     , {ir, irreps}, {w, weights[ir]}, {alpha, 1, rank}];
    
    Do[
     If[lowering[ir, w, alpha] == {},
      basislowering[ir, w, alpha] = {},
-     basislowering[ir, w, alpha] = basison[ir, w].statelowering[ir, w, alpha].Transpose[basison[ir, lowering[ir, w, alpha]]]
+     basislowering[ir, w, alpha] = basison[ir, w] . statelowering[ir, w, alpha] . Transpose[basison[ir, lowering[ir, w, alpha]]]
      ]
     , {ir, irreps}, {w, weights[ir]}, {alpha, 1, rank}];
    
@@ -1952,7 +1985,7 @@ checkfusionrules[] := Module[{dualpos, tempok, irreppos},
   
   tempok = True;
   Do[
-   If[nmat[ir1].nmat[ir2] == nmat[ir2].nmat[ir1], Null,
+   If[nmat[ir1] . nmat[ir2] == nmat[ir2] . nmat[ir1], Null,
      fusionrulesok = False;
      tempok = False;
      ];
@@ -2104,7 +2137,7 @@ sethwstates[hw1_, hw2_, hw3_] := Module[
        result /. Table[variables[[j]] -> If[j == i, 1, 0], {j, 1, numofrawsol}]
        , {i, 1, numofrawsol}];
      rawipmat = 
-      Table[rawstates[[i]].rawstates[[j]]
+      Table[rawstates[[i]] . rawstates[[j]]
       , {i, 1, numofrawsol}, {j, 1, numofrawsol}];
      
      subs = Subsets[Range[numofrawsol], {numofstates}];
@@ -2216,7 +2249,7 @@ checkorthonormality[] := Module[{maxdev, tempdev},
    
     tempdev = 
        Max[Abs /@ (Flatten[
-           Table[(tpbasis[hw1, hw2, hw3, v, {w3, i}].tpbasis[hw1, hw2, hw3, v, {w3, j}])
+           Table[(tpbasis[hw1, hw2, hw3, v, {w3, i}] . tpbasis[hw1, hw2, hw3, v, {w3, j}])
            , {i, 1, wdim[hw3, w3]}, {j, 1, wdim[hw3, w3]}] - IdentityMatrix[wdim[hw3, w3]]])];
 
     (*If[tempdev > maxdev, maxdev = tempdev];*)
@@ -2457,9 +2490,9 @@ to do so. Proceed with care!"];
    
    If[
     And @@ Table[
-       (Chop[ (fmat[Sequence @@ fm].Conjugate[Transpose[fmat[Sequence @@ fm]]] - 
+       (Chop[ (fmat[Sequence @@ fm] . Conjugate[Transpose[fmat[Sequence @@ fm]]] - 
               IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20) ] // Flatten // Union) == {0}
-       , {fm, fmatlist}] && And @@ Table[(Chop[ (Conjugate[Transpose[fmat[Sequence @@ fm]]].fmat[Sequence @@ fm] - 
+       , {fm, fmatlist}] && And @@ Table[(Chop[ (Conjugate[Transpose[fmat[Sequence @@ fm]]] . fmat[Sequence @@ fm] - 
               IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20) ] // Flatten // Union) == {0}
        , {fm, fmatlist}],
     fmatunitary = True;
@@ -2472,9 +2505,9 @@ to do so. Proceed with care!"];
    
    If[
     And @@ Table[
-       ( Chop[ (fmat[Sequence @@ fm].Transpose[fmat[Sequence @@ fm]] - IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20) ] // Flatten // Union) == {0}
+       ( Chop[ (fmat[Sequence @@ fm] . Transpose[fmat[Sequence @@ fm]] - IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20) ] // Flatten // Union) == {0}
        , {fm, fmatlist}] &&
-    And @@ Table[( Chop[ (Transpose[fmat[Sequence @@ fm]].fmat[Sequence @@ fm] - IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20)] // Flatten // Union) == {0}
+    And @@ Table[( Chop[ (Transpose[fmat[Sequence @@ fm]] . fmat[Sequence @@ fm] - IdentityMatrix[fmatdim[Sequence @@ fm]]) , 10^(-20)] // Flatten // Union) == {0}
        , {fm, fmatlist}],
     fsymsFTFone = True;
     ,
@@ -2603,13 +2636,13 @@ this issue should be investigated further!"]];
      
      If[Length[goodpositions] == 1,
       rsym[rlist[[i, 1]], rlist[[i, 2]], rlist[[i, 3]], rlist[[i, 4]]] = 
-        q^(tmax/2 currtpstates[[goodpositions[[1]], 1, 1]].qfm.currtpstates[[goodpositions[[1]], 2, 1]])*
+        q^(tmax/2 currtpstates[[goodpositions[[1]], 1, 1]] . qfm . currtpstates[[goodpositions[[1]], 2, 1]])*
          qcg[hw1, currtpstates[[goodpositions[[1]], 1]], hw2, currtpstates[[goodpositions[[1]], 2]], hw3, {hw3, 1}, rlist[[i, 4, 1]]]/
           qcg[hw2, currtpstates[[goodpositions[[1]], 2]], hw1, currtpstates[[goodpositions[[1]], 1]], hw3, {hw3, 1}, rlist[[i, 4, 1]]];
       ,
       rsym[rlist[[i, 1]], rlist[[i, 2]], rlist[[i, 3]], rlist[[i, 4]]] =
         sign[rlist[[i, 1]], rlist[[i, 2]], rlist[[i, 3]], rlist[[i, 4]]]*
-         q^(tmax/2 currtpstates[[goodpositions[[1]], 1, 1]].qfm.currtpstates[[goodpositions[[1]], 2, 1]])*
+         q^(tmax/2 currtpstates[[goodpositions[[1]], 1, 1]] . qfm . currtpstates[[goodpositions[[1]], 2, 1]])*
          Sqrt[
            Sum[(qcg[hw1, currtpstates[[pos, 1]], hw2, currtpstates[[pos, 2]], hw3, {hw3, 1}, rlist[[i, 4, 1]]])^2, {pos, goodpositions}]]/
           Sqrt[Sum[(qcg[hw2, currtpstates[[pos, 2]], hw1, currtpstates[[pos, 1]], hw3, {hw3, 1}, rlist[[i, 4, 1]]])^2, {pos, goodpositions}]];
@@ -2828,9 +2861,9 @@ this issue should be investigated further!"]];
    
    
    rmatunitary = And @@ Table[
-       ( Chop[ rmat[Sequence @@ rm].Conjugate[Transpose[rmat[Sequence @@ rm]]] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
+       ( Chop[ rmat[Sequence @@ rm] . Conjugate[Transpose[rmat[Sequence @@ rm]]] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
        , {rm, rmatlist}] &&
-       And @@ Table[(Chop[ Conjugate[Transpose[rmat[Sequence @@ rm]]].rmat[Sequence @@ rm] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
+       And @@ Table[(Chop[ Conjugate[Transpose[rmat[Sequence @@ rm]]] . rmat[Sequence @@ rm] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
        , {rm, rmatlist}];
    
    rmatdiagonal = And @@ Table[
@@ -3159,9 +3192,9 @@ Something seems to have gone wrong."];
    
    
    rmatunitary = And @@ Table[
-       ( Chop[ rmat[Sequence @@ rm].Conjugate[Transpose[rmat[Sequence @@ rm]]] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
+       ( Chop[ rmat[Sequence @@ rm] . Conjugate[Transpose[rmat[Sequence @@ rm]]] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
        , {rm, rmatlist}] &&
-       And @@ Table[(Chop[ Conjugate[Transpose[rmat[Sequence @@ rm]]].rmat[Sequence @@ rm] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
+       And @@ Table[(Chop[ Conjugate[Transpose[rmat[Sequence @@ rm]]] . rmat[Sequence @@ rm] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
        , {rm, rmatlist}];
    
    rmatdiagonal = And @@ Table[
@@ -3259,9 +3292,9 @@ F- and R-symbols to their original values."];
     rmatricesdiagonalized = False;
 
     rmatunitary = And @@ Table[
-       ( Chop[ rmat[Sequence @@ rm].Conjugate[Transpose[rmat[Sequence @@ rm]]] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
+       ( Chop[ rmat[Sequence @@ rm] . Conjugate[Transpose[rmat[Sequence @@ rm]]] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
        , {rm, rmatlist}] &&
-       And @@ Table[(Chop[ Conjugate[Transpose[rmat[Sequence @@ rm]]].rmat[Sequence @@ rm] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
+       And @@ Table[(Chop[ Conjugate[Transpose[rmat[Sequence @@ rm]]] . rmat[Sequence @@ rm] - IdentityMatrix[nv[Sequence @@ rm]] , 10^(-20) ] // Flatten // Union) == {0}
        , {rm, rmatlist}];
    
     rmatdiagonal = And @@ Table[
@@ -3326,7 +3359,7 @@ before calculating the modular data."];
       
     qdimvec = Table[
      N[Chop[Product[
-       nq[tmax (ir + rho).qfm.posroots[[pr]], 1] / nq[ tmax (rho).qfm.posroots[[pr]], 1]
+       nq[tmax (ir + rho) . qfm . posroots[[pr]], 1] / nq[ tmax (rho) . qfm . posroots[[pr]], 1]
        , {pr, 1, numposroots}], 10^(-20)], precision]
     , {ir, irreps}];
     
@@ -3397,7 +3430,7 @@ before calculating the modular data."];
   
   tmat = DiagonalMatrix[thetalist];
   
-  modular = (Chop[ smat.ConjugateTranspose[smat] - IdentityMatrix[numofirreps] , 10^(-20) ] // Flatten // Union) == {0};
+  modular = (Chop[ smat . ConjugateTranspose[smat] - IdentityMatrix[numofirreps] , 10^(-20) ] // Flatten // Union) == {0};
   
   pplus = Sum[qd[ir]^2 theta[ir], {ir, irreps}];
   pminus = Sum[qd[ir]^2 /theta[ir], {ir, irreps}];
@@ -3412,8 +3445,8 @@ before calculating the modular data."];
   
   If[modular,
   modularrelationsok =
-   (( Chop[ MatrixPower[smat.tmat, 3] - Exp[2 Pi I/8*centralcharge] smat.smat // Flatten , 10^(-20) ] // Union) == {0}) &&
-   (( Chop[ smat.smat - cmat , 10^(-20) ] // Flatten // Union) == {0});,
+   (( Chop[ MatrixPower[smat . tmat, 3] - Exp[2 Pi I/8*centralcharge] smat . smat // Flatten , 10^(-20) ] // Union) == {0}) &&
+   (( Chop[ smat . smat - cmat , 10^(-20) ] // Flatten // Union) == {0});,
    modularrelationsok = Missing["The theory is not modular, so there are no modular relations to be checked."];,
    modularrelationsok = Missing["The theory is not modular, so there are no modular relations to be checked."];
   ];
@@ -3608,7 +3641,7 @@ These can be obtained by running `possiblesphericalpivotalstructures[]'"];
     
     qdimvecquantumgroup = Table[
      N[Chop[Product[
-       nq[tmax (ir + rho).qfm.posroots[[pr]], 1] / nq[ tmax (rho).qfm.posroots[[pr]], 1]
+       nq[tmax (ir + rho) . qfm . posroots[[pr]], 1] / nq[ tmax (rho) . qfm . posroots[[pr]], 1]
        , {pr, 1, numposroots}], 10^(-20)], precision]
     , {ir, irreps}];
  
@@ -3677,7 +3710,7 @@ of the modular data for the quantum group, you should run calculatemodulardata[]
   
   tmat = DiagonalMatrix[thetalist];
   
-  modular = (Chop[ smat.ConjugateTranspose[smat] - IdentityMatrix[numofirreps] , 10^(-20) ] // Flatten // Union) == {0};
+  modular = (Chop[ smat . ConjugateTranspose[smat] - IdentityMatrix[numofirreps] , 10^(-20) ] // Flatten // Union) == {0};
   
   pplus = Sum[qd[ir]^2 theta[ir], {ir, irreps}];
   pminus = Sum[qd[ir]^2 /theta[ir], {ir, irreps}];
@@ -3690,8 +3723,8 @@ of the modular data for the quantum group, you should run calculatemodulardata[]
   
   If[modular,
   modularrelationsok =
-   (( Chop[ MatrixPower[smat.tmat, 3] - Exp[2 Pi I/8*centralcharge] smat.smat // Flatten , 10^(-20) ] // Union) == {0}) &&
-   (( Chop[ smat.smat - cmat , 10^(-20) ] // Flatten // Union) == {0});
+   (( Chop[ MatrixPower[smat . tmat, 3] - Exp[2 Pi I/8*centralcharge] smat . smat // Flatten , 10^(-20) ] // Union) == {0}) &&
+   (( Chop[ smat . smat - cmat , 10^(-20) ] // Flatten // Union) == {0});
   ];
   
   
@@ -3968,11 +4001,11 @@ makersymbolsexact[cosdenom_, cosnum_] := Module[
 
 toexactvalue[fsexact_, cosdenom_, cosnum_] :=
   Exp[fsexact[[1]]*Pi*I] *
-    Sqrt[fsexact[[2]].Table[If[i > 0, Cos[2 Pi cosnum/cosdenom]^i, 1], {i, 0, EulerPhi[cosdenom]/2 - 1}]];
+    Sqrt[fsexact[[2]] . Table[If[i > 0, Cos[2 Pi cosnum/cosdenom]^i, 1], {i, 0, EulerPhi[cosdenom]/2 - 1}]];
     
 toexactnumericalvalue[fsexact_, cosdenom_, cosnum_, prec_] :=
   N[Exp[fsexact[[1]]*Pi*I] * 
-    Sqrt[fsexact[[2]].Table[If[i > 0, Cos[2 Pi cosnum/cosdenom]^i, 1], {i, 0, EulerPhi[cosdenom]/2 - 1}]], prec];    
+    Sqrt[fsexact[[2]] . Table[If[i > 0, Cos[2 Pi cosnum/cosdenom]^i, 1], {i, 0, EulerPhi[cosdenom]/2 - 1}]], prec];    
 
 
 checkpentagonexactform[cosdenom_, cosnum_, prec_] := Module[
@@ -3993,7 +4026,7 @@ least 100; the default used is 2*precision, with a default precision of 100."];
     Do[
      fsymexnum[Sequence @@ fs] = 
        Exp[fsymexact[Sequence @@ fs][[1]]*Pi*I]*
-        Sqrt[(fsymexact[Sequence @@ fs][[2]]).cosvec];
+        Sqrt[(fsymexact[Sequence @@ fs][[2]]) . cosvec];
      , {fs, flist}];
     counter = 0;
 
@@ -4070,19 +4103,19 @@ the default used is 2*precision, with a default precision of 100."];
     Do[
      fsymexnum[Sequence @@ fs] = 
        Exp[fsymexact[Sequence @@ fs][[1]]*Pi*I] *
-        Sqrt[(fsymexact[Sequence @@ fs][[2]]).cosvec];
+        Sqrt[(fsymexact[Sequence @@ fs][[2]]) . cosvec];
      , {fs, flist}];
      
     Do[
      rsymexnum[Sequence @@ rs] = 
        Exp[rsymexact[Sequence @@ rs][[1]]*Pi*I] *
-        Sqrt[(rsymexact[Sequence @@ rs][[2]]).cosvec];
+        Sqrt[(rsymexact[Sequence @@ rs][[2]]) . cosvec];
      , {rs, rlist}];
      
     Do[
      rsyminvexnum[Sequence @@ rs] = 
        Exp[rsyminvexact[Sequence @@ rs][[1]]*Pi*I] *
-        Sqrt[(rsyminvexact[Sequence @@ rs][[2]]).cosvec];
+        Sqrt[(rsyminvexact[Sequence @@ rs][[2]]) . cosvec];
      , {rs, rlist}];
     
     Do[
@@ -4458,7 +4491,7 @@ findsqrt[cosdenom_, cosnum_, factor_] :=
    If[Not[done],
    cosvec = 
     Table[If[i > 0, Cos[2 Pi cosnum/cosdenom]^i, 1], {i, 0, numofvars - 1}];
-   If[Not[factor.cosvec >= 0], 
+   If[Not[factor . cosvec >= 0], 
     Print["The numerical value corresponding to the input does not \
 correspond to a non-negative number, the evaluation is aborted!"];
     res = {};
@@ -4475,7 +4508,7 @@ correspond to a non-negative number, the evaluation is aborted!"];
      sol1 = sols[[1, All, 2]];
      sol2 = sols[[2, All, 2]];
      If[
-      sol1.cosvec >= 0,
+      sol1 . cosvec >= 0,
       res = sol1;,
       res = sol2;
       ];
@@ -5530,10 +5563,10 @@ not agree with the numerical ones :-("];
      ];   
     
     ssdagmaxdev = 
-     Max[Abs /@ ((smatexactnum.ConjugateTranspose[smatexactnum] - 
+     Max[Abs /@ ((smatexactnum . ConjugateTranspose[smatexactnum] - 
            IdentityMatrix[numofirreps]) // Flatten)];
     sdagsmaxdev = 
-     Max[Abs /@ ((ConjugateTranspose[smatexactnum].smatexactnum - 
+     Max[Abs /@ ((ConjugateTranspose[smatexactnum] . smatexactnum - 
            IdentityMatrix[numofirreps]) // Flatten)];
     
     modularexact = Chop[Max[ssdagmaxdev, sdagsmaxdev], 10^(-(2*precision - 20))] == 0;
@@ -5541,12 +5574,12 @@ not agree with the numerical ones :-("];
     If[modularexact,
      
      st3maxdev = 
-      Max[Abs /@ ((MatrixPower[smatexactnum.tmatexactnum, 3] - 
-            Exp[2 Pi I/8*centralcharge]*smatexactnum.smatexactnum) // 
+      Max[Abs /@ ((MatrixPower[smatexactnum . tmatexactnum, 3] - 
+            Exp[2 Pi I/8*centralcharge]*smatexactnum . smatexactnum) // 
           Flatten)];
      
      s2maxdev = 
-      Max[Abs /@ ((smatexactnum.smatexactnum - cmat) // Flatten)];
+      Max[Abs /@ ((smatexactnum . smatexactnum - cmat) // Flatten)];
      
      modularrelationsexactok = 
       Chop[Max[s2maxdev, st3maxdev], 10^(-(2*precision - 20))] == 0;,
@@ -6130,9 +6163,9 @@ If[typeranklevelrootinitok && fsymbolscalculated && rsymbolscalculated && modula
     exactproduct[cosdenominator, 
      Table[
       exactproduct[cosdenominator,
-        nqexact[cosdenominator, cosnumerator, tmax (ir + rho).qfm.posroots[[pr]]], 
+        nqexact[cosdenominator, cosnumerator, tmax (ir + rho) . qfm . posroots[[pr]]], 
         findoneover[cosdenominator, 
-         nqexact[cosdenominator, cosnumerator, tmax (rho).qfm.posroots[[pr]]]]]
+         nqexact[cosdenominator, cosnumerator, tmax (rho) . qfm . posroots[[pr]]]]]
       , {pr, 1, numposroots}]]
      , {ir, irreps}];
    
@@ -7289,7 +7322,7 @@ clearvariables[] := Clear[
    modularexact, modularrelationsexactok,
    modulardataexactok,
    numofsimplecurrents, numofselfduals, numofpentagonequations,
-   fraclevel
+   fraclevel 
    ];
    
 clearglobalvariables[] := Clear[
