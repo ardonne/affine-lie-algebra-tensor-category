@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Begin Package*)
 
 
@@ -245,8 +245,14 @@ doitall::usage =
 F-symbols, the R-symbols, the modular data, the exact form of the F-symbols, \
 the exact form of the R-symbols and finally the exact form of the modular data."
 
+doitallsave::usage = 
+	"doitallsave[] assumes that the system is correctly initialized, and calculates the \
+F-symbols, the R-symbols, the modular data, the exact form of the F-symbols, \
+the exact form of the R-symbols and finally the exact form of the modular data. The data \
+is then also saved."
 
-(* ::Section:: *)
+
+(* ::Section::Closed:: *)
 (*Begin `Private` Context*)
 
 
@@ -279,7 +285,7 @@ Steve Simon, Joost Slingerland, Gert Vercleyen\n" ,
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2022-06-28\n\
+       "Last revision: 2023-07-05\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
@@ -636,6 +642,17 @@ doitall[] := With[{},
 	findexactfsymbols[];
 	findexactrsymbols[];
 	findexactmodulardata[];
+];
+
+
+doitallsave[] := With[{},
+	calculatefsymbols[];
+	calculatersymbols[];
+	calculatemodulardata[];
+	findexactfsymbols[];
+	findexactrsymbols[];
+	findexactmodulardata[];
+	savecurrentdata[];
 ];
 
 
@@ -1473,7 +1490,7 @@ initializeweightspaces[irreps_] := Module[{inprod, factor, w, pos, dims, dim, te
 ];
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Routines to construct the bases for the weight spaces*)
 
 
@@ -1516,6 +1533,43 @@ Module[
   ];
   result
 ];
+
+
+nextset[curr_, range_] := 
+  Module[{len, lastset, done, result, diff, lastdiffpos},
+   (* curr should have length 1 at least! *)
+   len = Length[curr];
+   lastset = Range[range - len + 1, range];
+   done = False;
+   
+   If[curr == lastset, done = True; 
+    Print["Allready reached the last!"]; result = {};];
+   
+   If[Not[done],
+    diff = lastset - curr;
+    lastdiffpos = 
+     len + 1 - 
+      Position[Reverse[diff], x_ /; x != 0, {1}, 1, 
+        Heads -> False][[1, 1]];
+    Which[
+     lastdiffpos == len && len > 1, 
+     result = Join[curr[[1 ;; -2]], {curr[[-1]] + 1}];,
+     lastdiffpos == len && len == 1, result = {curr[[len]] + 1};,
+     lastdiffpos == 1, 
+     result = 
+       Range[curr[[lastdiffpos]] + 1, 
+        curr[[lastdiffpos]] + 1 + len - 1];,
+     True, 
+     result = 
+       Join[curr[[1 ;; lastdiffpos - 1]], 
+        Range[curr[[lastdiffpos]] + 1, 
+         curr[[lastdiffpos]] + 1 + len - (lastdiffpos - 1) - 1]];
+     ];
+    ];
+   
+   result
+   
+   ];
 
 (*
 generatestatespossible[] should not be necessary anymore, after the update dealing the precision in a better way.
@@ -1584,29 +1638,7 @@ generatestatesneeded[] :=
      (* Subsets can cause memory problems, if the number of subsets is large *)
      (*subs = Subsets[Range[Length[allbasis]], {wdim[l, currentweight]}];*)
 
-(* Below is the old way of generating the basis *)         
-(*     subslength = Binomial[Length[allbasis],wdim[l, currentweight]];
-     notfound = True;
-     subspos = 1;
-     currsub = Range[wdim[l, currentweight]];
-     (*Print[{subslength,wdim[l, currentweight]}];*)
-     While[notfound && subspos <= subslength,
-      If[
-       MatrixRank[Table[
-          Chop[innerproduct[l, w1, l, w2], 10^(-(Max[10, precision - 20]))]
-          , {w1, allbasis[[currsub]]}
-          , {w2, allbasis[[currsub]]}]
-          ] == wdim[l, currentweight]
-       ,
-       notfound = False;
-       statesneeded[l, currentweight] = allbasis[[currsub]];
-       ];
-      subspos++;
-      currsub = nextset[currsub, Length[allbasis], wdim[l, currentweight]];
-      ];
-*)     
 
-(* Below is the new way of generating the basis *)
       allbasislength = Length[allbasis];
       currsub = {};
       currdim = wdim[l, currentweight];
@@ -1635,10 +1667,41 @@ generatestatesneeded[] :=
       If[Not[notfound],
       statesneeded[l, currentweight] = allbasis[[currsub]];
       ];
-           
-     If[notfound,
       
-      Print["Reverting to the other method.", {l, currentweight}];
+     If[notfound (*&& Not[uniform]*),
+     (* It can happen that the usual method to generate the weight space basis does not work in non-uniform cases
+     due to issues with the innerproduct. In that case we revert to an older, slower method.
+     *)
+     (*Print["Reverting to the other method, non-uniform case, for: ", {l, currentweight}];*)
+
+     subspos = 1;
+     subslength = Binomial[Length[allbasis],wdim[l, currentweight]];
+     currsub = Range[wdim[l, currentweight]];
+     While[notfound && subspos <= subslength,
+      If[
+       MatrixRank[Table[
+          Chop[innerproduct[l, w1, l, w2], 10^(-(Max[10, precision - 20]))]
+          , {w1, allbasis[[currsub]]}
+          , {w2, allbasis[[currsub]]}]
+          ] == wdim[l, currentweight]
+       ,
+       notfound = False;
+       statesneeded[l, currentweight] = allbasis[[currsub]];
+       (*Print["Success with other method!"];*)
+       ];
+      subspos++;
+      currsub = nextset[currsub, Length[allbasis]];
+      ];
+     
+      ];
+     If[notfound && Not[uniform], 
+       Print["No correct basis was found!! ", {l, currentweight}]]; 
+           
+           
+(*     If[notfound && uniform,
+     (* This part of the code should not be reached *)
+      
+      (*Print["Reverting to the other method.", {l, currentweight}];*)
       
       If[statespossible[irreps[[1]], irreps[[1]]] == {{}}, Null, generatestatespossible[];];
       
@@ -1667,7 +1730,8 @@ generatestatesneeded[] :=
        Print["No correct basis was found!! ", {l, currentweight}]];
       
       
-      ];
+      ];*)
+
      
      , {currentweight, weights[l][[2 ;; -1]]}];
     
@@ -1676,6 +1740,42 @@ generatestatesneeded[] :=
     , {l, irreps}];
    
    ];   
+
+
+nextpermutation[perm_] := Module[
+   {res, len, done, index1, index2},
+   (* it is assumed that perm is a permutation of 1,2,3,...,len > 0 *)
+   (* applying the function on the 'last' permutation, 
+   gives back the first one *)
+   
+   done = False;
+   len = Length[perm];
+   
+   If[perm == Reverse[Range[len]], res = Range[len]; done = True;];
+   
+   If[Not[done],
+    res = perm;
+    found = False;
+    j = len - 1;
+    While[Not[found],
+     If[perm[[j]] < perm[[j + 1]], found = True; index1 = j;, j--];
+     ];
+    found = False;
+    j = len;
+    While[Not[found],
+     If[perm[[index1]] < perm[[j]], found = True; index2 = j;, j--];
+     ];
+    res = 
+     ReplacePart[
+      perm, {index1 -> perm[[index2]], index2 -> perm[[index1]]}];
+    
+    res = Join[res[[1 ;; index1]], Reverse[res[[index1 + 1 ;; -1]]]];
+    
+    ];
+   
+   res
+   
+   ];
 
 
 constructgramm[] := With[{},
@@ -1687,26 +1787,72 @@ constructgramm[] := With[{},
     , {ir, irreps}, {w, weights[ir]}];
    ];
    
-constructbasis[] := Module[{norm},
+constructbasis[] := Module[{norm, basisfound, normok, basistemp, perm, numofperms, counter},
    
    Do[
-    basis[ir, w, i] =
-     Table[If[j == i, 1, 0], {j, 1, wdim[ir, w]}] - 
-      Sum[basis[ir, w, j] (basis[ir, w, j] . gramm[ir, w])[[i]], {j, 1, i - 1}];
-        
-    norm = basis[ir, w, i] . gramm[ir, w] . basis[ir, w, i];
-    
+   basisfound = False;
+   normok = True;
+   
+   (* This is doing gram schmidt in the standard ordering, works in almost all cases. *)
+   Do[
+    basistemp[i] = Table[If[j == i, 1, 0], {j, 1, wdim[ir, w]}] - 
+      Sum[basistemp[j] (basistemp[j] . gramm[ir, w])[[i]], {j, 1, i - 1}];
+    norm = basistemp[i] . gramm[ir, w] . basistemp[i];
     If[Chop[norm, 10^(-(Max[10, precision - 20]))] != 0, 
-     basis[ir, w, i] = 
-       Chop[1/Sqrt[norm] basis[ir, w, i], 
-        10^(-(Max[10, precision - 20]))];, 
-     Print["The norm of a state is zero! ", {ir, w, i}]];
-    Clear[norm];
-    , {ir, irreps}, {w, weights[ir]}, {i, 1, wdim[ir, w]}];
+      basistemp[i] = Chop[1/Sqrt[norm] basistemp[i], 10^(-(Max[10, precision - 20]))];,
+      normok = False;
+      (*Print["The norm of a state is zero! ", {ir, w, i}];*)
+      ];  
+   , {i, 1, wdim[ir, w]}];
    
-   Do[
-    basison[ir, w] = Table[basis[ir, w, i], {i, wdim[ir, w]}]
-    , {ir, irreps}, {w, weights[ir]}];
+   If[normok == True,
+    basisfound = True;
+    basison[ir, w] = Table[basistemp[i], {i, 1, wdim[ir, w]}];
+   ];
+   
+   (* This is doing gram schmidt in the other possible orderings, which is sometimes necessary
+   (due to negative eigenvalues of the 'gram' matrix (due to our special innerproduct)) *)
+   If[
+   Not[basisfound] && wdim[ir, w] > 1,
+   
+   numofperms = (wdim[ir, w])!;
+   perm = Range[wdim[ir, w]];
+   perm = nextpermutation[perm];
+   counter = 2;
+   
+   While[
+     Not[basisfound] && counter <= numofperms,
+     
+     normok = True;
+   
+     Do[
+      basistemp[i] = Table[If[j == perm[[i]], 1, 0], {j, 1, wdim[ir, w]}] - 
+        Sum[basistemp[j] (basistemp[j] . gramm[ir, w])[[perm[[i]]]], {j, 1, i - 1}];
+      norm = basistemp[i] . gramm[ir, w] . basistemp[i];
+      If[Chop[norm, 10^(-(Max[10, precision - 20]))] != 0, 
+        basistemp[i] = Chop[1/Sqrt[norm] basistemp[i], 10^(-(Max[10, precision - 20]))];,
+        normok = False;
+        (*Print["The norm of a state is zero! ", {ir, w, i, counter}];*)
+      ];  
+     , {i, 1, wdim[ir, w]}];
+     
+     If[normok == True,
+       basisfound = True;
+       basison[ir, w] = Table[basistemp[i], {i, 1, wdim[ir, w]}];       
+     ];
+     
+     
+     counter++;
+     perm = nextpermutation[perm];
+   ];
+      
+   ];  
+
+   If[Not[basisfound], Print["No proper basis was found for: ", {ir, w}];];
+   
+   
+   , {ir, irreps}, {w, weights[ir]}];
+   
    
    ];   
 
@@ -2635,18 +2781,35 @@ this issue should be investigated further!"]];
       Position[curr1stweights, curr1stweights[[goodpositions[[-1]]]]] // Flatten;
      
      If[Length[goodpositions] == 1,
-      rsym[rlist[[i, 1]], rlist[[i, 2]], rlist[[i, 3]], rlist[[i, 4]]] = 
-        q^(tmax/2 currtpstates[[goodpositions[[1]], 1, 1]] . qfm . currtpstates[[goodpositions[[1]], 2, 1]])*
-         qcg[hw1, currtpstates[[goodpositions[[1]], 1]], hw2, currtpstates[[goodpositions[[1]], 2]], hw3, {hw3, 1}, rlist[[i, 4, 1]]]/
-          qcg[hw2, currtpstates[[goodpositions[[1]], 2]], hw1, currtpstates[[goodpositions[[1]], 1]], hw3, {hw3, 1}, rlist[[i, 4, 1]]];
-      ,
+     
+     If[
+     Chop[Abs[qcg[hw2,currtpstates[[goodpositions[[1]],2]],hw1,currtpstates[[goodpositions[[1]],1]],hw3,{hw3,1},rlist[[i,4,1]]]],10^(-20)] == 0
+     ,
+     rsym[rlist[[i,1]],rlist[[i,2]],rlist[[i,3]],rlist[[i,4]]]=phase[hw1,hw2,hw3,{1,1}];
+     ,
+     rsym[rlist[[i, 1]], rlist[[i, 2]], rlist[[i, 3]], rlist[[i, 4]]] = 
+     q^(tmax / 2  currtpstates[[goodpositions[[1]], 1, 1]] . qfm . currtpstates[[goodpositions[[1]], 2, 1]]) *
+     qcg[hw1, currtpstates[[goodpositions[[1]], 1]], hw2, currtpstates[[goodpositions[[1]], 2]], hw3, {hw3, 1}, rlist[[i, 4, 1]]] / 
+     qcg[hw2, currtpstates[[goodpositions[[1]], 2]], hw1, currtpstates[[goodpositions[[1]], 1]], hw3, {hw3, 1}, rlist[[i, 4, 1]]];
+     ];
+     
+     ,
+     
+     If[
+     Chop[Abs[Sqrt[Sum[(qcg[hw2,currtpstates[[pos,2]],hw1,currtpstates[[pos,1]],hw3,{hw3,1},rlist[[i,4,1]]])^2,{pos,goodpositions}]]], 10^(-20)] == 0
+     ,
+     rsym[rlist[[i,1]],rlist[[i,2]],rlist[[i,3]],rlist[[i,4]]]=phase[hw1,hw2,hw3,{1,1}];
+     ,
+     
       rsym[rlist[[i, 1]], rlist[[i, 2]], rlist[[i, 3]], rlist[[i, 4]]] =
         sign[rlist[[i, 1]], rlist[[i, 2]], rlist[[i, 3]], rlist[[i, 4]]]*
          q^(tmax/2 currtpstates[[goodpositions[[1]], 1, 1]] . qfm . currtpstates[[goodpositions[[1]], 2, 1]])*
          Sqrt[
            Sum[(qcg[hw1, currtpstates[[pos, 1]], hw2, currtpstates[[pos, 2]], hw3, {hw3, 1}, rlist[[i, 4, 1]]])^2, {pos, goodpositions}]]/
           Sqrt[Sum[(qcg[hw2, currtpstates[[pos, 2]], hw1, currtpstates[[pos, 1]], hw3, {hw3, 1}, rlist[[i, 4, 1]]])^2, {pos, goodpositions}]];
-      ];
+     ];
+     
+       ];
      
      ,
      
@@ -2699,28 +2862,9 @@ this issue should be investigated further!"]];
     Do[
     rsym[Sequence @@ rlist[[i]]] = Chop[ rsym[Sequence @@ rlist[[i]]] /. solsign , 10^(-20)];
     , {i, 1, Length[rlist]}];
-    
-    temphex =
-     DeleteCases[
-      Table[
-       
-       Chop[(Sum[rsym[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}]*
-            fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
-            rsym[i[[3]], i[[2]], i[[6]], {v9, i[[7, 3]]}]
-            , {v8, nv[i[[1]], i[[2]], i[[5]]]}, {v9, 
-            nv[i[[3]], i[[2]], i[[6]]]}]
-          -
-          Sum[fsym[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
-            rsym[j, i[[2]], i[[4]], {v6, v7}]*
-            fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
-           , {j, Cases[irreps,  x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
-             MemberQ[fusion[i[[2]], x], i[[4]]]]}
-           , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]) // Expand, 10^(-20) ]
-       
-       , {i, flist}]
-      
-      , 0];
-    
+        
+    temphex = temphex /. solsign;
+    temphex = DeleteCases[Chop[temphex // Expand, 10^(-20)], x_ /; NumericQ[x]];
     goodposonesign = Position[temphex, x_Complex + c1_Complex sign[y1___], {1} , Heads -> False] // Flatten;
     
     If[Length[goodposonesign] > 0, signeqleft = True];
@@ -2756,27 +2900,9 @@ this issue should be investigated further!"]];
     Do[rsym[Sequence @@ rlist[[i]]] = Chop[ rsym[Sequence @@ rlist[[i]]] /. solphase , 10^(-20) ];
     , {i, 1, Length[rlist]}];
     
-    temphex =
-     DeleteCases[
-      Table[
-       Chop[(Sum[rsym[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}]*
-            fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
-            rsym[i[[3]], i[[2]], i[[6]], {v9, i[[7, 3]]}]
-            , {v8, nv[i[[1]], i[[2]], i[[5]]]}, {v9, nv[i[[3]], i[[2]], i[[6]]]}]
-          -
-          Sum[fsym[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
-            rsym[j, i[[2]], i[[4]], {v6, v7}]*
-            fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
-           , {j, Cases[irreps,  x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
-             MemberQ[fusion[i[[2]], x], i[[4]]]]}
-           , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]) // Expand , 10^(-20) ]
-       
-       , {i, flist}]
-      
-      , 0];
-    
-    goodposonephase = 
-     Position[temphex, x_Complex + c1_Complex phase[y1___], {1} , Heads -> False] // Flatten;
+    temphex = temphex /. solphase;
+    temphex = DeleteCases[Chop[temphex // Expand, 10^(-20)], x_ /; NumericQ[x]];
+    goodposonephase = Position[temphex, x_Complex + c1_Complex phase[y1___], {1} , Heads -> False] // Flatten;
     
     If[Length[goodposonephase] > 0, phaseeqleft = True];
     
@@ -2810,24 +2936,8 @@ this issue should be investigated further!"]];
     Do[rsym[Sequence @@ rlist[[i]]] = Chop[ rsym[Sequence @@ rlist[[i]]] /. solphase , 10^(-20) ];
     , {i, 1, Length[rlist]}];
     
-    temphex =
-     DeleteCases[
-      Table[
-       Chop[(Sum[rsym[i[[1]], i[[2]], i[[5]], {i[[7, 1]], v8}]*
-             fsym[i[[1]], i[[2]], i[[3]], i[[4]], i[[5]], i[[6]], {v8, i[[7, 2]], v9, i[[7, 4]]}]*
-             rsym[i[[3]], i[[2]], i[[6]], {v9, i[[7, 3]]}]
-             , {v8, nv[i[[1]], i[[2]], i[[5]]]}, {v9,  nv[i[[3]], i[[2]], i[[6]]]}]
-           -
-           Sum[fsym[i[[2]], i[[1]], i[[3]], i[[4]], i[[5]], j, {i[[7, 1]], i[[7, 2]], v5, v6}]*
-             rsym[j, i[[2]], i[[4]], {v6, v7}]*
-             fsym[i[[1]], i[[3]], i[[2]], i[[4]], j, i[[6]], {v5, v7, i[[7, 3]], i[[7, 4]]}]
-            , {j, Cases[irreps, x_ /; MemberQ[fusion[i[[1]], i[[3]]], x] &&
-              MemberQ[fusion[i[[2]], x], i[[4]]]]}
-            , {v5, nv[i[[1]], i[[3]], j]}, {v6, nv[i[[2]], j, i[[4]]]}, {v7, nv[i[[2]], j, i[[4]]]}]) // Expand , 10^(-20) ]
-       
-       , {i, flist}]
-      
-      , 0];
+    temphex = temphex /. solphase;
+    temphex = DeleteCases[Chop[temphex // Expand, 10^(-20)], x_ /; NumericQ[x]];
     
     firstlinpos = Position[temphex, x_ /; FreeQ[x, phase[___]^2, Infinity], 1, 1, Heads -> False] // Flatten;
     If[temphex != {},
@@ -6637,8 +6747,26 @@ fullfilename[type_, rank_, cosdenom_, cosnum_] :=
   FileNameJoin[{$UserBaseDirectory, "ApplicationData", "alatc", filename[type, rank, cosdenom, cosnum]}];
 (* no check is done to see if the arguments are consistent! *)
 
+(* 
+  At some point, I switched to saving in .wl format, because it acutally uses less space, and
+  it produces ordinary 'text' files. When loading the data, it is checked (for backwards
+  compatibility), if there exists a .wdx file (if so, it is converted to an .wl file)
+*)
 
-savecurrentdata[] := Module[{dir, dirok, name, file, fileexists, data, files, filesizes, totalfilesize},
+filenamewl[type_, rank_, cosdenom_, cosnum_] :=
+  "alatc_type=" <> ToString[type] <> "_rank=" <> 
+   StringPadLeft[ToString[rank], 3, "0"] <> "_denom=" <> 
+   StringPadLeft[ToString[cosdenom], 3, "0"] <> "_num=" <> 
+   StringPadLeft[ToString[cosnum], 3, "0"] <> ".wl";
+(* no check is done to see if the arguments are consistent! *)
+
+fullfilenamewl[type_, rank_, cosdenom_, cosnum_] :=
+  FileNameJoin[{$UserBaseDirectory, "ApplicationData", "alatc", filenamewl[type, rank, cosdenom, cosnum]}];
+(* no check is done to see if the arguments are consistent! *)
+
+
+savecurrentdata[] := Module[{dir, dirok, name, file, namewl, filewl, namewdx, filewdx,
+fileexists, fileexistswl, fileexistswdx, data, files, filesizes, totalfilesize},
    
    If[Not[fsymbolsexactfound && rsymbolsexactfound && modulardataexactfound],
      Print["The exact form F-symbols, R-symbols and/or modular data was not obtained. Please do so first, \
@@ -6648,7 +6776,9 @@ before saving the data!"];
    If[fsymbolsexactfound && rsymbolsexactfound && modulardataexactfound &&
       Not[pentholdsexact && hexholdsexact && modulardataexactok],
      Print["The exact form F-symbols, R-symbols and/or modular data was obtained, but at least one relation \
-does not hold. This should be sorted out, before one can save the data!"];   
+does not hold. This should be sorted out, before one can save the data!"];
+     Print["A possible/likely reason is that the F- and/or R-symbols were not calculated with high enough starting precision. \
+One can try to recalculate using higher precision."];
    ];
    
    If[fsymbolsexactfound && rsymbolsexactfound && modulardataexactfound &&
@@ -6661,25 +6791,50 @@ does not hold. This should be sorted out, before one can save the data!"];
    dirok = 
     FileExistsQ[dir];
    
-   name = filename[type, rank, cosdenominator, cosnumerator];
-   file = FileNameJoin[{dir, name}];
+   (* We're now using the .wl file type to store the data *)
+   namewl = filenamewl[type, rank, cosdenominator, cosnumerator];
+   filewl = FileNameJoin[{dir, namewl}];
+   
+   (* We're now using the .wl file type to store the data, but we check if data exits in the .wdx format *)
+   namewdx = filename[type, rank, cosdenominator, cosnumerator];
+   filewdx = FileNameJoin[{dir, namewdx}];
+   
    
    If[Not[dirok],
     CreateDirectory[dir];
     Print["The directory ", dir, " was created."];
     ];
    
-   fileexists = FileExistsQ[file];
    
-   If[fileexists,
+   fileexistswl = FileExistsQ[filewl];
+   fileexistswdx = FileExistsQ[filewdx];
+   fileexists = FileExistsQ[filewl] || FileExistsQ[filewdx];
+   
+   If[fileexistswl && Not[fileexistswdx],
     Print["The file with the data for the current algebra, rank and root \
 of unity already exists!"];
     Print["No data was saved."];
     Print["Done :-)"];
     ];
    
-   If[Not[fileexists],
-    Print["Saving the current data..."];
+   If[fileexistswl && fileexistswdx,
+    Print["The file with the data for the current algebra, rank and root \
+of unity already exists, both as .wl file and as .wdx file."];
+    Print["The .wdx file will be deleted."];
+    DeleteFile[filewdx];
+    Print["Done :-)"];
+    ];
+   
+   If[Not[fileexistswl],
+    
+    If[fileexistswdx,
+     Print["The data exists as a .wdx file. The data will be saved as a .wl file. The .wdx file \
+will be deleted."];
+    ];
+    
+    If[Not[fileexistswdx],
+     Print["Saving the current data..."];
+    ];
     
     data = {
       (* 1 the irreps *)
@@ -6737,18 +6892,23 @@ of unity already exists!"];
       roots
       };
     
-    Export[file, data];
+    Export[filewl, data];
     
+    (*
     files = FileNames[All, dir];
     files = Cases[files, x_ /; StringPart[x,-4;;-1] == {".", "w", "d", "x"} ];
     filesizes = FileSize /@ files;
     totalfilesize = Plus @@ filesizes;
-    
+    *)
     
     Print[
      "The data for the current algebra, rank and root of unity was saved in the file:"];
-    Print[file];    
-    Print["The size of the data directory is ", totalfilesize];
+    Print[filewl];
+    If[fileexistswdx,
+     DeleteFile[filewdx];
+     Print["The .wdx file was deleted."];
+    ];
+    (*Print["The size of the data directory is ", totalfilesize];*)
     Print["Done :-)"];
     
     ];
@@ -6845,9 +7005,32 @@ initfusionfromnmatrices[nmatrices_, irreps_] := Module[{irreptopos},
    ];
 
 
-importdata[file_] := Module[{data},
+importdata[file_] := Module[{data, filewl, filewdx, fileexistswl, fileexistswdx},
   
+  (* Because of the change from saving as .wdx to .wl, some tests are done, and the data is converted to .wl if necessary *)
+  
+  If[StringTake[file, -2] == "dx",
+   filewdx = file;
+   filewl = StringReplacePart[filewdx, "l", {-2,-1}];,
+   filewl = file;
+   filewdx = StringReplacePart[file, "dx", {-1,-1}];
+  ];
+  
+  fileexistswdx = FileExistsQ[filewdx];
+  fileexistswl = FileExistsQ[filewl];
+    
   data = Import[file];
+  
+  If[fileexistswdx && fileexistswl,
+   Print["The data file exists both as a .wdx and .wl file. The .wdx file will be deleted."];
+   DeleteFile[filewdx];
+  ];
+  
+  If[fileexistswdx && Not[fileexistswl],
+   Print["The data file exists only as a .wdx file. The data will be saved as a .wl file, and the .wdx file will be deleted."];
+   Export[filewl, data];
+   DeleteFile[filewdx];
+  ];
   
     (* Take care of the fusion rules *)
     
@@ -7071,7 +7254,7 @@ loaddata[atype_, rr_, lev_, rootfac_] := Module[
     posrootfacsuniform, posrootfacsnonuniform, posrootfacsall,
     gtemp, tmaxtemp, rootofunitytemp, uniformtemp, cosdenominatortemp,
      cosnumeratortemp,
-    dir, name, file, fileexists},
+    dir, name, file, namewl, filewl, namewdx, filewdx, fileexists, fileexistswl, fileexistswdx},
    
    typerankok = rangeok[atype, rr];
    levelok = IntegerQ[lev] && lev >= 0;
@@ -7115,14 +7298,21 @@ no data was loaded, no initialization was done!"];
      cosnumeratortemp = rootfac/tmaxtemp;
      ];
     dir = FileNameJoin[{$UserBaseDirectory, "ApplicationData", "alatc"}];
-    name = filename[atype, rr, cosdenominatortemp, cosnumeratortemp];
-    file = FileNameJoin[{dir, name}];
-    fileexists = FileExistsQ[file];
+    namewl = filenamewl[atype, rr, cosdenominatortemp, cosnumeratortemp];
+    filewl = FileNameJoin[{dir, namewl}];
+    fileexistswl = FileExistsQ[filewl];
+    namewdx = filename[atype, rr, cosdenominatortemp, cosnumeratortemp];
+    filewdx = FileNameJoin[{dir, namewdx}];
+    fileexistswdx = FileExistsQ[filewdx];
+    fileexists = fileexistswl || fileexistswdx;
     If[Not[fileexists],
      Print["The data file for the specified type, rank, level and rootfactor \
 does not exist, no data was loaded, no initialization was done!" ];
      ];
     ];
+   
+   If[fileexistswl, file = filewl];  
+   If[Not[fileexistswl] && fileexistswdx, file = filewdx];  
    
    If[typerankok && levelok && rootfacok && fileexists,
     
@@ -7184,7 +7374,7 @@ exists, the data will be loaded and the system will be initialized..."];
 
 loaddatalz[atype_, rr_, lvalue_, zvalue_] := Module[
    {typerankok, currentlvalueok, currentzvalueok,
-    dir, name, file, fileexists},
+    dir, name, file, fileexists, namewl, filewl, fileexistswl, namewdx, filewdx, fileexistswdx},
    
    typerankok = rangeok[atype, rr];
    If[typerankok,
@@ -7207,9 +7397,18 @@ z are not compatible, no data was loaded, no initialization was done!"];
     (* let's check if the file exists *)
     
     dir = FileNameJoin[{$UserBaseDirectory, "ApplicationData", "alatc"}];
-    name = filename[atype, rr, lvalue, zvalue];
-    file = FileNameJoin[{dir, name}];
-    fileexists = FileExistsQ[file];
+    namewdx = filename[atype, rr, lvalue, zvalue];
+    filewdx = FileNameJoin[{dir, namewdx}];
+    fileexistswdx = FileExistsQ[filewdx];
+    namewl = filenamewl[atype, rr, lvalue, zvalue];
+    filewl = FileNameJoin[{dir, namewl}];
+    fileexistswl = FileExistsQ[filewl];
+    
+    fileexists = fileexistswl || fileexistswdx;
+
+    If[fileexistswl, file = filewl];  
+    If[Not[fileexistswl] && fileexistswdx, file = filewdx];  
+
     If[Not[fileexists],
      Print["The data file for the specified type, rank, the value of l \
 and the value of z does not exist, no data was loaded, no \
