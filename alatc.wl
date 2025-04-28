@@ -285,7 +285,7 @@ Steve Simon, Joost Slingerland, Gert Vercleyen\n" ,
        "License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
       Style[ 
-       "Last revision: 2023-07-05\n\
+       "Last revision: 2025-04-28\n\
 " , FontSize -> 15, FontFamily -> "Source Sans Pro", Bold],
 
 
